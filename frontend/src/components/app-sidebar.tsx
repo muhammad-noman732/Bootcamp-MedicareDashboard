@@ -1,202 +1,149 @@
 import * as React from "react"
-import { GalleryVerticalEnd } from "lucide-react"
+import { NavLink } from "react-router-dom"
 
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 
-// This is sample data.
-const data = {
-  navMain: [
-    {
-      title: "Getting Started",
-      url: "#",
-      items: [
-        {
-          title: "Installation",
-          url: "#",
-        },
-        {
-          title: "Project Structure",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Building Your Application",
-      url: "#",
-      items: [
-        {
-          title: "Routing",
-          url: "#",
-        },
-        {
-          title: "Data Fetching",
-          url: "#",
-          isActive: true,
-        },
-        {
-          title: "Rendering",
-          url: "#",
-        },
-        {
-          title: "Caching",
-          url: "#",
-        },
-        {
-          title: "Styling",
-          url: "#",
-        },
-        {
-          title: "Optimizing",
-          url: "#",
-        },
-        {
-          title: "Configuring",
-          url: "#",
-        },
-        {
-          title: "Testing",
-          url: "#",
-        },
-        {
-          title: "Authentication",
-          url: "#",
-        },
-        {
-          title: "Deploying",
-          url: "#",
-        },
-        {
-          title: "Upgrading",
-          url: "#",
-        },
-        {
-          title: "Examples",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "API Reference",
-      url: "#",
-      items: [
-        {
-          title: "Components",
-          url: "#",
-        },
-        {
-          title: "File Conventions",
-          url: "#",
-        },
-        {
-          title: "Functions",
-          url: "#",
-        },
-        {
-          title: "next.config.js Options",
-          url: "#",
-        },
-        {
-          title: "CLI",
-          url: "#",
-        },
-        {
-          title: "Edge Runtime",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Architecture",
-      url: "#",
-      items: [
-        {
-          title: "Accessibility",
-          url: "#",
-        },
-        {
-          title: "Fast Refresh",
-          url: "#",
-        },
-        {
-          title: "Next.js Compiler",
-          url: "#",
-        },
-        {
-          title: "Supported Browsers",
-          url: "#",
-        },
-        {
-          title: "Turbopack",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Community",
-      url: "#",
-      items: [
-        {
-          title: "Contribution Guide",
-          url: "#",
-        },
-      ],
-    },
-  ],
-}
+// Menu items data with image paths
+const menuItems = [
+  {
+    title: "Dashboard",
+    url: "/dashboard/home",
+    image: "/vite.svg",
+  },
+  {
+    title: "Schedule",
+    url: "/dashboard/schedule",
+    image: "/shedule.svg",
+  },
+  {
+    title: "Tasks",
+    url: "/dashboard/tasks",
+    image: "/tasks.svg",
+  },
+  {
+    title: "Patients",
+    url: "/dashboard/patients",
+    image: "/patient.svg",
+  },
+  {
+    title: "Messages",
+    url: "/dashboard/messages",
+    image: "/message.png",
+    badge: 2,
+  },
+  {
+    title: "Analytics",
+    url: "/dashboard/analytics",
+    image: "/analytics.svg",
+  },
+]
+
+const generalItems = [
+  {
+    title: "Settings",
+    url: "/dashboard/settings",
+    image: "/settings.svg",
+  },
+  {
+    title: "Support",
+    url: "/dashboard/support",
+    image: "/support.svg",
+  },
+]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar variant="floating" {...props}>
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <GalleryVerticalEnd className="size-4" />
-                </div>
-                <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-medium">Documentation</span>
-                  <span className="">v1.0.0</span>
-                </div>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+    <Sidebar variant="sidebar" {...props}>
+      <SidebarHeader className="h-16 border-b border-sidebar-border">
+        <div className="flex items-center gap-3 px-4">
+          <div className="bg-primary text-primary-foreground flex aspect-square size-10 items-center justify-center rounded-full text-lg font-semibold">
+            M
+          </div>
+          <span className="text-xl font-semibold text-foreground">Medicare</span>
+        </div>
       </SidebarHeader>
-      <SidebarContent>
-        <SidebarGroup>
+
+      <SidebarContent className="pr-3">
+        {/* MENU Section */}
+        <SidebarGroup className="mt-3">
+          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground mb-2 px-2">
+            MENU
+          </SidebarGroupLabel>
           <SidebarMenu className="gap-2">
-            {data.navMain.map((item) => (
+            {menuItems.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild>
-                  <a href={item.url} className="font-medium">
-                    {item.title}
-                  </a>
+                <SidebarMenuButton
+                  asChild
+                  className="group relative h-11 data-[active=true]:bg-transparent data-[active=true]:text-primary hover:bg-accent"
+                >
+                  <NavLink to={item.url} className="relative">
+                    {({ isActive }) => (
+                      <>
+                        {isActive && (
+                          <div className="absolute -left-0 top-0 h-full w-1 bg-primary rounded-r-sm mr-[5px]" />
+                        )}
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className={`size-5 ${isActive ? '' : 'opacity-60 grayscale'}`}
+                        />
+                        <span className={`${isActive ? 'font-medium text-primary' : 'text-muted-foreground'}`}>
+                          {item.title}
+                        </span>
+                        {item.badge && (
+                          <span className="ml-10 bg-destructive text-white text-xs font-medium  rounded-full h-5 w-5 flex items-center justify-center">
+                            {item.badge}
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </NavLink>
                 </SidebarMenuButton>
-                {item.items?.length ? (
-                  <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
-                    {item.items.map((item) => (
-                      <SidebarMenuSubItem key={item.title}>
-                        <SidebarMenuSubButton asChild isActive={item.isActive}>
-                          <a href={item.url}>{item.title}</a>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    ))}
-                  </SidebarMenuSub>
-                ) : null}
               </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
+
+        {/* GENERAL Section */}
+        <SidebarGroup className="mt-8">
+          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground mb-2 px-2">
+            GENERAL
+          </SidebarGroupLabel>
+          <SidebarMenu className="gap-1">
+            {generalItems.map((item) => (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton
+                  asChild
+                  className="group relative h-11 data-[active=true]:bg-transparent data-[active=true]:text-primary hover:bg-accent"
+                >
+                  <NavLink to={item.url}>
+                    {({ isActive }) => (
+                      <>
+                        {isActive && (
+                          <div className="absolute -left-0 top-0 h-full w-1 bg-primary rounded-r-sm mr-[5px]" />
+                        )}
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className={`size-5 ${isActive ? '' : 'opacity-60 grayscale'}`}
+                        />
+                        <span className={`${isActive ? 'font-medium text-primary' : 'text-muted-foreground'}`}>
+                          {item.title}
+                        </span>
+                      </>
+                    )}
+                  </NavLink>
+                </SidebarMenuButton>
+                </SidebarMenuItem>
             ))}
           </SidebarMenu>
         </SidebarGroup>

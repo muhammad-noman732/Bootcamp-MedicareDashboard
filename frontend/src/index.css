@@ -45,15 +45,15 @@
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: #000000;
-  --card-foreground:#000000;
+  --card-foreground: #000000;
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary:#0000AC ;
+  --primary: #0000AC;
   --primary-foreground: #FFFFFF;
   --secondary: oklch(0.97 0 0);
-  --secondary-foreground:#828282;
+  --secondary-foreground: #828282;
 
-  --muted: oklch(0.97 0 0); 
+  --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
@@ -67,14 +67,13 @@
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: #FFFFFF;
-  --sidebar-foreground: #828282 --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: #828282;
+  --sidebar-foreground: #828282;
+  --sidebar-primary: #0000AC;
+  --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground:#0000AC,
-  --sidebar-border: 0.98px solid #E0E0E0; 
-  --sidebar-ring: oklch(0.708 0 0); 
-  --sidebar-primary: hsl(240 5.9% 10%); 
-  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-accent-foreground: #0000AC;
+  --sidebar-border: #E0E0E0;
+  --sidebar-ring: oklch(0.708 0 0);
 }
 
 .dark {
@@ -118,5 +117,6 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Mukta', sans-serif;
   }
 }

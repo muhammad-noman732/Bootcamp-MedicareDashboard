@@ -74,6 +74,12 @@
   --sidebar-accent-foreground: #0000AC;
   --sidebar-border: #E0E0E0;
   --sidebar-ring: oklch(0.708 0 0);
+  --status-recovered: #27AE60;
+  --status-recovered-overlay: rgba(255, 255, 255, 0.65);
+  --status-awaiting-surgery: #2F80ED;
+  --status-awaiting-surgery-overlay: rgba(255, 255, 255, 0.65);
+  --status-on-treatment: #EB5757;
+  --status-on-treatment-overlay: rgba(255, 255, 255, 0.65);
 }
 
 .dark {

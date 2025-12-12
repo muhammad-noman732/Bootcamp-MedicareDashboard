@@ -10,6 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
 } from "@/components/ui/sidebar"
 
 // Menu items data with image paths
@@ -63,12 +64,22 @@ const generalItems = [
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar variant="sidebar" {...props}>
-      <SidebarHeader className="h-16 border-b border-sidebar-border">
-        <div className="flex items-center gap-3 px-4">
-          <div className="bg-primary text-primary-foreground flex aspect-square size-10 items-center justify-center rounded-full text-lg font-semibold">
-            M
-          </div>
-          <span className="text-xl font-semibold text-foreground">Medicare</span>
+      <SidebarHeader
+        className="border-b border-sidebar-border"
+        style={{
+          width: "244.1758103580214px",
+          height: "92.17882110819937px",
+          borderRightWidth: "0.98px",
+          opacity: 1,
+        }}
+      >
+        <div className="flex h-full items-center gap-3 px-4">
+          <img
+            src="/logo.png"
+            alt="Medicare logo"
+            className="h-10 w-10 rounded-full object-contain"
+          />
+          <span className="text-xl font-semibold text-[#0000AC]">Medicare</span>
         </div>
       </SidebarHeader>
 
@@ -113,8 +124,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenu>
         </SidebarGroup>
 
+        <SidebarSeparator className="mx-4 my-4" />
+
         {/* GENERAL Section */}
-        <SidebarGroup className="mt-8">
+        <SidebarGroup className="mt-7">
           <SidebarGroupLabel className="text-xs font-medium text-muted-foreground mb-2 px-2">
             GENERAL
           </SidebarGroupLabel>

@@ -45,7 +45,7 @@ export const SchedulePage = () => {
       </div>
 
       <NewAppointmentModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
-    </div>
+      </div>
   )
 }
 

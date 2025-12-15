@@ -126,3 +126,18 @@
     font-family: 'Mukta', sans-serif;
   }
 }
+
+/* Schedule calendar tweaks */
+.schedule-calendar .fc-scroller,
+.schedule-calendar .fc-scroller-liquid-absolute {
+  overflow: visible !important;
+}
+
+.schedule-calendar .fc-theme-standard td,
+.schedule-calendar .fc-theme-standard th {
+  border-color: #efefef;
+}
+
+.schedule-calendar .fc-timegrid-slot {
+  height: 115px;
+}

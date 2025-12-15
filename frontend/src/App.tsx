@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import PatientsPage from "./pages/dashboard/patients/PatientsPage";
 import AddPatientPage from "./pages/dashboard/patients/AddPatientPage";
 import SchedulePage from "./pages/dashboard/schedule/SchedulePage";
-
+import Nomi from "./nomi";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -45,7 +45,8 @@ const router = createBrowserRouter([
 function App() {
 
   return (
-    <RouterProvider router={router}></RouterProvider>
+    <RouterProvider router={router} />
+    // <Nomi/>
   )
 }
 

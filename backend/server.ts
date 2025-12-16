@@ -1,11 +1,16 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import compression from "compression"
+import compression from 'compression'
 import rateLimit from "express-rate-limit";
 import { buffer } from "node:stream/consumers";
-import ExpressMongoSanitize from "express-mongo-sanitize";
+import mongoSanitize from "express-mongo-sanitize";
 import hpp from 'hpp'
+import xss from 'xss-clean'
+import morgan from "morgan"
+
+
+
 const app = express();
 
 
@@ -24,7 +29,7 @@ app.use('/api/', express.json({
 app.use(express.urlencoded({extended:true , limit:"10kb"}))
 // cors policy
 const corsOptions ={
-    origin:process.env.CORS_ORIGIN,
+    origin:process.env.ALLOWED_ORIGINS,
     methods:["GET","POST","PUT","DELETE"],
     credientals: true, // allow cookies
 }
@@ -70,12 +75,20 @@ const authLimiter = rateLimit({
 
 
 // Prevent NoSQL injection attacks
-app.use(ExpressMongoSanitize());
+app.use(mongoSanitize());
 
 // Prevent HTTP Parameter Pollution
 app.use(hpp({
   whitelist: ['sort', 'filter', 'page'] // Allow these params to appear multiple times
 }));
+
+// Data sanitization against XSS
+app.use(xss());
+
+// HTTP request logger (only in development)
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 
 
 app.use('/api/', apiLimiter);
@@ -97,3 +110,4 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
+

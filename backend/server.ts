@@ -1,4 +1,4 @@
-import express from "express";
+import express, { type NextFunction, type Request, type Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import compression from 'compression'
@@ -8,6 +8,8 @@ import mongoSanitize from "express-mongo-sanitize";
 import hpp from 'hpp'
 import xss from 'xss-clean'
 import morgan from "morgan"
+import { notFoundHandler } from "./utils/notFound";
+import { erroHandler } from "./middlewares/error.middleware";
 
 
 
@@ -90,6 +92,11 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+// Request logger
+app.use((req: Request, res: Response, next: NextFunction) => {
+    console.log(`${req.method} ${req.path}`);
+    next(); // Continue to next middleware
+});
 
 app.use('/api/', apiLimiter);
 app.use('/api/auth/', authLimiter);
@@ -103,6 +110,13 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+// not found handler
+
+app.use(notFoundHandler);
+
+app.use(erroHandler)
+
 
 // SERVER
 const PORT = process.env.PORT || 3000;

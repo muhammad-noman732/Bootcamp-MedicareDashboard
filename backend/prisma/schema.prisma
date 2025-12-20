@@ -30,12 +30,13 @@ enum Sex {
   male
   female
 }
+
 // model RefreshToken {
 //   id        String   @id @default(auto()) @map("_id") @db.ObjectId
 //   token     String   @unique
 //   expiresAt DateTime
 //   createdAt DateTime @default(now())
-  
+
 //   // Relations
 //   userId    String   @db.ObjectId
 //   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -44,49 +45,48 @@ enum Sex {
 // }
 
 model User {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  email         String   @unique
-  password      String?
-  name          String   // From onboarding form
-  userName      String?  
-  specialty     String?
-  companyName   String?
-  industry      String?
-  employeeCount String?
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  email         String  @unique
+  password      String
+  confirmPassword String
+  name          String // From onboarding form
+  userName      String
+  specialty     String
+  companyName   String
+  industry      String
+  employeeCount String
   googleId      String?
 
-  
-   avatar        String?
-  isVerified    Boolean   @default(false)
-  verificationToken String?
-  passwordResetToken String?
+  avatar               String?
+  isVerified           Boolean   @default(false)
+  verificationToken    String?
+  passwordResetToken   String?
   passwordResetExpires DateTime?
-  lastLoginAt   DateTime?
+  lastLoginAt          DateTime?
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  appointments  Appointment[]
-  tasks         Task[]
+  appointments Appointment[]
+  tasks        Task[]
 }
 
 model Patient {
   id           String         @id @default(auto()) @map("_id") @db.ObjectId
-  recordNumber String         @unique 
-  forename     String         
-  surname      String        
-  firstName    String?       
-  lastName     String?      
-  dateOfBirth  DateTime       
-  dob          DateTime?     
-  sex          Sex            
-  gender       String?       
+  recordNumber String         @unique
+  forename     String
+  surname      String
+  firstName    String?
+  lastName     String?
+  dateOfBirth  DateTime
+  dob          DateTime?
+  sex          Sex
+  gender       String?
   diagnosis    String?
   notes        String?
-  phoneNumber  String?        
-  phone        String?       
-  status       PatientStatus? 
+  phoneNumber  String?
+  phone        String?
+  status       PatientStatus?
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 
@@ -94,40 +94,40 @@ model Patient {
 }
 
 model Appointment {
-  id             String           @id @default(auto()) @map("_id") @db.ObjectId
-  userId         String           @db.ObjectId 
-  patientId      String           @db.ObjectId 
-  startTime      DateTime        
-  endTime        DateTime?        
-  date           DateTime?       
-  time           String?          
-  clinic         String?          
-  room           String?          
-  location       String?          
-  purpose        String?          
-  status         AppointmentStatus @default(pending) 
-  duration       Int              
-  type           AppointmentType  
-  isOnline       Boolean          @default(false)
-  notifications  Boolean           @default(false) 
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
+  id            String            @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String            @db.ObjectId
+  patientId     String            @db.ObjectId
+  startTime     DateTime
+  endTime       DateTime?
+  date          DateTime?
+  time          String?
+  clinic        String?
+  room          String?
+  location      String?
+  purpose       String?
+  status        AppointmentStatus @default(pending)
+  duration      Int
+  type          AppointmentType
+  isOnline      Boolean           @default(false)
+  notifications Boolean           @default(false)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 
-  user           User             @relation(fields: [userId], references: [id])
-  patient        Patient          @relation(fields: [patientId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  patient Patient @relation(fields: [patientId], references: [id])
 }
 
 model Task {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String   @db.ObjectId 
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String    @db.ObjectId
   title       String
   description String?
   date        DateTime?
-  isCompleted Boolean  @default(false) 
+  isCompleted Boolean   @default(false)
   status      Boolean?
-  statusText  String?  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  statusText  String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  user        User     @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }

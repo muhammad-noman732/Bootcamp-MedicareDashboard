@@ -3,6 +3,7 @@ import type { ValidationErrorDetail } from "../types/error.types";
 export class AppError extends Error {
     public status: string; // Will be "fail" or "error"
 
+    // here in constructur with public we are directly assigning the value as well
     constructor(
         public statusCode: number,
         message: string,
@@ -10,7 +11,7 @@ export class AppError extends Error {
     ) {
         super(message); 
         this.status = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
-        Error.captureStackTrace(this, this.constructor);
+        Error.captureStackTrace(this, this.constructor); 
     }
 }
 
@@ -26,20 +27,20 @@ export class ValidationError extends AppError{
     constructor(
          message: string = 'Validation failed',
          public errors: ValidationErrorDetail[] = [] ){
-        super( 400 ,  message  , true)
+         super( 400 ,  message  , true)
     }
 }
 
 
 export class BadRequestError extends AppError {
     constructor(message: string = 'Bad request') {
-        super(400 ,message,  true);
+        super(400 , message,  true);
     }
 }
 
 export class UnauthorizedError extends AppError {
     constructor(message: string = 'Authentication required') {
-        super(401, message, true);
+        super(401 , message, true);
     }
 }
 
@@ -53,7 +54,7 @@ export class ForbiddenError extends AppError {
 
 export class ConflictError extends AppError {
     constructor(message: string = 'Resource conflict') {
-        super( 409,message, true);
+        super( 409 , message, true);
     }
 }
 

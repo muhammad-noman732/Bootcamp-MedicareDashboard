@@ -1,15 +1,15 @@
 import DashboardLayout from "./components/dashboard/DashboardLayout"
-import { Register } from "./pages/auth/register/Register"
 import { DashboardHome } from "./pages/dashboard/home/DashboardHome"
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import PatientsPage from "./pages/dashboard/patients/PatientsPage";
 import AddPatientPage from "./pages/dashboard/patients/AddPatientPage";
 import SchedulePage from "./pages/dashboard/schedule/SchedulePage";
-import Nomi from "./nomi";
+import SignupPage from "./pages/auth/SignupPage";
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Register />
+    element: <SignupPage/>
   },
   {
     path: "/dashboard",
@@ -51,3 +51,14 @@ function App() {
 }
 
 export default App
+
+
+const array =["demo" ,"noman","dappg"];
+
+const query = "demo";
+
+for(let i = 0  ; i< array.length ; i++ ){
+   if(array[i].includes(query)){
+     console.log(array[i] , i)
+   }
+}

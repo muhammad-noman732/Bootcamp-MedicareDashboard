@@ -4,36 +4,38 @@ import helmet from "helmet";
 import compression from 'compression'
 import rateLimit from "express-rate-limit";
 import { buffer } from "node:stream/consumers";
-import mongoSanitize from "express-mongo-sanitize";
 import hpp from 'hpp'
-import xss from 'xss-clean'
+
 import morgan from "morgan"
 import { notFoundHandler } from "./utils/notFound";
 import { erroHandler } from "./middlewares/error.middleware";
+import authRouter from "./routes/authRoutes";
 
 
 
 const app = express();
-
+app.use(express.json({
+  limit: "10kb"
+}));
 
 // global middlewares
 // for parsing the json into object in request body
 // based on endpoin the data they have
 app.use('/api/uploads', express.json({ limit: '50mb' }));
 app.use('/api/', express.json({
-         limit: '10kb',
-        verify: (req, res, buf) => {
-            req.rawBody = buf.toString();
-         }
-        }));
+  limit: '10kb',
+  verify: (req, res, buf) => {
+    (req as any).rawBody = buf.toString();
+  }
+}));
 
 // for parsing the url encoded data in the request body
-app.use(express.urlencoded({extended:true , limit:"10kb"}))
+app.use(express.urlencoded({ extended: true, limit: "10kb" }))
 // cors policy
-const corsOptions ={
-    origin:process.env.ALLOWED_ORIGINS,
-    methods:["GET","POST","PUT","DELETE"],
-    credientals: true, // allow cookies
+const corsOptions = {
+  origin: process.env.ALLOWED_ORIGINS,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credientals: true, // allow cookies
 }
 app.use(cors(corsOptions))
 
@@ -76,16 +78,11 @@ const authLimiter = rateLimit({
 });
 
 
-// Prevent NoSQL injection attacks
-app.use(mongoSanitize());
-
 // Prevent HTTP Parameter Pollution
 app.use(hpp({
   whitelist: ['sort', 'filter', 'page'] // Allow these params to appear multiple times
 }));
 
-// Data sanitization against XSS
-app.use(xss());
 
 // HTTP request logger (only in development)
 if (process.env.NODE_ENV === 'development') {
@@ -94,16 +91,16 @@ if (process.env.NODE_ENV === 'development') {
 
 // Request logger
 app.use((req: Request, res: Response, next: NextFunction) => {
-    console.log(`${req.method} ${req.path}`);
-    next(); // Continue to next middleware
+  console.log(`${req.method} ${req.path}`);
+  next(); // Continue to next middleware
 });
 
 app.use('/api/', apiLimiter);
-app.use('/api/auth/', authLimiter);
+app.use('/api/auth', authLimiter, authRouter);
 
 
 // ROUTES
-app.get('/api/health', (req, res) => {
+app.get('/health', (req, res) => {
   res.json({
     success: true,
     message: 'Server is healthy',
@@ -112,7 +109,6 @@ app.get('/api/health', (req, res) => {
 });
 
 // not found handler
-
 app.use(notFoundHandler);
 
 app.use(erroHandler)

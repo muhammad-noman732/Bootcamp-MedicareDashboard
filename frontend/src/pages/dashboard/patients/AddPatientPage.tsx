@@ -10,7 +10,7 @@ import { TextareaField } from "@/components/dashboard/patients/add-patient/Texta
 
 export const AddPatientPage = () => {
   const handleSave = () => {
-    // TODO: Implement save functionality
+    
     console.log("Save clicked")
   }
 

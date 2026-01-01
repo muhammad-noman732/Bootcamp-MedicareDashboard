@@ -142,7 +142,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     {({ isActive }) => (
                       <>
                         {isActive && (
-                          <div className="absolute -left-0 top-0 h-full w-1 bg-primary rounded-r-sm mr-[5px]" />
+                          <div className="absolute left-0 top-0 h-full w-1 bg-primary rounded-r-sm mr-[5px]" />
                         )}
                         <img
                           src={item.image}

@@ -1,22 +1,33 @@
-import type {Request , Response , NextFunction } from "express";
-import { asyncHandler } from "../utils/asyncHandler";
-import { authSchema } from "../schema/userSchema";
-import type { authRepository } from "../repositories/authRepository";
-import type { authServices } from "../services/authServices";
+import type { Request, Response, NextFunction } from "express";
+import { asyncHandler } from "../utils/asyncHandler.ts";
+import { authSchema, loginSchema } from "../schema/userSchema.ts";
+import { authRepository } from "../repositories/authRepository.ts";
+import { authServices } from "../services/authServices.ts";
 
+export class authController {
+  constructor(private authServices: authServices) {}
 
-class authController {
-    constructor(private authServices : authServices){}
+  signup = asyncHandler(async (req: Request, res: Response) => {
+    const body = authSchema.parse(req.body);
+    console.log("data", body);
 
-     getUser = asyncHandler(async (req: Request, res: Response) => {
-         const body = authSchema.parse(req.body);
-         console.log("data" , body)
-         
-        const user = await this.authServices.createUser(body);
+    const user = await this.authServices.createUser(body);
 
-        res.status(200).json({
-            status: 'success',
-            data: { user }
-        });
+    res.status(200).json({
+      status: "success",
+      data: { user, message: "User created successfully" },
     });
+  });
+
+  login = asyncHandler(async (req: Request, res: Response) => {
+    const data = loginSchema.parse(req.body);
+    console.log("data", data);
+
+    const user = await this.authServices.loginUser(body);
+
+    res.status(200).json({
+      status: "success",
+      data: { user, message: "User created successfully" },
+    });
+  });
 }

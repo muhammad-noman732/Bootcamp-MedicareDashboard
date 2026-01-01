@@ -45,16 +45,16 @@ enum Sex {
 // }
 
 model User {
-  id            String  @id @default(auto()) @map("_id") @db.ObjectId
-  email         String  @unique
-  password      String
-  confirmPassword String
-  name          String // From onboarding form
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  email    String @unique
+  password String
+
+  name          String? // From onboarding form
   userName      String
-  specialty     String
-  companyName   String
-  industry      String
-  employeeCount String
+  specialty     String?
+  companyName   String?
+  industry      String?
+  employeeCount String?
   googleId      String?
 
   avatar               String?

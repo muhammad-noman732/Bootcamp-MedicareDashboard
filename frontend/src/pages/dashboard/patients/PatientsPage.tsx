@@ -20,7 +20,7 @@ export const PatientsPage = () => {
         </div>
       </div>
 
-      <div className="mt-4 flex-shrink-0">
+      <div className="mt-4 shrink-0">
         <PatientsPagination currentPage={currentPage} totalPages={totalPages} />
       </div>
     </div>

@@ -79,4 +79,6 @@ export class AuthController {
             message: "Logged out successfully"
         });
     });
+
+
 }

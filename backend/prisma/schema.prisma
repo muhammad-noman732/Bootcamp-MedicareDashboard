@@ -47,9 +47,10 @@ model RefreshToken {
 }
 
 model User {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  email    String @unique
-  password String
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  email     String  @unique
+  password  String
+  isVerfied Boolean @default(false)
 
   name          String? // From onboarding form
   userName      String
@@ -69,9 +70,24 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  verification  EmailVerification[]
   appointments  Appointment[]
   tasks         Task[]
   refreshTokens RefreshToken[]
+}
+
+model EmailVerification {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hashedOtp String
+  expiresAt DateTime
+  attempts  Int      @default(0) // Track wrong attempts
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, verified])
 }
 
 model Patient {

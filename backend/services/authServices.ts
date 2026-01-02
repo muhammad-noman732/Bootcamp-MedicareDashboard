@@ -112,6 +112,8 @@ export class AuthService {
         const storedToken = await this.authRepository.findRefreshToken(tokenHash);
 
         if (!storedToken) {
+            // This could mean token theft!
+            await this.authRepository.revokeRefreshTokensByUserId(decoded.userId);
             throw new UnauthorizedError("Invalid refresh token");
         }
 

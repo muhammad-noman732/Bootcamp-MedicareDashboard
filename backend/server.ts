@@ -31,6 +31,10 @@ app.use('/api/', express.json({
 
 // for parsing the url encoded data in the request body
 app.use(express.urlencoded({ extended: true, limit: "10kb" }))
+// cookie parser
+import cookieParser from "cookie-parser";
+app.use(cookieParser());
+
 // cors policy
 const corsOptions = {
   origin: process.env.ALLOWED_ORIGINS,

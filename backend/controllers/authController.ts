@@ -2,20 +2,20 @@ import type { Request, Response, NextFunction } from "express";
 import { asyncHandler } from "../utils/asyncHandler.ts";
 import { authSchema, loginSchema } from "../schema/userSchema.ts";
 import { AuthService } from "../services/authServices.ts";
-import type { User } from "../generated/prisma/client";
+import type { AuthUserResponse } from "../types/authTypes.ts";
+import { UnauthorizedError } from "../utils/appError.ts";
 
 export class AuthController {
     constructor(private authService: AuthService) { }
 
-    private sendTokenResponse(res: Response, result: { user: Partial<User> | null, accessToken: string, refreshToken: string }, message: string) {
+    private sendTokenResponse(res: Response, result: { user: AuthUserResponse, accessToken: string, refreshToken: string }, message: string) {
         const { user, accessToken, refreshToken } = result;
 
-        // HTTP-Only Cookie for Refresh Token (Security Best Practice)
         const cookieOptions = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Send only over HTTPS in prod
+            secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict' as const,
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            maxAge: 7 * 24 * 60 * 60 * 1000
         };
 
         res.cookie('refreshToken', refreshToken, cookieOptions);
@@ -24,13 +24,14 @@ export class AuthController {
             status: "success",
             message,
             data: {
-                user, // Type is strictly Partial<User> now
-                accessToken // Refresh token is intentionally NOT in the body, only cookie
+                user,
+                accessToken
             }
         });
     }
 
     signup = asyncHandler(async (req: Request, res: Response) => {
+
         const body = authSchema.parse(req.body);
         const result = await this.authService.createUser(body);
         this.sendTokenResponse(res, result, "User created successfully");
@@ -42,16 +43,22 @@ export class AuthController {
         this.sendTokenResponse(res, result, "Login successful");
     });
 
+    // refresh access token
     refresh = asyncHandler(async (req: Request, res: Response) => {
         const refreshToken = req.cookies.refreshToken;
 
         if (!refreshToken) {
-            res.status(401).json({ status: "fail", message: "Refresh token required" });
-            return;
+            throw new UnauthorizedError("Refresh token required")
         }
 
-        const { accessToken } = await this.authService.refreshAccessToken(refreshToken);
+        const { accessToken, refreshToken: newRefreshToken } = await this.authService.refreshAccessToken(refreshToken);
 
+        res.cookie("refreshToken", newRefreshToken, {
+            httpOnly: true,
+            sameSite: 'strict' as const,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
         res.status(200).json({
             status: "success",
             data: { accessToken }

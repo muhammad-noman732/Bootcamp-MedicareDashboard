@@ -47,47 +47,70 @@ model RefreshToken {
 }
 
 model User {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  email     String  @unique
-  password  String
-  isVerfied Boolean @default(false)
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  email    String @unique
+  password String
+  userName String
 
   name          String? // From onboarding form
-  userName      String
   specialty     String?
   companyName   String?
   industry      String?
   employeeCount String?
+  avatar        String?
+  // outh
   googleId      String?
+  // security and status 
+  isVerified    Boolean   @default(false)
+  isActive      Boolean   @default(true)
+  lastLoginAt   DateTime?
+  // Timestamps
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime? // Soft delete
 
-  avatar               String?
-  isVerified           Boolean   @default(false)
-  verificationToken    String?
-  passwordResetToken   String?
-  passwordResetExpires DateTime?
-  lastLoginAt          DateTime?
+  // Relations
+  emailVerifications EmailVerification[]
+  passwordResets     PasswordReset[]
+  refreshTokens      RefreshToken[]
+  appointments       Appointment[]
+  tasks              Task[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  verification  EmailVerification[]
-  appointments  Appointment[]
-  tasks         Task[]
-  refreshTokens RefreshToken[]
+  @@index([googleId])
+  @@index([isVerified, isActive])
+  @@map("users")
 }
 
 model EmailVerification {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   @db.ObjectId
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String    @db.ObjectId
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   hashedOtp String
   expiresAt DateTime
-  attempts  Int      @default(0) // Track wrong attempts
-  verified  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  attempts  Int       @default(0) // Track wrong attempts
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
-  @@index([userId, verified])
+  @@index([userId, expiresAt])
+  @@index([hashedOtp])
+  @@map("email_verifications")
+}
+
+model PasswordReset {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  hashedToken String    @unique
+  expiresAt   DateTime
+  usedAt      DateTime?
+  ipAddress   String?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, expiresAt])
+  @@map("password_resets")
 }
 
 model Patient {

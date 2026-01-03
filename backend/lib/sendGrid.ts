@@ -1,30 +1,56 @@
 import sgMail from '@sendgrid/mail';
-
-sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+import { NotFoundError } from '../utils/appError';
 
 export class SendGridService {
+    private readonly fromEmail: string;
+    private readonly fromName: string;
+
     constructor() {
-        if (process.env.SENDGRID_API_KEY) {
-            throw new Error("SENDGRID_API_KEY")
+        // Check if API key exists
+        if (!process.env.SENDGRID_API_KEY) {
+            throw new NotFoundError("SENDGRID_API_KEY is required in environment variables");
+        }
+
+        if (!process.env.SENDGRID_FROM_EMAIL) {
+            throw new NotFoundError("SENDGRID_FROM_EMAIL is required in environment variables");
+        }
+
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        this.fromEmail = process.env.SENDGRID_FROM_EMAIL;
+        this.fromName = process.env.SENDGRID_FROM_NAME || 'Medicare Dashboard';
+    }
+
+    async sendVerificationEmail(to: string, userName: string, htmlContent: string): Promise<void> {
+        try {
+            await sgMail.send({
+                to,
+                from: {
+                    email: this.fromEmail,
+                    name: this.fromName
+                },
+                subject: 'Verify Your Email - Medicare Dashboard',
+                html: htmlContent,
+            });
+        } catch (error) {
+            console.error('SendGrid Error:', error);
+            throw new Error('Failed to send verification email');
         }
     }
-    async sendVerificationEmail(to: string, from: string, msg: string) {
-        sgMail.send({
-            to,
-            from,
-            subject: 'Verification Email',
-            text: msg
-        })
+
+    async sendPasswordResetEmail(to: string, userName: string, htmlContent: string): Promise<void> {
+        try {
+            await sgMail.send({
+                to,
+                from: {
+                    email: this.fromEmail,
+                    name: this.fromName
+                },
+                subject: 'Password Reset - Medicare Dashboard',
+                html: htmlContent,
+            });
+        } catch (error) {
+            console.error('SendGrid Error:', error);
+            throw new Error('Failed to send password reset email');
+        }
     }
-
-    async sendPasswordResetEmail(to: string, from: string, msg: string) {
-        sgMail.send({
-            to,
-            from,
-            subject: 'Password Reset',
-            text: msg
-        })
-    }
-
-
 }

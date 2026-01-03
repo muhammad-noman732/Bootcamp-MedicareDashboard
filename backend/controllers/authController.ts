@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { asyncHandler } from "../utils/asyncHandler.ts";
 import { authSchema, loginSchema } from "../schema/userSchema.ts";
+import { verifyEmailSchema, resendOTPSchema } from "../schema/emailVerificationSchema.ts";
 import { AuthService } from "../services/authServices.ts";
 import type { AuthUserResponse } from "../types/authTypes.ts";
 import { UnauthorizedError } from "../utils/appError.ts";
@@ -30,11 +31,19 @@ export class AuthController {
         });
     }
 
-    signup = asyncHandler(async (req: Request, res: Response) => {
 
+    signup = asyncHandler(async (req: Request, res: Response) => {
         const body = authSchema.parse(req.body);
         const result = await this.authService.createUser(body);
-        this.sendTokenResponse(res, result, "User created successfully");
+
+        res.status(201).json({
+            status: "success",
+            message: result.message,
+            data: {
+                email: result.user.email,
+                userName: result.user.userName,
+            }
+        });
     });
 
     login = asyncHandler(async (req: Request, res: Response) => {
@@ -80,5 +89,39 @@ export class AuthController {
         });
     });
 
+    verifyEmail = asyncHandler(async (req: Request, res: Response) => {
+        const { email, otp } = verifyEmailSchema.parse(req.body);
 
+        const result = await this.authService.verifyEmail(email, otp);
+
+        const cookieOptions = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict' as const,
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        };
+
+        res.cookie('refreshToken', result.refreshToken, cookieOptions);
+
+        res.status(200).json({
+            status: "success",
+            message: "Email verified successfully. You are now logged in.",
+            data: {
+                user: result.user,
+                accessToken: result.accessToken
+            }
+        });
+    });
+
+
+    resendVerificationOTP = asyncHandler(async (req: Request, res: Response) => {
+        const { email } = resendOTPSchema.parse(req.body);
+
+        const result = await this.authService.resendVerificationOTP(email);
+
+        res.status(200).json({
+            status: "success",
+            message: result.message
+        });
+    });
 }

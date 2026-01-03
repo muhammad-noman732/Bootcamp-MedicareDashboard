@@ -2,7 +2,7 @@ import {
     type AuthSchema,
     type LoginSchema,
 } from "../schema/userSchema";
-import type { AuthRepository } from "../repositories/authRepository"; // Updated import name
+import type { AuthRepository } from "../repositories/authRepository";
 import type { User } from "../generated/prisma/client";
 import {
     ConflictError,
@@ -13,19 +13,24 @@ import {
 import bcryptjs from "bcryptjs";
 import { JwtService } from "../lib/jwt";
 import { AuthUserResponse } from "../types/authTypes";
-import crypto from 'crypto'
+import crypto from 'crypto';
+import { SendGridService } from "../lib/sendGrid";
+import { verificationEmailTemplate } from "../template/email/verificationEmail";
+
 export class AuthService {
     private readonly SALT_ROUNDS = 12;
+    private readonly OTP_EXPIRY_MINUTES = 10;
 
     constructor(
         private authRepository: AuthRepository,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private sendGridService: SendGridService
     ) { }
+
 
     async createUser(data: AuthSchema): Promise<{
         user: AuthUserResponse,
-        accessToken: string,
-        refreshToken: string
+        message: string
     }> {
         const existingUser = await this.authRepository.findByEmailWithPassword(data.email);
 
@@ -44,20 +49,25 @@ export class AuthService {
             throw new InternalServerError("Failed to create user");
         }
 
-        const accessToken = this.jwtService.generateAccessToken(user.id);
-        const refreshToken = this.jwtService.generateRefreshToken(user.id);
+        // Generate OTP
+        const otp = this.generateOTP();
+        const hashedOTP = this.hashOTP(otp);
+        const expiresAt = new Date(Date.now() + this.OTP_EXPIRY_MINUTES * 60 * 1000);
 
-        const hashedRefreshToken = await this.hashToken(refreshToken)
-        await this.authRepository.createRefreshToken(
+        // Store OTP in database
+        await this.authRepository.createEmailVerification(
             user.id,
-            hashedRefreshToken,
-            new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+            hashedOTP,
+            expiresAt
         );
+
+        // Send verification email
+        const emailHtml = verificationEmailTemplate(user.userName, otp);
+        await this.sendGridService.sendVerificationEmail(user.email, user.userName, emailHtml);
 
         return {
             user,
-            accessToken,
-            refreshToken,
+            message: "Verification OTP sent to your email. Please verify to continue."
         };
     }
 
@@ -66,6 +76,12 @@ export class AuthService {
 
         if (!user) {
             throw new NotFoundError("User");
+        }
+
+        if (!user.isVerified) {
+            throw new UnauthorizedError(
+                "Please verify your email before logging in. Check your inbox for the verification OTP."
+            );
         }
 
         const isPasswordMatch = await bcryptjs.compare(
@@ -80,7 +96,7 @@ export class AuthService {
         const accessToken = this.jwtService.generateAccessToken(user.id);
         const refreshToken = this.jwtService.generateRefreshToken(user.id);
 
-        const hashedRefreshToken = this.hashToken(refreshToken)
+        const hashedRefreshToken = this.hashToken(refreshToken);
 
         await this.authRepository.createRefreshToken(
             user.id,
@@ -98,7 +114,7 @@ export class AuthService {
             accessToken,
             refreshToken,
             user: userProfile
-        }
+        };
     }
 
     async refreshAccessToken(
@@ -154,6 +170,133 @@ export class AuthService {
 
 
     hashToken(token: string): string {
-        return crypto.createHash('sha256').update(token).digest('hex')
+        return crypto.createHash('sha256').update(token).digest('hex');
+    }
+
+    private generateOTP(): string {
+        return crypto.randomInt(100000, 999999).toString();
+    }
+
+    private hashOTP(otp: string): string {
+        return crypto.createHash('sha256').update(otp).digest('hex');
+    }
+
+
+    async verifyEmail(
+        email: string,
+        otp: string
+    ): Promise<{
+        user: AuthUserResponse,
+        accessToken: string,
+        refreshToken: string
+    }> {
+
+        const user = await this.authRepository.findByEmailWithPassword(email);
+
+        if (!user) {
+            throw new NotFoundError("User");
+        }
+
+        if (user.isVerified) {
+            throw new ConflictError("Email already verified");
+        }
+
+        const verification = await this.authRepository.findEmailVerification(user.id);
+
+        if (!verification) {
+            throw new UnauthorizedError("No pending verification found. Please request a new OTP.");
+        }
+
+        // Check attempts limit
+        if (verification.attempts >= 5) {
+            throw new UnauthorizedError("Too many failed attempts. Please request a new OTP.");
+        }
+
+        // Verify OTP
+        const hashedInputOtp = this.hashOTP(otp);
+
+        if (hashedInputOtp !== verification.hashedOtp) {
+            // Increment attempts
+            await this.authRepository.incrementVerificationAttempts(verification.id);
+
+            const remainingAttempts = 5 - (verification.attempts + 1);
+            throw new UnauthorizedError(
+                `Invalid OTP. ${remainingAttempts} attempts remaining.`
+            );
+        }
+
+        // OTP is valid - mark as verified
+        await this.authRepository.markUserAsVerified(user.id);
+        await this.authRepository.markVerificationAsUsed(verification.id);
+
+        // Generate JWT tokens 
+        const accessToken = this.jwtService.generateAccessToken(user.id);
+        const refreshToken = this.jwtService.generateRefreshToken(user.id);
+
+        const hashedRefreshToken = this.hashToken(refreshToken);
+        await this.authRepository.createRefreshToken(
+            user.id,
+            hashedRefreshToken,
+            new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        );
+
+        const verifiedUser = await this.authRepository.findById(user.id);
+
+        if (!verifiedUser) {
+            throw new InternalServerError("User profile not found");
+        }
+
+        return {
+            user: verifiedUser,
+            accessToken,
+            refreshToken,
+        };
+    }
+
+
+    async resendVerificationOTP(email: string): Promise<{ message: string }> {
+        const user = await this.authRepository.findByEmailWithPassword(email);
+
+        if (!user) {
+            throw new NotFoundError("User not found");
+        }
+
+        if (user.isVerified) {
+            throw new ConflictError("Email already verified");
+        }
+
+        // Check rate limiting (prevent spam)
+        const existingVerification = await this.authRepository.findEmailVerification(user.id);
+
+        if (existingVerification) {
+            const timeSinceCreation = Date.now() - existingVerification.createdAt.getTime();
+            const twoMinutes = 2 * 60 * 1000;
+
+            if (timeSinceCreation < twoMinutes) {
+                const waitTime = Math.ceil((twoMinutes - timeSinceCreation) / 1000);
+                throw new ConflictError(
+                    `Please wait ${waitTime} seconds before requesting a new OTP.`
+                );
+            }
+        }
+
+        // Generate new OTP
+        const otp = this.generateOTP();
+        const hashedOtp = this.hashOTP(otp);
+        const expiresAt = new Date(Date.now() + this.OTP_EXPIRY_MINUTES * 60 * 1000);
+
+        await this.authRepository.createEmailVerification(
+            user.id,
+            hashedOtp,
+            expiresAt
+        );
+
+        // Send email
+        const emailHtml = verificationEmailTemplate(user.userName || user.name || 'User', otp);
+        await this.sendGridService.sendVerificationEmail(user.email, user.userName, emailHtml);
+
+        return {
+            message: "New verification OTP sent to your email."
+        };
     }
 }

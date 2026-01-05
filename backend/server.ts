@@ -1,17 +1,15 @@
 import express, { type NextFunction, type Request, type Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
-import compression from 'compression'
+import compression from 'compression';
 import rateLimit from "express-rate-limit";
 import { buffer } from "node:stream/consumers";
-import hpp from 'hpp'
-
-import morgan from "morgan"
+import hpp from 'hpp';
+import morgan from "morgan";
+import cookieParser from "cookie-parser";
 import { notFoundHandler } from "./utils/notFound";
 import { erroHandler } from "./middlewares/error.middleware";
 import authRouter from "./routes/authRoutes";
-
-
 
 const app = express();
 app.use(express.json({
@@ -20,19 +18,17 @@ app.use(express.json({
 
 // global middlewares
 // for parsing the json into object in request body
-// based on endpoin the data they have
+// based on endpoint the data they have
 app.use('/api/uploads', express.json({ limit: '50mb' }));
 app.use('/api/', express.json({
   limit: '10kb',
-  verify: (req, res, buf) => {
-    (req as any).rawBody = buf.toString();
-  }
 }));
 
+
 // for parsing the url encoded data in the request body
-app.use(express.urlencoded({ extended: true, limit: "10kb" }))
+app.use(express.urlencoded({ extended: true, limit: "10kb" }));
+
 // cookie parser
-import cookieParser from "cookie-parser";
 app.use(cookieParser());
 
 // cors policy

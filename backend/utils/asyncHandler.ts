@@ -1,4 +1,4 @@
-import type { Request ,Response,  NextFunction  } from "express";
+import type { Request, Response, NextFunction } from "express";
 /*
 WHAT IS asyncHandler?
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -29,26 +29,26 @@ asyncHandler automatically adds the try-catch for you!
 */
 
 
-type  AsyncFunction =(
-    req: Request,
-    res: Response,
-    next:NextFunction
- ) => Promise<any>
+type AsyncFunction = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => Promise<void>
 
 
 
 export const asyncHandler = (fn: AsyncFunction) => {
-    // Return a NEW function that Express will call
-    return (req: Request, res: Response, next: NextFunction) => {
-        // Execute your function
-        // Wrap it in Promise.resolve (in case it's not async)
-        // If error happens, .catch() sends it to next()
-        Promise.resolve(fn(req, res, next)).catch(next);
-    };
+  // Return a NEW function that Express will call
+  return (req: Request, res: Response, next: NextFunction) => {
+    // Execute your function
+    // Wrap it in Promise.resolve (in case it's not async)
+    // If error happens, .catch() sends it to next()
+    Promise.resolve(fn(req, res, next)).catch(next);
+  };
 };
 
 
-// 
+//
 // HOW IT WORKS INTERNALLY:
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

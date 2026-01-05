@@ -75,6 +75,7 @@ model User {
   refreshTokens      RefreshToken[]
   appointments       Appointment[]
   tasks              Task[]
+  patients           Patient[]
 
   @@index([googleId])
   @@index([isVerified, isActive])
@@ -114,25 +115,28 @@ model PasswordReset {
 }
 
 model Patient {
-  id           String         @id @default(auto()) @map("_id") @db.ObjectId
-  recordNumber String         @unique
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  recordNumber String        @unique
   forename     String
   surname      String
-  firstName    String?
-  lastName     String?
   dateOfBirth  DateTime
-  dob          DateTime?
   sex          Sex
-  gender       String?
-  diagnosis    String?
+  diagnosis    String
   notes        String?
-  phoneNumber  String?
-  phone        String?
-  status       PatientStatus?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  phoneNumber  String
+  status       PatientStatus @default(on_treatment)
+  //  
+  userId       String        @db.ObjectId
+  user         User          @relation(fields: [userId], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  deletedAt    DateTime? // Soft delete
 
   appointments Appointment[]
+
+  @@index([surname, forename])
+  @@index([status])
+  @@map("patients")
 }
 
 model Appointment {

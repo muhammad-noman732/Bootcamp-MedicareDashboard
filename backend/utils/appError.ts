@@ -1,4 +1,4 @@
-import type { ValidationErrorDetail } from "../types/error.types";
+import type { ValidationErrorDetail } from "../types/errorTypes";
 
 export class AppError extends Error {
     public status: string; // Will be "fail" or "error"

@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
-import { AppError, ValidationError } from "../utils/appError.ts";
+import { AppError, ValidationError } from "../utils/appError";
 
-export const erroHandler = (
+export const errorHandler = (
     err: Error,
     req: Request,
     res: Response,

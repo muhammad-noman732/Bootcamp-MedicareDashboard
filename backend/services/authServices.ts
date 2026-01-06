@@ -25,7 +25,7 @@ export class AuthService {
         private authRepository: AuthRepository,
         private jwtService: JwtService,
         private sendGridService: SendGridService
-    ) { }
+    ){}
 
 
     async createUser(data: AuthSchema): Promise<{

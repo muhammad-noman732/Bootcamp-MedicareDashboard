@@ -4,9 +4,11 @@ import { prisma } from "../lib/prisma";
 export class PatientRepository {
 
 
-    async createPatient(data: Prisma.PatientCreateInput): Promise<Patient> {
+    // patientUncheckedCreateInput is used to create a patient without any relations as in this we can get the id of the user 
+    async createPatient(data: Prisma.PatientUncheckedCreateInput): Promise<Patient> {
         return await prisma.patient.create({
             data,
+
         });
     }
 
@@ -37,4 +39,33 @@ export class PatientRepository {
             }
         });
     }
+
+
+
+    async findPaginatedPatients(
+        where: Prisma.PatientWhereInput,
+        orderBy: Prisma.PatientOrderByWithRelationInput,
+        skip: number,
+        take: number
+    ) {
+
+        const [patients, totalCount] = await Promise.all([
+            prisma.patient.findMany({
+                where,
+                orderBy,
+                skip,
+                take,
+            }),
+            prisma.patient.count({
+                where,
+            }),
+        ]);
+
+        return {
+            patients,
+            totalCount,
+        };
+    }
 }
+
+

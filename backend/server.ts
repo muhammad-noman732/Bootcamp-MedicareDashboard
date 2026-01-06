@@ -8,7 +8,7 @@ import hpp from 'hpp';
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import { notFoundHandler } from "./utils/notFound";
-import { erroHandler } from "./middlewares/error.middleware";
+import { errorHandler } from "./middlewares/errorMiddleware";
 import authRouter from "./routes/authRoutes";
 
 const app = express();
@@ -111,7 +111,7 @@ app.get('/health', (req, res) => {
 // not found handler
 app.use(notFoundHandler);
 
-app.use(erroHandler)
+app.use(errorHandler)
 
 
 // SERVER

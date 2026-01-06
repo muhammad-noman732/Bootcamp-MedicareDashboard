@@ -1,28 +1,65 @@
 import { Request, Response } from "express";
 import { createPatientSchema } from "../schema/patientSchema";
 import { PatientServices } from "../services/patientServices";
-import { InternalServerError } from "../utils/appError";
-
+import { InternalServerError, UnauthorizedError } from "../utils/appError";
+import { asyncHandler } from "../utils/asyncHandler";
+import { paginationQuerySchema } from "../schema/paginationQuerySchema";
 
 export class PatientController {
-    constructor(
-        private patientServices: PatientServices
-    ) {
+  constructor(private patientServices: PatientServices) {}
 
+  createPatient = asyncHandler(async (req: Request, res: Response) => {
+    const body = createPatientSchema.parse(req.body);
+    console.log("data of patinet schema ", body);
+    const userId = req.user.id;
+
+    const patient = await this.patientServices.createPatient(body, userId);
+
+    if (!patient) {
+      throw new InternalServerError("Failed to create patient");
+    }
+    res.status(201).json({
+      message: "Patient created successfully",
+      patient,
+    });
+  });
+
+  getPatient = asyncHandler(async (req: Request, res: Response) => {
+    const patientId = req.params.id;
+    const patient = await this.patientServices.getPatientById(patientId);
+    if (!patient) {
+      throw new InternalServerError("Failed to get patient ");
     }
 
-    async createPatient(req: Request, res: Response) {
-        const body = createPatientSchema.parse(req.body);
-        console.log("data of patinet schema ", body);
+    res.status(200).json({
+      message: "Patient get Successfully",
+      data: patient,
+    });
+  });
 
-        const patient = await this.patientServices.createPatient(body)
-
-        if (!patient) {
-            throw new InternalServerError("Failed to create patient");
-        }
-        res.status(201).json({
-            message: "Patient created successfully",
-            patient
-        })
+  deletePatient = asyncHandler(async (req: Request, res: Response) => {
+    const patientId = req.params.id;
+    const patient = await this.patientServices.deletePatient(patientId);
+    if (!patient) {
+      throw new InternalServerError("Failed to get patient ");
     }
+
+    res.status(200).json({
+      message: "Patient deleted Successfully",
+      data: patient,
+    });
+  });
+
+
+   getPatients = asyncHandler(async(req : Request , res: Response)=>{
+          const data =  paginationQuerySchema.parse(req.query)
+
+          const userId = req.user.id;
+
+          const result = await this.patientServices.getPatientsPaginated(userId ,data)
+
+    }) 
 }
+
+
+   

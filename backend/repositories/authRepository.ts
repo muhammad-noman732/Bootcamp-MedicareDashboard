@@ -83,34 +83,55 @@ export class AuthRepository {
     }
 
 
-    //email verification 
-    async createEmailVerification(userId: string, hashedOTP: string, expiresAt: Date): Promise<void> {
-        // invalidate any previous pending verification
-        await prisma.emailVerification.updateMany({
-            where: {
-                userId,
-                usedAt: null
-            },
-            data: {
-                expiresAt: new Date() // expires immediately
-            }
-        })
-        // create new verification 
+    async createEmailVerification(userId: string, hashedOTP: string, expiresAt: Date, invalidateOld: boolean = false): Promise<void> {
+        console.log(`[createEmailVerification] Creating OTP for user ${userId}, expiresAt: ${expiresAt}, invalidateOld: ${invalidateOld}`);
+
+        if (invalidateOld) {
+            const updateResult = await prisma.emailVerification.updateMany({
+                where: {
+                    userId,
+                    usedAt: null
+                },
+                data: {
+                    expiresAt: new Date()
+                }
+            });
+            console.log(`[createEmailVerification] Invalidated ${updateResult.count} old OTPs`);
+        }
+
         await prisma.emailVerification.create({
             data: {
                 userId,
                 hashedOtp: hashedOTP,
                 expiresAt
             }
-        })
+        });
+        console.log(`[createEmailVerification] New OTP created`);
     }
 
     async findEmailVerification(userId: string) {
+
+        const latestVerification = await prisma.emailVerification.findFirst({
+            where: { userId },
+            orderBy: { createdAt: 'desc' },
+        });
+
+        if (!latestVerification) {
+            return null;
+        }
+
+        if (latestVerification.usedAt !== null) {
+            return null;
+        }
+
+        return latestVerification;
+    }
+
+    async findPendingEmailVerification(userId: string) {
         return await prisma.emailVerification.findFirst({
             where: {
                 userId,
-                usedAt: null, // Not used yet
-                expiresAt: { gte: new Date() }, // Not expired
+                usedAt: null,
             },
             orderBy: {
                 createdAt: 'desc',
@@ -135,6 +156,7 @@ export class AuthRepository {
             },
         });
     }
+
 
 
     async markUserAsVerified(userId: string): Promise<void> {

@@ -6,7 +6,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { paginationQuerySchema } from "../schema/paginationQuerySchema";
 
 export class PatientController {
-  constructor(private patientServices: PatientServices) {}
+  constructor(private patientServices: PatientServices) { }
 
   createPatient = asyncHandler(async (req: Request, res: Response) => {
     const body = createPatientSchema.parse(req.body);
@@ -51,15 +51,19 @@ export class PatientController {
   });
 
 
-   getPatients = asyncHandler(async(req : Request , res: Response)=>{
-          const data =  paginationQuerySchema.parse(req.query)
+  getPatients = asyncHandler(async (req: Request, res: Response) => {
+    const data = paginationQuerySchema.parse(req.query)
 
-          const userId = req.user.id;
+    const userId = req.user.id;
 
-          const result = await this.patientServices.getPatientsPaginated(userId ,data)
+    const result = await this.patientServices.getPatientsPaginated(userId, data);
 
-    }) 
+    res.json({
+      message: "Patients get Successfully",
+      data: result,
+    })
+
+  })
 }
 
 
-   

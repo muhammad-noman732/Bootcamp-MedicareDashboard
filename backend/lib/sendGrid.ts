@@ -1,5 +1,5 @@
 import sgMail from '@sendgrid/mail';
-import { NotFoundError } from '../utils/appError';
+import { NotFoundError, InternalServerError } from '../utils/appError';
 
 export class SendGridService {
     private readonly fromEmail: string;
@@ -33,7 +33,9 @@ export class SendGridService {
             });
         } catch (error) {
             console.error('SendGrid Error:', error);
-            throw new Error('Failed to send verification email');
+            throw new InternalServerError(
+                `Failed to send verification email: ${error instanceof Error ? error.message : 'Unknown error'}`
+            );
         }
     }
 
@@ -50,7 +52,9 @@ export class SendGridService {
             });
         } catch (error) {
             console.error('SendGrid Error:', error);
-            throw new Error('Failed to send password reset email');
+            throw new InternalServerError(
+                `Failed to send password reset email: ${error instanceof Error ? error.message : 'Unknown error'}`
+            );
         }
     }
 }

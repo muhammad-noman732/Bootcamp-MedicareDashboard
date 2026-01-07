@@ -4,7 +4,7 @@ import { JwtService } from "../lib/jwt";
 import { asyncHandler } from "../utils/asyncHandler";
 
 export class AuthMiddleware {
-  constructor(private jwtService: JwtService) {}
+  constructor(private jwtService: JwtService) { }
 
   authMiddleware = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {

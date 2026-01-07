@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser";
 import { notFoundHandler } from "./utils/notFound";
 import { errorHandler } from "./middlewares/errorMiddleware";
 import authRouter from "./routes/authRoutes";
+import patientRouter from "./routes/patientRoutes";
 
 const app = express();
 app.use(express.json({
@@ -97,6 +98,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use('/api/', apiLimiter);
 app.use('/api/auth', authLimiter, authRouter);
+app.use('/api/patients', apiLimiter, patientRouter);
 
 
 // ROUTES

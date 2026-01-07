@@ -25,14 +25,16 @@ export class AuthService {
         private authRepository: AuthRepository,
         private jwtService: JwtService,
         private sendGridService: SendGridService
-    ){}
+    ) { }
 
 
     async createUser(data: AuthSchema): Promise<{
         user: AuthUserResponse,
         message: string
     }> {
-        const existingUser = await this.authRepository.findByEmailWithPassword(data.email);
+        // Ensure email is lowercased
+        const emailLower = data.email.toLowerCase();
+        const existingUser = await this.authRepository.findByEmailWithPassword(emailLower);
 
         if (existingUser) {
             throw new ConflictError("Email already registered");
@@ -42,6 +44,7 @@ export class AuthService {
 
         const user = await this.authRepository.createUser({
             ...data,
+            email: data.email.toLowerCase(), // Ensure consistent casing
             password: hashPassword,
         });
 
@@ -72,7 +75,7 @@ export class AuthService {
     }
 
     async loginUser(data: LoginSchema): Promise<{ accessToken: string, refreshToken: string, user: AuthUserResponse }> {
-        const user = await this.authRepository.findByEmailWithPassword(data.email);
+        const user = await this.authRepository.findByEmailWithPassword(data.email.toLowerCase());
 
         if (!user) {
             throw new NotFoundError("User");
@@ -190,8 +193,8 @@ export class AuthService {
         accessToken: string,
         refreshToken: string
     }> {
-
-        const user = await this.authRepository.findByEmailWithPassword(email);
+        const normalizedEmail = email.toLowerCase();
+        const user = await this.authRepository.findByEmailWithPassword(normalizedEmail);
 
         if (!user) {
             throw new NotFoundError("User");
@@ -207,16 +210,17 @@ export class AuthService {
             throw new UnauthorizedError("No pending verification found. Please request a new OTP.");
         }
 
-        // Check attempts limit
+        if (verification.expiresAt < new Date()) {
+            throw new UnauthorizedError("OTP has expired. Please request a new one.");
+        }
+
         if (verification.attempts >= 5) {
             throw new UnauthorizedError("Too many failed attempts. Please request a new OTP.");
         }
 
-        // Verify OTP
         const hashedInputOtp = this.hashOTP(otp);
 
         if (hashedInputOtp !== verification.hashedOtp) {
-            // Increment attempts
             await this.authRepository.incrementVerificationAttempts(verification.id);
 
             const remainingAttempts = 5 - (verification.attempts + 1);
@@ -225,11 +229,8 @@ export class AuthService {
             );
         }
 
-        // OTP is valid - mark as verified
         await this.authRepository.markUserAsVerified(user.id);
         await this.authRepository.markVerificationAsUsed(verification.id);
-
-        // Generate JWT tokens 
         const accessToken = this.jwtService.generateAccessToken(user.id);
         const refreshToken = this.jwtService.generateRefreshToken(user.id);
 
@@ -255,7 +256,7 @@ export class AuthService {
 
 
     async resendVerificationOTP(email: string): Promise<{ message: string }> {
-        const user = await this.authRepository.findByEmailWithPassword(email);
+        const user = await this.authRepository.findByEmailWithPassword(email.toLowerCase());
 
         if (!user) {
             throw new NotFoundError("User not found");
@@ -269,13 +270,12 @@ export class AuthService {
         const existingVerification = await this.authRepository.findEmailVerification(user.id);
 
         if (existingVerification) {
-            const timeSinceCreation = Date.now() - existingVerification.createdAt.getTime();
-            const twoMinutes = 2 * 60 * 1000;
+            const timeUntilExpiry = existingVerification.expiresAt.getTime() - Date.now();
 
-            if (timeSinceCreation < twoMinutes) {
-                const waitTime = Math.ceil((twoMinutes - timeSinceCreation) / 1000);
+            if (timeUntilExpiry > 0) {
+                const secondsRemaining = Math.ceil(timeUntilExpiry / 1000);
                 throw new ConflictError(
-                    `Please wait ${waitTime} seconds before requesting a new OTP.`
+                    `An OTP is already active. Please wait ${secondsRemaining} seconds before requesting a new one, or use the existing OTP.`
                 );
             }
         }
@@ -288,11 +288,12 @@ export class AuthService {
         await this.authRepository.createEmailVerification(
             user.id,
             hashedOtp,
-            expiresAt
+            expiresAt,
+            true
         );
 
         // Send email
-        const emailHtml = verificationEmailTemplate(user.userName || user.name || 'User', otp);
+        const emailHtml = verificationEmailTemplate(user.userName, otp);
         await this.sendGridService.sendVerificationEmail(user.email, user.userName, emailHtml);
 
         return {

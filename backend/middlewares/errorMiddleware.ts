@@ -15,7 +15,8 @@ export const errorHandler = (
             message: err.message,
             status: err.status,
             ...(err instanceof ValidationError && { error: err.errors })
-        })
+        });
+        return; // CRITICAL: Prevent further execution
     }
 
     // If it's an unknown error (programming error)

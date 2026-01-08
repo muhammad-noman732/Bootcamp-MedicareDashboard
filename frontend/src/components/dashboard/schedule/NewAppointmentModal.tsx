@@ -62,7 +62,6 @@ export function NewAppointmentModal({
         </div>
 
         <div className="px-6 py-6 space-y-6">
-          {/* Top summary */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
             <SummaryItem
               icon={<User size={18} className="text-[#0000AC]" />}

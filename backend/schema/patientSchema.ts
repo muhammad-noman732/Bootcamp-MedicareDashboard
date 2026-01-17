@@ -22,6 +22,7 @@ export const createPatientSchema = z.object({
     phoneNumber: internationalPhoneSchema,
 })
 
+export const updatePatientSchema = createPatientSchema.partial();
 
-// type to use in service
 export type CreatePatientSchema = z.infer<typeof createPatientSchema>
+export type UpdatePatientSchema = z.infer<typeof updatePatientSchema>

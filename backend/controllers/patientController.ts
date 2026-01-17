@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createPatientSchema } from "../schema/patientSchema";
+import { createPatientSchema, updatePatientSchema } from "../schema/patientSchema";
 import { PatientServices } from "../services/patientServices";
 import { InternalServerError, UnauthorizedError } from "../utils/appError";
 import { asyncHandler } from "../utils/asyncHandler";
@@ -28,7 +28,7 @@ export class PatientController {
     const patientId = req.params.id;
     const patient = await this.patientServices.getPatientById(patientId);
     if (!patient) {
-      throw new InternalServerError("Failed to get patient ");
+      throw new UnauthorizedError("Failed to get patient ");
     }
 
     res.status(200).json({
@@ -41,7 +41,7 @@ export class PatientController {
     const patientId = req.params.id;
     const patient = await this.patientServices.deletePatient(patientId);
     if (!patient) {
-      throw new InternalServerError("Failed to get patient ");
+      throw new UnauthorizedError("Failed to get patient ");
     }
 
     res.status(200).json({
@@ -50,11 +50,27 @@ export class PatientController {
     });
   });
 
+  updatePatient = asyncHandler(async (req: Request, res: Response) => {
+    const patientId = req.params.id;
+    const body = updatePatientSchema.parse(req.body);
+
+    const patient = await this.patientServices.updatePatient(patientId, body);
+
+    if (!patient) {
+      throw new InternalServerError("Failed to update patient");
+    }
+
+    res.status(200).json({
+      message: "Patient updated successfully",
+      data: patient,
+    });
+  });
+
 
   getPatients = asyncHandler(async (req: Request, res: Response) => {
     const data = paginationQuerySchema.parse(req.query)
 
-    const userId = req.user.id;
+    const userId = req?.user.id;
 
     const result = await this.patientServices.getPatientsPaginated(userId, data);
 
@@ -65,5 +81,4 @@ export class PatientController {
 
   })
 }
-
 

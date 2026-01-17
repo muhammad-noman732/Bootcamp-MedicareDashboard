@@ -20,6 +20,7 @@ export class AuthController {
         };
 
         res.cookie('refreshToken', refreshToken, cookieOptions);
+        res.cookie('accessToken', accessToken, cookieOptions);
 
         res.status(200).json({
             status: "success",

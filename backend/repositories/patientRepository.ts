@@ -9,26 +9,35 @@ export class PatientRepository {
         return await prisma.patient.create({
             data,
 
+
         });
     }
 
 
     async findByPhoneNumber(phoneNumber: string): Promise<Patient | null> {
-        return await prisma.patient.findFirst({
+        const patient = await prisma.patient.findFirst({
             where: {
                 phoneNumber,
-                deletedAt: null // Ignore deleted patients 
             }
         });
+
+        if (!patient || patient.deletedAt) {
+            return null;
+        }
+
+        return patient;
     }
 
     async findPatientById(id: string): Promise<Patient | null> {
-        return await prisma.patient.findFirst({
-            where: {
-                id,
-                deletedAt: null
-            }
+        const patient = await prisma.patient.findUnique({
+            where: { id }
         });
+
+        if (!patient || patient.deletedAt) {
+            return null;
+        }
+
+        return patient;
     }
 
     async deletePatient(id: string): Promise<Patient> {
@@ -37,6 +46,13 @@ export class PatientRepository {
             data: {
                 deletedAt: new Date(),
             }
+        });
+    }
+
+    async updatePatient(id: string, data: Prisma.PatientUpdateInput): Promise<Patient> {
+        return await prisma.patient.update({
+            where: { id },
+            data,
         });
     }
 
@@ -49,6 +65,7 @@ export class PatientRepository {
         take: number
     ) {
 
+        console.log("where", where);
         const [patients, totalCount] = await Promise.all([
             prisma.patient.findMany({
                 where,
@@ -65,6 +82,22 @@ export class PatientRepository {
             patients,
             totalCount,
         };
+    }
+
+    async getGenderStats(userId: string) {
+        const [total, male, female] = await Promise.all([
+            prisma.patient.count({
+                where: { userId, deletedAt: null }
+            }),
+            prisma.patient.count({
+                where: { userId, sex: 'male', deletedAt: null }
+            }),
+            prisma.patient.count({
+                where: { userId, sex: 'female', deletedAt: null }
+            })
+        ]);
+
+        return { total, male, female };
     }
 }
 

@@ -11,11 +11,15 @@ import { notFoundHandler } from "./utils/notFound";
 import { errorHandler } from "./middlewares/errorMiddleware";
 import authRouter from "./routes/authRoutes";
 import patientRouter from "./routes/patientRoutes";
+import appointmentRouter from "./routes/appointmentRoutes";
+import taskRouter from "./routes/taskRoutes";
+import dashboardRouter from "./routes/dashboardRoutes";
 
 const app = express();
 app.use(express.json({
   limit: "10kb"
 }));
+
 
 // global middlewares
 // for parsing the json into object in request body
@@ -99,6 +103,9 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/api/', apiLimiter);
 app.use('/api/auth', authLimiter, authRouter);
 app.use('/api/patients', apiLimiter, patientRouter);
+app.use('/api/appointments', apiLimiter, appointmentRouter);
+app.use('/api/tasks', apiLimiter, taskRouter);
+app.use('/api/dashboard', apiLimiter, dashboardRouter);
 
 
 // ROUTES

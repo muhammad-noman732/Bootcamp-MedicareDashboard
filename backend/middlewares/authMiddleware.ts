@@ -8,14 +8,13 @@ export class AuthMiddleware {
 
   authMiddleware = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
-      const token = req.headers.authorization?.split(" ")[1];
-
+      const token = req.cookies.accessToken;
       if (!token) {
         throw new UnauthorizedError("Unauthorized - No Token Provided");
       }
 
       const decoded = this.jwtService.verifyAccessToken(token);
-      req.user = { id: decoded.userId, ...decoded };
+      req.user = { id: decoded.userId.trim(), ...decoded };
 
       next();
     }

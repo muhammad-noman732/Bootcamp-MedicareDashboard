@@ -20,5 +20,6 @@ patientRouter.post('/', controller.createPatient);
 patientRouter.get('/', controller.getPatients);
 patientRouter.get('/:id', controller.getPatient);
 patientRouter.delete('/:id', controller.deletePatient);
+patientRouter.put('/:id', controller.updatePatient);
 
 export default patientRouter;

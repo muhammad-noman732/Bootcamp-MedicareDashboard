@@ -1,7 +1,7 @@
 import { PatientRepository } from "../repositories/patientRepository";
-import { CreatePatientSchema } from "../schema/patientSchema";
+import { CreatePatientSchema, UpdatePatientSchema } from "../schema/patientSchema";
 import { Patient, PatientStatus, Prisma } from "../generated/prisma/client";
-import { ConflictError, InternalServerError } from "../utils/appError";
+import { ConflictError, InternalServerError, NotFoundError } from "../utils/appError";
 import crypto from "crypto";
 import { PaginationQuery } from "../schema/paginationQuerySchema";
 
@@ -27,6 +27,7 @@ export class PatientServices {
             recordNumber,
             status: "on_treatment" as const,
             userId,
+            deletedAt: null,
         };
 
         return await this.patientRepository.createPatient(createData);
@@ -37,7 +38,7 @@ export class PatientServices {
         const patinetData = await this.patientRepository.findPatientById(patientId);
 
         if (!patinetData) {
-            throw new InternalServerError("Failed to get patient");
+            throw new NotFoundError("Patient not found");
         }
 
         return patinetData;
@@ -51,6 +52,28 @@ export class PatientServices {
         return deletedPatient;
     }
 
+    async updatePatient(
+        patientId: string,
+        updateData: UpdatePatientSchema
+    ): Promise<Patient> {
+        const existingPatient = await this.patientRepository.findPatientById(patientId);
+
+        if (!existingPatient) {
+            throw new NotFoundError("Patient not found");
+        }
+
+        if (updateData.phoneNumber && updateData.phoneNumber !== existingPatient.phoneNumber) {
+            const phoneExists = await this.patientRepository.findByPhoneNumber(
+                updateData.phoneNumber
+            );
+            if (phoneExists) {
+                throw new ConflictError("Phone number already in use by another patient");
+            }
+        }
+
+        return await this.patientRepository.updatePatient(patientId, updateData);
+    }
+
 
 
     async getPatientsPaginated(userId: string, query: PaginationQuery) {
@@ -61,7 +84,7 @@ export class PatientServices {
         // where condition .
         // where userId (for doctor referral and deletedAt null for not deleted)
         const where: Prisma.PatientWhereInput = {
-            userId,
+            userId: userId.trim(),
             deletedAt: null,
         };
 
@@ -115,5 +138,3 @@ export class PatientServices {
         return `REC-${random}`;
     }
 }
-
-

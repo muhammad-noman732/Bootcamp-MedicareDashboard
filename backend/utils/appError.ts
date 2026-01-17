@@ -62,7 +62,7 @@ export class ConflictError extends AppError {
 export class TooManyRequestsError extends AppError {
     constructor(
         message: string = 'Too many requests',
-        public retryAfter?: number // Seconds to wait
+        public retryAfter?: number
     ) {
         super(429, message, true);
     }
@@ -72,9 +72,9 @@ export class TooManyRequestsError extends AppError {
 export class InternalServerError extends AppError {
     constructor(
         message: string = 'Internal server error',
-        public originalError?: Error // Store original error for logging
+        public originalError?: Error
     ) {
-        super(500, message, false); // isOperational = false (don't show details)
+        super(500, message, false);
     }
 }
 

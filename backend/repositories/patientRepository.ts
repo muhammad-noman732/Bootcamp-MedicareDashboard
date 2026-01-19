@@ -7,9 +7,7 @@ export class PatientRepository {
     // patientUncheckedCreateInput is used to create a patient without any relations as in this we can get the id of the user 
     async createPatient(data: Prisma.PatientUncheckedCreateInput): Promise<Patient> {
         return await prisma.patient.create({
-            data,
-
-
+            data
         });
     }
 

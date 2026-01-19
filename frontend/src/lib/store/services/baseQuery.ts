@@ -1,0 +1,39 @@
+import { fetchBaseQuery } from "@reduxjs/toolkit/query";
+import type {
+    BaseQueryFn,
+    FetchArgs,
+    FetchBaseQueryError,
+} from "@reduxjs/toolkit/query";
+
+
+const API_BASE_URL = "http://localhost:3000/api";
+
+const baseQuery = fetchBaseQuery({
+    baseUrl: API_BASE_URL,
+    credentials: "include"
+})
+
+export const baseQueryWithReauth: BaseQueryFn<
+    FetchArgs | string,
+    unknown,
+    FetchBaseQueryError> = async (args, api, extraOptions) => {
+        let result = await baseQuery(args, api, extraOptions);
+
+        if (result.error && result.error.status === 401) {
+            const uri = typeof args === "string" ? args : args.url;
+            if (uri.includes('/auth/refresh')) {
+                return result
+            }
+
+            const refreshResult = await baseQuery(
+                { url: "/auth/refresh", method: "POST" },
+                api,
+                extraOptions
+            );
+
+            if (refreshResult.data) {
+                result = await baseQuery(args, api, extraOptions);
+            }
+        }
+        return result;
+    }

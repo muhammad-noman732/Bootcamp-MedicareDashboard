@@ -36,6 +36,19 @@ export class AuthRepository {
         });
     }
 
+    async findByGoogleId(googleId: string): Promise<User | null> {
+        return prisma.user.findFirst({
+            where: { googleId }
+        });
+    }
+
+    async updateUser(id: string, data: Prisma.UserUpdateInput): Promise<User> {
+        return prisma.user.update({
+            where: { id },
+            data,
+        });
+    }
+
     async createUser(data: Prisma.UserCreateInput): Promise<AuthUserResponse | null> {
         return prisma.user.create({
             data,

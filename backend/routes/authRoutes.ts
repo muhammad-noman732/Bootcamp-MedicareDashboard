@@ -22,5 +22,6 @@ authRouter.post('/logout', controller.logout);
 // Email verification routes
 authRouter.post('/verify-email', controller.verifyEmail);
 authRouter.post('/resend-verification', controller.resendVerificationOTP);
+authRouter.post('/google', controller.googleLogin);
 
 export default authRouter; 

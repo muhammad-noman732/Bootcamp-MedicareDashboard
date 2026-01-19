@@ -5,9 +5,14 @@ import { verifyEmailSchema, resendOTPSchema } from "../schema/emailVerificationS
 import { AuthService } from "../services/authServices.ts";
 import type { AuthUserResponse } from "../types/authTypes.ts";
 import { UnauthorizedError } from "../utils/appError.ts";
+import { OAuth2Client } from 'google-auth-library'
 
 export class AuthController {
-    constructor(private authService: AuthService) { }
+    private googleClient: OAuth2Client;
+
+    constructor(private authService: AuthService) {
+        this.googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+    }
 
     private sendTokenResponse(res: Response, result: { user: AuthUserResponse, accessToken: string, refreshToken: string }, message: string) {
         const { user, accessToken, refreshToken } = result;
@@ -124,5 +129,42 @@ export class AuthController {
             status: "success",
             message: result.message
         });
+    });
+
+
+    googleLogin = asyncHandler(async (req: Request, res: Response) => {
+
+        const ticket = await this.googleClient.verifyIdToken({
+            idToken: req.body.idToken,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+
+        const payload = ticket.getPayload();
+
+        if (!payload) {
+            throw new UnauthorizedError("Invalid Google token");
+        }
+
+        const { email, name, picture, sub, email_verified, iss } = payload;
+
+        // 1. Payload Safety Checks
+        if (!email || !sub) {
+            throw new UnauthorizedError("Invalid Google account data: email or sub missing");
+        }
+
+
+        if (!email_verified) {
+            throw new UnauthorizedError("Google email not verified");
+        }
+
+        if (iss !== 'accounts.google.com' && iss !== 'https://accounts.google.com') {
+            throw new UnauthorizedError("Invalid token issuer");
+        }
+
+        const normalizedEmail = email.toLowerCase();
+        const userName = name || normalizedEmail.split('@')[0];
+        const user = await this.authService.googleLogin(normalizedEmail, userName, picture || "", sub);
+
+        this.sendTokenResponse(res, user, "Google login successful");
     });
 }

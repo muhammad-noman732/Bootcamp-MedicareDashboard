@@ -300,4 +300,69 @@ export class AuthService {
             message: "New verification OTP sent to your email."
         };
     }
+
+    async googleLogin(email: string, name: string, picture: string, sub: string): Promise<{ accessToken: string, refreshToken: string, user: AuthUserResponse }> {
+
+        let user = await this.authRepository.findByGoogleId(sub);
+
+        if (!user) {
+            // 2. If not found by Google ID, check by email (Account Linking)
+            user = await this.authRepository.findByEmailWithPassword(email.toLowerCase());
+
+            if (user) {
+                // Link existing account with Google ID
+                user = await this.authRepository.updateUser(user.id, {
+                    googleId: sub,
+                    isVerified: true, // Google verifies email
+                    avatar: user.avatar || picture // Keep existing avatar or use Google's
+                });
+            } else {
+                // 3. Create new user (Signup)
+                // Password is not needed for Google users (User model has password as optional)
+                const newUser = await this.authRepository.createUser({
+                    email: email.toLowerCase(),
+                    userName: name,
+                    name: name,
+                    googleId: sub,
+                    avatar: picture,
+                    isVerified: true,
+                    isActive: true
+                });
+
+                if (!newUser) {
+                    throw new InternalServerError("Failed to create user via Google Login");
+                }
+
+                // Fetch the full user object (compatible with User type)
+                user = await this.authRepository.findByGoogleId(sub);
+            }
+        }
+
+        if (!user) {
+            throw new InternalServerError("User processing failed");
+        }
+
+        const accessToken = this.jwtService.generateAccessToken(user.id);
+        const refreshToken = this.jwtService.generateRefreshToken(user.id);
+
+        const hashedRefreshToken = this.hashToken(refreshToken);
+
+        await this.authRepository.createRefreshToken(
+            user.id,
+            hashedRefreshToken,
+            new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        );
+
+        const userProfile = await this.authRepository.findById(user.id);
+
+        if (!userProfile) {
+            throw new InternalServerError("User profile not found");
+        }
+
+        return {
+            user: userProfile,
+            accessToken,
+            refreshToken,
+        };
+    }
 }

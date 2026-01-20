@@ -17,9 +17,10 @@ import crypto from 'crypto';
 import { SendGridService } from "../lib/sendGrid";
 import { verificationEmailTemplate } from "../template/email/verificationEmail";
 
+
 export class AuthService {
     private readonly SALT_ROUNDS = 12;
-    private readonly OTP_EXPIRY_MINUTES = 10;
+    private readonly OTP_EXPIRY_MINUTES = 1;
 
     constructor(
         private authRepository: AuthRepository,
@@ -30,7 +31,8 @@ export class AuthService {
 
     async createUser(data: AuthSchema): Promise<{
         user: AuthUserResponse,
-        message: string
+        message: string,
+        verifyToken: string
     }> {
         // Ensure email is lowercased
         const emailLower = data.email.toLowerCase();
@@ -64,13 +66,17 @@ export class AuthService {
             expiresAt
         );
 
+        // Generate verify token for cookie
+        const verifyToken = this.jwtService.generateVerifyToken(user.email, user.id);
+
         // Send verification email
         const emailHtml = verificationEmailTemplate(user.userName, otp);
         await this.sendGridService.sendVerificationEmail(user.email, user.userName, emailHtml);
 
         return {
             user,
-            message: "Verification OTP sent to your email. Please verify to continue."
+            message: "Verification OTP sent to your email. Please verify to continue.",
+            verifyToken
         };
     }
 
@@ -186,25 +192,25 @@ export class AuthService {
 
 
     async verifyEmail(
-        email: string,
+        userId: string,
         otp: string
     ): Promise<{
         user: AuthUserResponse,
         accessToken: string,
         refreshToken: string
     }> {
-        const normalizedEmail = email.toLowerCase();
-        const user = await this.authRepository.findByEmailWithPassword(normalizedEmail);
 
-        if (!user) {
+        const userCheck = await this.authRepository.findByIdWithVerification(userId);
+
+        if (!userCheck) {
             throw new NotFoundError("User");
         }
 
-        if (user.isVerified) {
+        if (userCheck.isVerified) {
             throw new ConflictError("Email already verified");
         }
 
-        const verification = await this.authRepository.findEmailVerification(user.id);
+        const verification = await this.authRepository.findEmailVerification(userId);
 
         if (!verification) {
             throw new UnauthorizedError("No pending verification found. Please request a new OTP.");
@@ -229,19 +235,19 @@ export class AuthService {
             );
         }
 
-        await this.authRepository.markUserAsVerified(user.id);
+        await this.authRepository.markUserAsVerified(userId);
         await this.authRepository.markVerificationAsUsed(verification.id);
-        const accessToken = this.jwtService.generateAccessToken(user.id);
-        const refreshToken = this.jwtService.generateRefreshToken(user.id);
+        const accessToken = this.jwtService.generateAccessToken(userId);
+        const refreshToken = this.jwtService.generateRefreshToken(userId);
 
         const hashedRefreshToken = this.hashToken(refreshToken);
         await this.authRepository.createRefreshToken(
-            user.id,
+            userId,
             hashedRefreshToken,
             new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         );
 
-        const verifiedUser = await this.authRepository.findById(user.id);
+        const verifiedUser = await this.authRepository.findById(userId);
 
         if (!verifiedUser) {
             throw new InternalServerError("User profile not found");
@@ -255,8 +261,8 @@ export class AuthService {
     }
 
 
-    async resendVerificationOTP(email: string): Promise<{ message: string }> {
-        const user = await this.authRepository.findByEmailWithPassword(email.toLowerCase());
+    async resendVerificationOTP(userId: string): Promise<{ message: string, verifyToken: string }> {
+        const user = await this.authRepository.findByIdWithVerification(userId);
 
         if (!user) {
             throw new NotFoundError("User not found");
@@ -292,12 +298,16 @@ export class AuthService {
             true
         );
 
+        // Generate new verify token
+        const verifyToken = this.jwtService.generateVerifyToken(user.email, user.id);
+
         // Send email
         const emailHtml = verificationEmailTemplate(user.userName, otp);
         await this.sendGridService.sendVerificationEmail(user.email, user.userName, emailHtml);
 
         return {
-            message: "New verification OTP sent to your email."
+            message: "New verification OTP sent to your email.",
+            verifyToken
         };
     }
 
@@ -306,7 +316,7 @@ export class AuthService {
         let user = await this.authRepository.findByGoogleId(sub);
 
         if (!user) {
-            // 2. If not found by Google ID, check by email (Account Linking)
+
             user = await this.authRepository.findByEmailWithPassword(email.toLowerCase());
 
             if (user) {
@@ -317,8 +327,7 @@ export class AuthService {
                     avatar: user.avatar || picture // Keep existing avatar or use Google's
                 });
             } else {
-                // 3. Create new user (Signup)
-                // Password is not needed for Google users (User model has password as optional)
+
                 const newUser = await this.authRepository.createUser({
                     email: email.toLowerCase(),
                     userName: name,

@@ -17,6 +17,18 @@ export class AuthRepository {
         });
     }
 
+    async findByIdWithVerification(id: string) {
+        return prisma.user.findUnique({
+            where: { id },
+            select: {
+                id: true,
+                userName: true,
+                email: true,
+                isVerified: true
+            }
+        });
+    }
+
     async findByEmail(email: string): Promise<AuthUserResponse | null> {
         return prisma.user.findUnique({
             where: { email },

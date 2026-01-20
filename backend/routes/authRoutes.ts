@@ -5,6 +5,8 @@ import { AuthController } from "../controllers/authController.ts";
 import { JwtService } from "../lib/jwt.ts";
 import { SendGridService } from "../lib/sendGrid.ts";
 
+import { verifyEmailAuth } from "../middlewares/verifyEmailMiddleware.ts";
+
 const authRouter = express.Router();
 
 const repository = new AuthRepository();
@@ -20,8 +22,8 @@ authRouter.post('/refresh', controller.refresh);
 authRouter.post('/logout', controller.logout);
 
 // Email verification routes
-authRouter.post('/verify-email', controller.verifyEmail);
-authRouter.post('/resend-verification', controller.resendVerificationOTP);
+authRouter.post('/verify-email', verifyEmailAuth, controller.verifyEmail);
+authRouter.post('/resend-verification', verifyEmailAuth, controller.resendVerificationOTP);
 authRouter.post('/google', controller.googleLogin);
 
 export default authRouter; 

@@ -6,6 +6,7 @@ import { AuthService } from "../services/authServices.ts";
 import type { AuthUserResponse } from "../types/authTypes.ts";
 import { UnauthorizedError } from "../utils/appError.ts";
 import { OAuth2Client } from 'google-auth-library'
+import type { RequestWithVerifyUser } from "../middlewares/verifyEmailMiddleware.ts";
 
 export class AuthController {
     private googleClient: OAuth2Client;
@@ -41,6 +42,13 @@ export class AuthController {
     signup = asyncHandler(async (req: Request, res: Response) => {
         const body = authSchema.parse(req.body);
         const result = await this.authService.createUser(body);
+
+        res.cookie('verify_token', result.verifyToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 10 * 60 * 1000 // 10 minutes matches token expiry
+        });
 
         res.status(201).json({
             status: "success",
@@ -96,9 +104,14 @@ export class AuthController {
     });
 
     verifyEmail = asyncHandler(async (req: Request, res: Response) => {
-        const { email, otp } = verifyEmailSchema.parse(req.body);
+        const { otp } = verifyEmailSchema.parse(req.body);
+        const { verifyUser } = req as RequestWithVerifyUser;
 
-        const result = await this.authService.verifyEmail(email, otp);
+        if (!verifyUser) {
+            throw new UnauthorizedError("Verification session expired");
+        }
+
+        const result = await this.authService.verifyEmail(verifyUser.userId, otp);
 
         const cookieOptions = {
             httpOnly: true,
@@ -108,6 +121,8 @@ export class AuthController {
         };
 
         res.cookie('refreshToken', result.refreshToken, cookieOptions);
+        res.cookie('accessToken', result.accessToken, cookieOptions);
+        res.clearCookie('verify_token');
 
         res.status(200).json({
             status: "success",
@@ -121,9 +136,20 @@ export class AuthController {
 
 
     resendVerificationOTP = asyncHandler(async (req: Request, res: Response) => {
-        const { email } = resendOTPSchema.parse(req.body);
+        const { verifyUser } = req as RequestWithVerifyUser;
 
-        const result = await this.authService.resendVerificationOTP(email);
+        if (!verifyUser) {
+            throw new UnauthorizedError("Verification session expired");
+        }
+
+        const result = await this.authService.resendVerificationOTP(verifyUser.userId);
+
+        res.cookie('verify_token', result.verifyToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 10 * 60 * 1000 // 10 minutes
+        });
 
         res.status(200).json({
             status: "success",

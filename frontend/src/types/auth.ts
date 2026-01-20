@@ -25,7 +25,6 @@ export interface LoginInput {
 }
 
 export interface VerifyEmailInput {
-    email: string;
     otp: string;
 }
 
@@ -33,9 +32,7 @@ export interface GoogleLoginInput {
     idToken: string;
 }
 
-export interface ResendVerifyEmailInput {
-    email: string;
-}
+export interface ResendVerifyEmailInput { }
 
 
 export interface AuthResponseData {

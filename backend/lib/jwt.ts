@@ -9,8 +9,10 @@ interface TokenPayload extends JwtPayload {
 export class JwtService {
     private readonly accessSecret: string;
     private readonly refreshSecret: string;
+    private readonly verifySecret: string;
     private readonly accessExpiresIn: string;
     private readonly refreshExpiresIn: string;
+    private readonly verifyExpiresIn: string;
     private readonly algorithm: jwt.Algorithm = "HS256";
 
     constructor() {
@@ -22,10 +24,16 @@ export class JwtService {
             throw new NotFoundError("JWT_REFRESH_SECRET is required");
         }
 
+        if (!process.env.JWT_VERIFY_SECRET) {
+            throw new NotFoundError("JWT_VERIFY_SECRET is required");
+        }
+
         this.accessSecret = process.env.JWT_ACCESS_SECRET;
         this.refreshSecret = process.env.JWT_REFRESH_SECRET;
+        this.verifySecret = process.env.JWT_VERIFY_SECRET;
         this.accessExpiresIn = process.env.JWT_ACCESS_EXPIRES_IN ?? "15m";
         this.refreshExpiresIn = process.env.JWT_REFRESH_EXPIRES_IN ?? "7d";
+        this.verifyExpiresIn = process.env.JWT_VERIFY_EXPIRES_IN ?? "10m";
     }
 
     generateAccessToken(userId: string): string {
@@ -41,6 +49,17 @@ export class JwtService {
             { userId, type: "refresh" },
             this.refreshSecret,
             { expiresIn: this.refreshExpiresIn as SignOptions['expiresIn'] }
+        );
+    }
+
+    generateVerifyToken(email: string, userId: string): string {
+        return jwt.sign(
+            { email, userId },
+            this.verifySecret,
+            {
+                expiresIn: this.verifyExpiresIn as SignOptions['expiresIn'],
+                algorithm: this.algorithm
+            }
         );
     }
 

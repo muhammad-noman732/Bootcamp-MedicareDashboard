@@ -91,3 +91,26 @@ export interface AddPatientFormErrors {
     notes?: string;
     phoneNumber?: string;
 }
+
+export interface SignupFormValues {
+    userName: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+}
+
+export interface BackendErrorData {
+    status: string;
+    message: string;
+    error?: unknown;
+}
+
+export interface VerifyEmailFormValues {
+    otp: string;
+}
+
+export interface LoginFormValues {
+    email: string;
+    password: string;
+}
+

@@ -4,43 +4,69 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import PatientsPage from "./pages/dashboard/patients/PatientsPage";
 import AddPatientPage from "./pages/dashboard/patients/AddPatientPage";
 import SchedulePage from "./pages/dashboard/schedule/SchedulePage";
-import SignupPage from "./pages/auth/SignupPage";
+import SignupPage from "./pages/auth/signup/SignupPage";
+import VerifyEmailPage from "./pages/auth/verifyEmail/VerifyEmailPage";
+import LoginPage from "./pages/auth/login/LoginPage";
+import { ProtectedRoute } from "./components/auth/guards/ProtectedRoute";
+import { PublicRoute } from "./components/auth/guards/PublicRoute";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <SignupPage />,
-  },
-  {
-    path: "/dashboard",
-    element: <DashboardLayout />,
+    element: <PublicRoute />,
     children: [
       {
-        index: true,
-        element: <DashboardHome />,
+        path: "/",
+        element: <SignupPage />,
       },
       {
-        path: "settings",
-        element: (
-          <div className="p-6">
-            <h1 className="text-3xl font-bold">Settings</h1>
-            <p className="text-muted-foreground mt-2">
-              Configure your account settings
-            </p>
-          </div>
-        ),
+        path: "/auth/signup",
+        element: <SignupPage />,
       },
       {
-        path: "patients",
-        element: <PatientsPage />,
+        path: "/auth/verify-email",
+        element: <VerifyEmailPage />,
       },
       {
-        path: "patients/add",
-        element: <AddPatientPage />,
+        path: "/auth/login",
+        element: <LoginPage />,
       },
+    ],
+  },
+  {
+    element: <ProtectedRoute />,
+    children: [
       {
-        path: "schedule",
-        element: <SchedulePage />,
+        path: "/dashboard",
+        element: <DashboardLayout />,
+        children: [
+          {
+            index: true,
+            element: <DashboardHome />,
+          },
+          {
+            path: "settings",
+            element: (
+              <div className="p-6">
+                <h1 className="text-3xl font-bold">Settings</h1>
+                <p className="text-muted-foreground mt-2">
+                  Configure your account settings
+                </p>
+              </div>
+            ),
+          },
+          {
+            path: "patients",
+            element: <PatientsPage />,
+          },
+          {
+            path: "patients/add",
+            element: <AddPatientPage />,
+          },
+          {
+            path: "schedule",
+            element: <SchedulePage />,
+          },
+        ],
       },
     ],
   },

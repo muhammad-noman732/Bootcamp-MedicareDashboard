@@ -35,6 +35,10 @@ export function AreaStatCard({
     },
   }
 
+  const element = document.getElementById("name")
+  console.log(element);
+
+
   return (
     <Card className="w-full h-[195px] rounded-[4.9px] border-0 bg-white p-4">
       <CardHeader className="flex flex-row flex-nowrap items-start justify-between gap-3 pb-2 px-0 pt-0 w-full">
@@ -48,6 +52,7 @@ export function AreaStatCard({
           <div className="text-[37.26px] font-bold leading-[100%] tracking-[0.25%] text-black">
             {value}
           </div>
+          <h1 id="name">title</h1>
           <div className="flex items-center gap-2">
             <span
               className={cn(

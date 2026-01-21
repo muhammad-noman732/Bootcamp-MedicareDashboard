@@ -6,7 +6,8 @@ type AddPatientHeaderProps = {
   onSave: () => void
 }
 
-export function AddPatientHeader({ onSave }: AddPatientHeaderProps) {
+
+export const AddPatientHeader = ({ onSave }: AddPatientHeaderProps) => {
   const navigate = useNavigate()
 
   return (

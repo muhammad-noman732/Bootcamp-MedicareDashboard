@@ -1,6 +1,5 @@
-import { MoreHorizontal } from "lucide-react"
-
 import { StatusBadge } from "./StatusBadge"
+import { PatientActions } from "./PatientActions"
 import type { Patient } from "@/types"
 
 type PatientTableRowProps = {
@@ -24,9 +23,7 @@ export function PatientTableRow({ patient }: PatientTableRowProps) {
         {patient.nextAppointment}
       </td>
       <td className="px-4 py-3">
-        <button className="p-1 hover:bg-muted rounded">
-          <MoreHorizontal size={18} className="text-[#828282]" />
-        </button>
+        <PatientActions patient={patient} />
       </td>
     </tr>
   )

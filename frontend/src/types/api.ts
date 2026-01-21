@@ -6,10 +6,12 @@ export interface ApiResponse<T> {
 
 export interface PaginatedResponse<T> {
     data: T[];
-    meta: {
-        total: number;
-        page: number;
-        limit: number;
+    pagination: {
+        currentPage: number;
         totalPages: number;
+        totalRecords: number;
+        recordsPerPage: number;
+        hasNextPage: boolean;
+        hasPrevPage: boolean;
     }
 }

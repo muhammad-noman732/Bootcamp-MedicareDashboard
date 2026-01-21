@@ -5,7 +5,6 @@ import { useLoginMutation } from "@/lib/store/services/auth/authApi";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import type { SerializedError } from "@reduxjs/toolkit";
 import type { LoginFormValues, BackendErrorData } from "@/types";
 
 const loginSchema = z.object({
@@ -32,8 +31,9 @@ export const useLogin = () => {
                 password: data.password,
             }).unwrap();
 
-            toast.success("Welcome back!", {
+            toast.success("Welcome Back!", {
                 description: "You have successfully logged in.",
+                duration: 3000,
             });
 
             navigate("/dashboard");
@@ -44,22 +44,34 @@ export const useLogin = () => {
 
     useEffect(() => {
         if (isError && error) {
-            let errorMessage = "Login failed. Please try again.";
+            let errorMessage = "Something went wrong. Please try again.";
+            let errorTitle = "Login Failed";
 
-            if ('data' in error) {
-                const errorData = error.data as BackendErrorData;
-                if (errorData?.message) {
-                    errorMessage = errorData.message;
+            if ('status' in error) {
+                const status = error.status;
+
+                if (status === 401) {
+                    errorTitle = "Invalid Credentials";
+                    errorMessage = "The email or password you entered is incorrect.";
+                } else if (status === 404) {
+                    errorTitle = "Account Not Found";
+                    errorMessage = "No account exists with this email. Please sign up.";
+                } else if (status === 500) {
+                    errorTitle = "Server Error";
+                    errorMessage = "Our servers are having issues. Please try again later.";
                 }
-            } else if ('message' in error) {
-                const serializedError = error as SerializedError;
-                if (serializedError.message) {
-                    errorMessage = serializedError.message;
+
+                if ('data' in error && error.data) {
+                    const errorData = error.data as BackendErrorData;
+                    if (errorData?.message) {
+                        errorMessage = errorData.message;
+                    }
                 }
             }
 
-            toast.error("Login failed", {
+            toast.error(errorTitle, {
                 description: errorMessage,
+                duration: 5000,
             });
         }
     }, [isError, error]);

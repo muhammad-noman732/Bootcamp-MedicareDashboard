@@ -5,7 +5,6 @@ import { useSignUpMutation } from "@/lib/store/services/auth/authApi";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import type { SerializedError } from "@reduxjs/toolkit";
 import type { SignupFormValues, BackendErrorData } from "@/types";
 
 const signupSchema = z
@@ -54,21 +53,33 @@ export const useSignup = () => {
     useEffect(() => {
         if (isError && error) {
             let errorMessage = "Something went wrong. Please try again.";
+            let errorTitle = "Signup Failed";
 
-            if ('data' in error) {
-                const errorData = error.data as BackendErrorData;
-                if (errorData?.message) {
-                    errorMessage = errorData.message;
+            if ('status' in error) {
+                const status = error.status;
+
+                if (status === 409) {
+                    errorTitle = "Account Exists";
+                    errorMessage = "This email is already registered. Please login instead.";
+                } else if (status === 400) {
+                    errorTitle = "Invalid Data";
+                    errorMessage = "Please check your information and try again.";
+                } else if (status === 500) {
+                    errorTitle = "Server Error";
+                    errorMessage = "Our servers are having issues. Please try again later.";
                 }
-            } else if ('message' in error) {
-                const serializedError = error as SerializedError;
-                if (serializedError.message) {
-                    errorMessage = serializedError.message;
+
+                if ('data' in error && error.data) {
+                    const errorData = error.data as BackendErrorData;
+                    if (errorData?.message) {
+                        errorMessage = errorData.message;
+                    }
                 }
             }
 
-            toast.error("Signup failed", {
+            toast.error(errorTitle, {
                 description: errorMessage,
+                duration: 5000,
             });
         }
     }, [isError, error]);

@@ -4,11 +4,11 @@ import { PatientsTable } from "@/components/dashboard/patients/PatientsTable"
 import { usePatients } from "@/hooks/usePatients"
 
 export const PatientsPage = () => {
-  const { total, patients, currentPage, totalPages } = usePatients()
+  const { total, patients, currentPage, totalPages, setPage } = usePatients()
 
   return (
     <div className="w-full max-w-[1169px] mx-auto max-h-[83vh] flex flex-col px-[26px] pt-[15px]">
-      <div className="text-sm text-[#1D1D1D] mb-4">Patient registrer</div>
+      <div className="text-sm text-[#1D1D1D] mb-4">Patient register &gt; Patients</div>
 
       <div className="">
         <PatientsHeader total={total} />
@@ -21,7 +21,11 @@ export const PatientsPage = () => {
       </div>
 
       <div className="mt-4 shrink-0">
-        <PatientsPagination currentPage={currentPage} totalPages={totalPages} />
+        <PatientsPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
       </div>
     </div>
   )

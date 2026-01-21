@@ -22,7 +22,7 @@ export function PatientsPagination({
 
   const renderPageNumbers = () => {
     const pages: (number | string)[] = []
-    
+
     if (totalPages <= 7) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i)

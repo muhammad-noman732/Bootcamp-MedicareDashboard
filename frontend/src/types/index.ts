@@ -50,7 +50,7 @@ export interface TasksCardData {
     tasks: TaskItem[];
 }
 
-export type PatientStatus = "recovered" | "awaiting-surgery" | "on-treatment";
+export type PatientStatus = "recovered" | "awaiting_surgery" | "on_treatment";
 
 export interface Patient {
     id: string;
@@ -114,3 +114,14 @@ export interface LoginFormValues {
     password: string;
 }
 
+export interface AddPatientFormValues {
+    recordNumber?: string;
+    forename: string;
+    surname: string;
+    dateOfBirth: string;
+    sex: "male" | "female";
+    diagnosis: string;
+    notes?: string;
+    phoneNumber: string;
+    status: "recovered" | "awaiting_surgery" | "on_treatment";
+}

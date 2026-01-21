@@ -32,8 +32,18 @@ export const OTPInput = ({ value, onChange, length = 6, disabled }: OTPInputProp
     };
 
     const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Backspace" && !value[index] && index > 0) {
-            inputRefs.current[index - 1]?.focus();
+        if (e.key === "Backspace") {
+            e.preventDefault();
+            const newValue = value.split("");
+
+            if (value[index]) {
+                newValue[index] = "";
+                onChange(newValue.join(""));
+            } else if (index > 0) {
+                newValue[index - 1] = "";
+                onChange(newValue.join(""));
+                inputRefs.current[index - 1]?.focus();
+            }
         }
     };
 

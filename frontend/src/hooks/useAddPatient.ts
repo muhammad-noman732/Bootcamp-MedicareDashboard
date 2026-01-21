@@ -1,110 +1,123 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useAddPatientMutation } from "@/lib/store/services/patient/patientApi";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import type { BackendErrorData } from "@/types";
 
-import type { AddPatientFormData, AddPatientFormErrors } from "@/types"
+const addPatientSchema = z.object({
+  recordNumber: z.string().optional(),
+  forename: z.string().min(2, "Forename must be at least 2 characters"),
+  surname: z.string().min(2, "Surname must be at least 2 characters"),
+  dateOfBirth: z.string().min(1, "Date of birth is required"),
+  sex: z.enum(["male", "female"]),
+  diagnosis: z.string().min(1, "Diagnosis is required"),
+  notes: z.string().optional(),
+  phoneNumber: z.string().min(10, "Phone number must be at least 10 digits"),
+  status: z.enum(["recovered", "awaiting_surgery", "on_treatment"]),
+});
 
-export function useAddPatient() {
-  const navigate = useNavigate()
-  const [formData, setFormData] = useState<AddPatientFormData>({
-    recordNumber: "",
-    forename: "",
-    surname: "",
-    dateOfBirth: "",
-    sex: "",
-    diagnosis: "",
-    notes: "",
-    phoneNumber: "",
-  })
+export type AddPatientFormValues = z.infer<typeof addPatientSchema>;
 
-  const [errors, setErrors] = useState<AddPatientFormErrors>({})
-  const [isManualRecordNumber, setIsManualRecordNumber] = useState(false)
+export const useAddPatient = () => {
+  const [addPatient, { isLoading, isError, error }] = useAddPatientMutation();
+  const navigate = useNavigate();
 
-  const toggleManualRecordNumber = () => {
-    setIsManualRecordNumber((prev) => {
-      const newValue = !prev
-      // Clear recordNumber when switching to automatic mode
-      if (!newValue) {
-        setFormData((prevData) => ({ ...prevData, recordNumber: "" }))
-        setErrors((prevErrors) => ({ ...prevErrors, recordNumber: undefined }))
+  const form = useForm<AddPatientFormValues>({
+    resolver: zodResolver(addPatientSchema),
+    defaultValues: {
+      recordNumber: "",
+      forename: "",
+      surname: "",
+      dateOfBirth: "",
+      sex: "male",
+      diagnosis: "",
+      notes: "",
+      phoneNumber: "",
+      status: "on_treatment",
+    },
+  });
+
+  const onSubmit = async (data: AddPatientFormValues) => {
+    try {
+      await addPatient({
+        forename: data.forename,
+        surname: data.surname,
+        dateOfBirth: data.dateOfBirth,
+        sex: data.sex,
+        diagnosis: data.diagnosis,
+        notes: data.notes,
+        phoneNumber: data.phoneNumber,
+        status: data.status,
+      }).unwrap();
+
+      toast.success("Patient Added Successfully", {
+        description: `${data.forename} ${data.surname} has been registered.`,
+        duration: 4000,
+      });
+      navigate("/dashboard/patients");
+    } catch (err) {
+      console.error("Add patient failed", err);
+    }
+  };
+
+  useEffect(() => {
+    if (isError && error) {
+      let errorMessage = "Something went wrong. Please try again.";
+      let errorTitle = "Failed to Add Patient";
+
+      if ('status' in error) {
+        const status = error.status;
+
+        if (status === 400) {
+          errorTitle = "Invalid Data";
+          errorMessage = "Please check the form fields and try again.";
+        } else if (status === 401) {
+          errorTitle = "Session Expired";
+          errorMessage = "Please login again to continue.";
+        } else if (status === 500) {
+          errorTitle = "Server Error";
+          errorMessage = "Our servers are having issues. Please try again later.";
+        }
+
+        if ('data' in error && error.data) {
+          const errorData = error.data as BackendErrorData & { errors?: Array<{ message: string; path: string[] }> };
+
+          if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+            errorMessage = errorData.errors[0].message;
+          } else if (errorData.message) {
+            if (errorData.message.trim().startsWith('{') || errorData.message.trim().startsWith('[')) {
+              try {
+                const parsed = JSON.parse(errorData.message);
+                if (Array.isArray(parsed) && parsed[0]?.message) {
+                  errorMessage = parsed[0].message;
+                } else if (parsed.message) {
+                  errorMessage = parsed.message;
+                } else {
+                  errorMessage = "Invalid data provided. Please check your inputs.";
+                }
+              } catch {
+                errorMessage = "Invalid data provided.";
+              }
+            } else {
+              errorMessage = errorData.message;
+            }
+          }
+        }
       }
-      return newValue
-    })
-  }
 
-  const updateField = (field: keyof AddPatientFormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }))
+      toast.error(errorTitle, {
+        description: errorMessage,
+        duration: 5000,
+      });
     }
-  }
-
-  const validate = (): boolean => {
-    const newErrors: AddPatientFormErrors = {}
-
-    // Validate recordNumber only if manual mode is enabled
-    if (isManualRecordNumber && !formData.recordNumber?.trim()) {
-      newErrors.recordNumber = "Record number is required when assigning manually"
-    }
-
-    if (!formData.forename.trim()) {
-      newErrors.forename = "Forename is required"
-    }
-
-    if (!formData.surname.trim()) {
-      newErrors.surname = "Surname is required"
-    }
-
-    if (!formData.dateOfBirth) {
-      newErrors.dateOfBirth = "Date of birth is required"
-    }
-
-    if (!formData.sex) {
-      newErrors.sex = "Sex is required"
-    }
-
-    if (!formData.diagnosis.trim()) {
-      newErrors.diagnosis = "Diagnosis is required"
-    }
-
-    if (!formData.phoneNumber.trim()) {
-      newErrors.phoneNumber = "Phone number is required"
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleSubmit = () => {
-    if (validate()) {
-      // Prepare submission data
-      const submissionData = {
-        ...formData,
-        // Only include recordNumber if manual mode is enabled
-        recordNumber: isManualRecordNumber ? formData.recordNumber : undefined,
-      }
-      
-      console.log("Form submitted:", submissionData)
-      
-      // TODO: Replace with actual API call
-      // await api.addPatient(submissionData)
-      
-      // Navigate to patients list after successful submission
-      navigate("/dashboard/patients")
-    }
-  }
-
-  const clearField = (field: keyof AddPatientFormData) => {
-    updateField(field, "")
-  }
+  }, [isError, error]);
 
   return {
-    formData,
-    errors,
-    isManualRecordNumber,
-    setIsManualRecordNumber,
-    updateField,
-    clearField,
-    handleSubmit,
-  }
-}
-
+    form,
+    isLoading,
+    onSubmit: form.handleSubmit(onSubmit),
+  };
+};

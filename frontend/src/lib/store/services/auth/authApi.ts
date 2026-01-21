@@ -43,7 +43,7 @@ export const authApi = api.injectEndpoints({
         }),
 
         getCurrentUser: builder.query<ApiResponse<AuthResponseData>, void>({
-            query: () => "/users/me", // Adjusted to standard convention
+            query: () => "/auth/me",
             providesTags: ["User"],
         }),
 

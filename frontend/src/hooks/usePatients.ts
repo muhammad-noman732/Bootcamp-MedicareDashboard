@@ -1,83 +1,51 @@
-import { useMemo } from "react"
+import { useMemo } from "react";
+import { useGetPatientsQuery } from "@/lib/store/services/patient/patientApi";
 
-import type { PatientsData } from "@/types"
+import { useSearchParams } from "react-router-dom";
 
-export function usePatients(): PatientsData {
-  const patients = useMemo(
-    () => [
-      {
-        id: "1",
-        name: "Mary Joseph",
-        diagnosis: "Malaria",
-        status: "recovered" as const,
-        lastAppointment: "20/10/2022",
-        nextAppointment: "1/12/2022",
-      },
-      {
-        id: "2",
-        name: "Amala Jones",
-        diagnosis: "Stroke",
-        status: "awaiting-surgery" as const,
-        lastAppointment: "11/10/2022",
-        nextAppointment: "1/12/2022",
-      },
-      {
-        id: "3",
-        name: "Damilola Oyin",
-        diagnosis: "Liver failure",
-        status: "on-treatment" as const,
-        lastAppointment: "9/10/2022",
-        nextAppointment: "1/11/2022",
-      },
-      {
-        id: "4",
-        name: "Selim jubril",
-        diagnosis: "Typhoid",
-        status: "awaiting-surgery" as const,
-        lastAppointment: "12/10/2022",
-        nextAppointment: "2/12/2022",
-      },
-      {
-        id: "5",
-        name: "Paul christian",
-        diagnosis: "Gonorrhea",
-        status: "on-treatment" as const,
-        lastAppointment: "22/10/2022",
-        nextAppointment: "3/12/2022",
-      },
-      {
-        id: "6",
-        name: "Rosabel Briggs",
-        diagnosis: "Malaria",
-        status: "recovered" as const,
-        lastAppointment: "23/10/2022",
-        nextAppointment: "4/12/2022",
-      },
-      {
-        id: "7",
-        name: "Tina Adekeye",
-        diagnosis: "Syphilis",
-        status: "recovered" as const,
-        lastAppointment: "19/10/2022",
-        nextAppointment: "5/12/2022",
-      },
-      {
-        id: "8",
-        name: "Mark Bossman",
-        diagnosis: "Malaria",
-        status: "recovered" as const,
-        lastAppointment: "17/10/2022",
-        nextAppointment: "2/12/2022",
-      },
-    ],
-    []
-  )
+export function usePatients() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+
+  const page = parseInt(searchParams.get("page") || "1");
+  const limit = parseInt(searchParams.get("limit") || "10");
+
+  const { data, isLoading, isError, error } = useGetPatientsQuery({
+    page,
+    limit,
+  });
+
+  // Update search params and trigger re-fetch
+  const setPage = (newPage: number) => {
+    setSearchParams({ page: newPage.toString(), limit: limit.toString() });
+  };
+
+  // Memoize patients data
+  const patients = useMemo(() => {
+    if (!data?.data?.data) return [];
+
+    return data.data.data.map(p => ({
+      id: p.id,
+      name: `${p.forename} ${p.surname}`,
+      diagnosis: p.diagnosis,
+      status: p.status,
+      lastAppointment: "N/A",
+      nextAppointment: "N/A"
+    }));
+  }, [data]);
+
+
+  if (isError) {
+
+    console.error("Failed to fetch patients", error);
+  }
 
   return {
-    total: 487,
+    total: data?.data?.pagination?.totalRecords || 0,
     patients,
-    currentPage: 1,
-    totalPages: 41,
-  }
+    currentPage: data?.data?.pagination?.currentPage || 1,
+    totalPages: data?.data?.pagination?.totalPages || 1,
+    isLoading,
+    setPage
+  };
 }
-

@@ -11,6 +11,8 @@ export class AuthRepository {
                 id: true,
                 userName: true,
                 email: true,
+                isVerified: true,
+                isActive: true,
                 createdAt: true,
                 updatedAt: true
             }
@@ -24,7 +26,8 @@ export class AuthRepository {
                 id: true,
                 userName: true,
                 email: true,
-                isVerified: true
+                isVerified: true,
+                isActive: true
             }
         });
     }
@@ -36,6 +39,8 @@ export class AuthRepository {
                 id: true,
                 userName: true,
                 email: true,
+                isVerified: true,
+                isActive: true,
                 createdAt: true,
                 updatedAt: true
             }
@@ -68,13 +73,13 @@ export class AuthRepository {
                 id: true,
                 userName: true,
                 email: true,
+                isVerified: true,
+                isActive: true,
                 createdAt: true,
                 updatedAt: true
             }
         });
     }
-
-    // Refresh Token Methods
 
     async createRefreshToken(userId: string, tokenHash: string, expiresAt: Date): Promise<RefreshToken> {
         return prisma.refreshToken.create({
@@ -86,33 +91,27 @@ export class AuthRepository {
         });
     }
 
-    // to find refresh token
     async findRefreshToken(tokenHash: string): Promise<RefreshToken | null> {
         return prisma.refreshToken.findUnique({
             where: { tokenHash }
         });
     }
 
-    // to delete from single account(logout)
     async revokeRefreshToken(tokenHash: string): Promise<RefreshToken> {
         return prisma.refreshToken.delete({
             where: { tokenHash }
         });
     }
 
-    // to delete from all accounts (change password , logout)
     async revokeRefreshTokensByUserId(userId: string): Promise<Prisma.BatchPayload> {
         return prisma.refreshToken.deleteMany({
             where: { userId }
         });
     }
 
-
     async createEmailVerification(userId: string, hashedOTP: string, expiresAt: Date, invalidateOld: boolean = false): Promise<void> {
-        console.log(`[createEmailVerification] Creating OTP for user ${userId}, expiresAt: ${expiresAt}, invalidateOld: ${invalidateOld}`);
-
         if (invalidateOld) {
-            const updateResult = await prisma.emailVerification.updateMany({
+            await prisma.emailVerification.updateMany({
                 where: {
                     userId,
                     usedAt: null
@@ -121,7 +120,6 @@ export class AuthRepository {
                     expiresAt: new Date()
                 }
             });
-            console.log(`[createEmailVerification] Invalidated ${updateResult.count} old OTPs`);
         }
 
         await prisma.emailVerification.create({
@@ -131,11 +129,9 @@ export class AuthRepository {
                 expiresAt
             }
         });
-        console.log(`[createEmailVerification] New OTP created`);
     }
 
     async findEmailVerification(userId: string) {
-
         const latestVerification = await prisma.emailVerification.findFirst({
             where: { userId },
             orderBy: { createdAt: 'desc' },
@@ -182,8 +178,6 @@ export class AuthRepository {
         });
     }
 
-
-
     async markUserAsVerified(userId: string): Promise<void> {
         await prisma.user.update({
             where: { id: userId },
@@ -193,4 +187,11 @@ export class AuthRepository {
         });
     }
 
+    async deleteUserById(userId: string): Promise<void> {
+        await prisma.user.delete({
+            where: { id: userId },
+        });
+    }
 }
+
+

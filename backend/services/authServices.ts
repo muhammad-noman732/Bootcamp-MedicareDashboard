@@ -20,7 +20,7 @@ import { verificationEmailTemplate } from "../template/email/verificationEmail";
 
 export class AuthService {
     private readonly SALT_ROUNDS = 12;
-    private readonly OTP_EXPIRY_MINUTES = 1;
+    private readonly OTP_EXPIRY_MINUTES = 10;
 
     constructor(
         private authRepository: AuthRepository,
@@ -34,19 +34,21 @@ export class AuthService {
         message: string,
         verifyToken: string
     }> {
-        // Ensure email is lowercased
         const emailLower = data.email.toLowerCase();
         const existingUser = await this.authRepository.findByEmailWithPassword(emailLower);
 
         if (existingUser) {
-            throw new ConflictError("Email already registered");
+            if (existingUser.isVerified) {
+                throw new ConflictError("Email already registered. Please login.");
+            }
+            await this.authRepository.deleteUserById(existingUser.id);
         }
 
         const hashPassword = await bcryptjs.hash(data.password, this.SALT_ROUNDS);
 
         const user = await this.authRepository.createUser({
             ...data,
-            email: data.email.toLowerCase(), // Ensure consistent casing
+            email: emailLower,
             password: hashPassword,
         });
 
@@ -54,22 +56,18 @@ export class AuthService {
             throw new InternalServerError("Failed to create user");
         }
 
-        // Generate OTP
         const otp = this.generateOTP();
         const hashedOTP = this.hashOTP(otp);
         const expiresAt = new Date(Date.now() + this.OTP_EXPIRY_MINUTES * 60 * 1000);
 
-        // Store OTP in database
         await this.authRepository.createEmailVerification(
             user.id,
             hashedOTP,
             expiresAt
         );
 
-        // Generate verify token for cookie
         const verifyToken = this.jwtService.generateVerifyToken(user.email, user.id);
 
-        // Send verification email
         const emailHtml = verificationEmailTemplate(user.userName, otp);
         await this.sendGridService.sendVerificationEmail(user.email, user.userName, emailHtml);
 
@@ -79,6 +77,7 @@ export class AuthService {
             verifyToken
         };
     }
+
 
     async loginUser(data: LoginSchema): Promise<{ accessToken: string, refreshToken: string, user: AuthUserResponse }> {
         const user = await this.authRepository.findByEmailWithPassword(data.email.toLowerCase());
@@ -91,6 +90,10 @@ export class AuthService {
             throw new UnauthorizedError(
                 "Please verify your email before logging in. Check your inbox for the verification OTP."
             );
+        }
+
+        if (!user.password) {
+            throw new UnauthorizedError("Please login with Google or reset your password.");
         }
 
         const isPasswordMatch = await bcryptjs.compare(
@@ -137,7 +140,6 @@ export class AuthService {
         const storedToken = await this.authRepository.findRefreshToken(tokenHash);
 
         if (!storedToken) {
-            // This could mean token theft!
             await this.authRepository.revokeRefreshTokensByUserId(decoded.userId);
             throw new UnauthorizedError("Invalid refresh token");
         }
@@ -147,17 +149,14 @@ export class AuthService {
             throw new UnauthorizedError("Refresh token expired");
         }
 
-        // 4. Rotate (delete old token)
         await this.authRepository.revokeRefreshToken(tokenHash);
 
-        // 5. Issue new tokens
         const newAccessToken = this.jwtService.generateAccessToken(decoded.userId);
 
         const newRefreshToken = this.jwtService.generateRefreshToken(decoded.userId);
 
         const newRefreshTokenHash = this.hashToken(newRefreshToken);
 
-        // 6. Store new refresh token
         await this.authRepository.createRefreshToken(
             decoded.userId,
             newRefreshTokenHash,
@@ -272,7 +271,6 @@ export class AuthService {
             throw new ConflictError("Email already verified");
         }
 
-        // Check rate limiting (prevent spam)
         const existingVerification = await this.authRepository.findEmailVerification(user.id);
 
         if (existingVerification) {
@@ -286,7 +284,6 @@ export class AuthService {
             }
         }
 
-        // Generate new OTP
         const otp = this.generateOTP();
         const hashedOtp = this.hashOTP(otp);
         const expiresAt = new Date(Date.now() + this.OTP_EXPIRY_MINUTES * 60 * 1000);
@@ -298,10 +295,8 @@ export class AuthService {
             true
         );
 
-        // Generate new verify token
         const verifyToken = this.jwtService.generateVerifyToken(user.email, user.id);
 
-        // Send email
         const emailHtml = verificationEmailTemplate(user.userName, otp);
         await this.sendGridService.sendVerificationEmail(user.email, user.userName, emailHtml);
 
@@ -320,11 +315,10 @@ export class AuthService {
             user = await this.authRepository.findByEmailWithPassword(email.toLowerCase());
 
             if (user) {
-                // Link existing account with Google ID
                 user = await this.authRepository.updateUser(user.id, {
                     googleId: sub,
-                    isVerified: true, // Google verifies email
-                    avatar: user.avatar || picture // Keep existing avatar or use Google's
+                    isVerified: true,
+                    avatar: user.avatar || picture
                 });
             } else {
 
@@ -342,7 +336,6 @@ export class AuthService {
                     throw new InternalServerError("Failed to create user via Google Login");
                 }
 
-                // Fetch the full user object (compatible with User type)
                 user = await this.authRepository.findByGoogleId(sub);
             }
         }
@@ -374,4 +367,19 @@ export class AuthService {
             refreshToken,
         };
     }
+
+    async getCurrentUser(id: string): Promise<AuthUserResponse> {
+        const user = await this.authRepository.findById(id);
+
+        if (!user) {
+            throw new NotFoundError("User not found");
+        }
+
+        if (!user.isActive) {
+            throw new UnauthorizedError("User account is deactivated");
+        }
+
+        return user;
+    }
 }
+

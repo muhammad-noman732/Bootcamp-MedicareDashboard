@@ -67,7 +67,7 @@ app.use(compression())
 // 5. RATE LIMITING
 // General API rate limiter
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 1 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
@@ -76,8 +76,8 @@ const apiLimiter = rateLimit({
 
 // Stricter rate limiter for auth routes
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5, // Only 5 requests per 15 minutes
+  windowMs: 1 * 60 * 1000,
+  max: 15, // Only 5 requests per 15 minutes
   skipSuccessfulRequests: true, // Don't count successful requests
   message: 'Too many login attempts, please try again later.'
 });

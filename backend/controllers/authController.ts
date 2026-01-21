@@ -8,6 +8,14 @@ import { UnauthorizedError } from "../utils/appError.ts";
 import { OAuth2Client } from 'google-auth-library'
 import type { RequestWithVerifyUser } from "../middlewares/verifyEmailMiddleware.ts";
 
+export interface RequestWithUser extends Request {
+    user: {
+        id: string;
+        [key: string]: any;
+    };
+}
+
+
 export class AuthController {
     private googleClient: OAuth2Client;
 
@@ -81,7 +89,14 @@ export class AuthController {
             sameSite: 'strict' as const,
             secure: process.env.NODE_ENV === 'production',
             maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+        });
+
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            sameSite: 'strict' as const,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 15 * 60 * 1000 // 15 minutes
+        });
         res.status(200).json({
             status: "success",
             data: { accessToken }
@@ -193,4 +208,16 @@ export class AuthController {
 
         this.sendTokenResponse(res, user, "Google login successful");
     });
+
+    getMe = asyncHandler(async (req: Request, res: Response) => {
+        const { id: userId } = (req as RequestWithUser).user;
+        const user = await this.authService.getCurrentUser(userId);
+
+        res.status(200).json({
+            status: "success",
+            data: user
+        });
+    });
 }
+
+

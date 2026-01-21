@@ -7,6 +7,8 @@ import { SendGridService } from "../lib/sendGrid.ts";
 
 import { verifyEmailAuth } from "../middlewares/verifyEmailMiddleware.ts";
 
+import { AuthMiddleware } from "../middlewares/authMiddleware.ts";
+
 const authRouter = express.Router();
 
 const repository = new AuthRepository();
@@ -14,6 +16,7 @@ const jwtService = new JwtService();
 const sendGridService = new SendGridService();
 const services = new AuthService(repository, jwtService, sendGridService);
 const controller = new AuthController(services);
+const authMiddleware = new AuthMiddleware(jwtService);
 
 // Authentication routes
 authRouter.post('/signup', controller.signup);
@@ -25,5 +28,9 @@ authRouter.post('/logout', controller.logout);
 authRouter.post('/verify-email', verifyEmailAuth, controller.verifyEmail);
 authRouter.post('/resend-verification', verifyEmailAuth, controller.resendVerificationOTP);
 authRouter.post('/google', controller.googleLogin);
+
+// Protected routes
+authRouter.get('/me', authMiddleware.authMiddleware, controller.getMe);
+
 
 export default authRouter; 

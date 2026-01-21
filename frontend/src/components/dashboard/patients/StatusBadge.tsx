@@ -7,8 +7,8 @@ type StatusBadgeProps = {
 
 const statusLabels: Record<PatientStatus, string> = {
   recovered: "Recovered",
-  "awaiting-surgery": "Awaiting surgery",
-  "on-treatment": "On treatment",
+  awaiting_surgery: "Awaiting surgery",
+  on_treatment: "On treatment",
 }
 
 export function StatusBadge({ status }: StatusBadgeProps) {
@@ -16,9 +16,9 @@ export function StatusBadge({ status }: StatusBadgeProps) {
     switch (status) {
       case "recovered":
         return "bg-[#27AE60] text-white"
-      case "awaiting-surgery":
+      case "awaiting_surgery":
         return "bg-[#2F80ED] text-white"
-      case "on-treatment":
+      case "on_treatment":
         return "bg-[#EB5757] text-white"
       default:
         return "bg-muted text-muted-foreground"

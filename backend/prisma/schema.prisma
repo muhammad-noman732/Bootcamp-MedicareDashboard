@@ -58,6 +58,7 @@ model User {
   industry      String?
   employeeCount String?
   avatar        String?
+  hasCompletedOnboarding Boolean @default(false)
   // oAuth
   googleId      String?
   // security and status 

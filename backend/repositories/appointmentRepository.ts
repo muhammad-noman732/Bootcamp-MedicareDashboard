@@ -1,7 +1,7 @@
 import { Appointment } from "../generated/prisma/client";
 import { prisma } from "../lib/prisma";
 import type { AppointmentWithPatient, AppointmentWithDetails, CreateAppointmentData, UpdateAppointmentData } from "../types/appointmentTypes";
-import { startOfMonth, endOfMonth, subMonths } from 'date-fns';
+import { startOfMonth, endOfMonth, subMonths, format } from 'date-fns';
 
 export class AppointmentRepository {
 
@@ -151,5 +151,37 @@ export class AppointmentRepository {
         return await prisma.appointment.count({
             where: { userId, isOnline }
         });
+    }
+
+    async getMonthlyConsultationData(
+        userId: string,
+        isOnline: boolean,
+        monthsBack: number = 6
+    ): Promise<Array<{ month: string; count: number }>> {
+        const queries: Promise<{ month: string; count: number }>[] = [];
+
+        for (let i = monthsBack - 1; i >= 0; i--) {
+            const targetDate = subMonths(new Date(), i);
+            const monthStart = startOfMonth(targetDate);
+            const monthEnd = endOfMonth(targetDate);
+
+            queries.push(
+                prisma.appointment.count({
+                    where: {
+                        userId,
+                        isOnline,
+                        createdAt: {
+                            gte: monthStart,
+                            lte: monthEnd
+                        }
+                    }
+                }).then(count => ({
+                    month: format(targetDate, "MMMM"),
+                    count
+                }))
+            );
+        }
+
+        return await Promise.all(queries);
     }
 }

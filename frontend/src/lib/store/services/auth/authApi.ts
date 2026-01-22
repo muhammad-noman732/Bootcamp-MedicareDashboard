@@ -9,7 +9,7 @@ import type {
     ResendVerifyEmailResponse,
     GoogleLoginInput,
     GoogleLoginResponse,
-    AuthResponseData,
+    User,
 } from "@/types/auth";
 import { api } from "../api";
 import type { ApiResponse } from "@/types/api";
@@ -42,7 +42,7 @@ export const authApi = api.injectEndpoints({
             invalidatesTags: ["User"],
         }),
 
-        getCurrentUser: builder.query<ApiResponse<AuthResponseData>, void>({
+        getCurrentUser: builder.query<ApiResponse<User>, void>({
             query: () => "/auth/me",
             providesTags: ["User"],
         }),
@@ -71,6 +71,21 @@ export const authApi = api.injectEndpoints({
                 body: data,
             }),
         }),
+
+        completeOnboarding: builder.mutation<ApiResponse<User>, {
+            name: string;
+            companyName: string;
+            industry: string;
+            employeeCount: string;
+            specialty?: string;
+        }>({
+            query: (data) => ({
+                url: "/auth/onboarding",
+                method: "POST",
+                body: data,
+            }),
+            invalidatesTags: ["User"],
+        }),
     }),
 });
 
@@ -81,5 +96,6 @@ export const {
     useGetCurrentUserQuery,
     useLogoutMutation,
     useVerifyEmailMutation,
-    useResendVerifyEmailMutation
+    useResendVerifyEmailMutation,
+    useCompleteOnboardingMutation
 } = authApi;

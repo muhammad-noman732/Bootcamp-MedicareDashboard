@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { asyncHandler } from "../utils/asyncHandler.ts";
-import { authSchema, loginSchema } from "../schema/userSchema.ts";
+import { authSchema, loginSchema, changePasswordSchema, updateProfileSchema, onboardingSchema } from "../schema/userSchema.ts";
 import { verifyEmailSchema, resendOTPSchema } from "../schema/emailVerificationSchema.ts";
 import { AuthService } from "../services/authServices.ts";
 import type { AuthUserResponse } from "../types/authTypes.ts";
@@ -216,6 +216,44 @@ export class AuthController {
         res.status(200).json({
             status: "success",
             data: user
+        });
+    });
+
+    changePassword = asyncHandler(async (req: Request, res: Response) => {
+        const { id: userId } = (req as RequestWithUser).user;
+        const data = changePasswordSchema.parse(req.body);
+
+        await this.authService.changePassword(userId, data);
+
+        res.status(200).json({
+            status: "success",
+            message: "Password changed successfully"
+        });
+    });
+
+    updateProfile = asyncHandler(async (req: Request, res: Response) => {
+        const { id: userId } = (req as RequestWithUser).user;
+        const data = updateProfileSchema.parse(req.body);
+
+        const updatedUser = await this.authService.updateProfile(userId, data);
+
+        res.status(200).json({
+            status: "success",
+            message: "Profile updated successfully",
+            data: updatedUser
+        });
+    });
+
+    completeOnboarding = asyncHandler(async (req: Request, res: Response) => {
+        const { id: userId } = (req as RequestWithUser).user;
+        const data = onboardingSchema.parse(req.body);
+
+        const updatedUser = await this.authService.completeOnboarding(userId, data);
+
+        res.status(200).json({
+            status: "success",
+            message: "Onboarding completed successfully",
+            data: updatedUser
         });
     });
 }

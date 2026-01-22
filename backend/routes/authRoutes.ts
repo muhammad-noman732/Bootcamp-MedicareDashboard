@@ -31,6 +31,9 @@ authRouter.post('/google', controller.googleLogin);
 
 // Protected routes
 authRouter.get('/me', authMiddleware.authMiddleware, controller.getMe);
+authRouter.patch('/change-password', authMiddleware.authMiddleware, controller.changePassword);
+authRouter.patch('/update-profile', authMiddleware.authMiddleware, controller.updateProfile);
+authRouter.post('/onboarding', authMiddleware.authMiddleware, controller.completeOnboarding);
 
 
 export default authRouter; 

@@ -21,6 +21,33 @@ export const loginSchema = z.object({
     password: z.string().min(1, 'Password is required')
 });
 
+export const changePasswordSchema = z.object({
+    currentPassword: z.string().min(1, "Current password is required"),
+    newPassword: z.string().min(8, "New password must be at least 8 characters long"),
+    confirmPassword: z.string().min(1, "Confirm password is required"),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+    message: "New password and confirm password do not match",
+    path: ["confirmPassword"],
+});
+
+export const updateProfileSchema = z.object({
+    userName: z.string().min(5, "User name must be at least 5 characters long").optional(),
+    email: z.string().email("Must be valid email").optional(),
+}).refine((data) => Object.keys(data).length > 0, {
+    message: "At least one field must be provided for update",
+});
+
+export const onboardingSchema = z.object({
+    name: z.string().min(3, "Name must be at least 3 characters long"),
+    companyName: z.string().min(3, "Company name must be at least 3 characters long"),
+    industry: z.string().min(3, "Industry must be at least 3 characters long"),
+    employeeCount: z.string().min(1, "Employee count is required"),
+    specialty: z.string().optional(),
+});
+
 export type LoginSchema = z.infer<typeof loginSchema>
 export type AuthSchema = z.infer<typeof authSchema>
-export type UserSchema = z.infer<typeof userSchema> 
+export type UserSchema = z.infer<typeof userSchema>
+export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>
+export type UpdateProfileSchema = z.infer<typeof updateProfileSchema>
+export type OnboardingSchema = z.infer<typeof onboardingSchema> 

@@ -39,7 +39,7 @@ app.use(cookieParser());
 // cors policy
 const corsOptions = {
   origin: process.env.ALLOWED_ORIGINS || "http://localhost:5173",
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true, // allow cookies
 }
 app.use(cors(corsOptions))

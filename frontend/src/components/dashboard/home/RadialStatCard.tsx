@@ -56,8 +56,8 @@ export function RadialStatCard({
         >
           <RadialBarChart
             data={chartData}
-            innerRadius={50}
-            outerRadius={59.5}
+            innerRadius={40}
+            outerRadius={65}
             startAngle={90}
             endAngle={-270}
           >
@@ -94,16 +94,16 @@ export function RadialStatCard({
             <RadialBar
               dataKey="female"
               stackId="a"
-              cornerRadius={5}
+              cornerRadius={8}
               fill="var(--color-female)"
-              className="stroke-transparent stroke-2"
+              className="stroke-transparent stroke-[3]"
             />
             <RadialBar
               dataKey="male"
               stackId="a"
-              cornerRadius={5}
+              cornerRadius={8}
               fill="var(--color-male)"
-              className="stroke-transparent stroke-2"
+              className="stroke-transparent stroke-[3]"
             />
           </RadialBarChart>
         </ChartContainer>

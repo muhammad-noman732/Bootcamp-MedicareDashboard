@@ -37,7 +37,8 @@ export const appointmentApi = api.injectEndpoints({
                 method: "POST",
                 body: data,
             }),
-            invalidatesTags: ["Appointments"],
+            invalidatesTags: (result, error) =>
+                error ? [] : [{ type: "Appointments", id: "LIST" }],
         }),
 
         updateAppointment: builder.mutation<UpdateAppointmentResponse, UpdateAppointmentInput>({

@@ -1,5 +1,5 @@
 import { MoreHorizontal } from "lucide-react"
-import { Area, AreaChart } from "recharts"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import {
   Card,
@@ -35,9 +35,7 @@ export function AreaStatCard({
     },
   }
 
-  const element = document.getElementById("name")
-  console.log(element);
-
+  const hasValidData = chartData && chartData.length > 0 && chartData.some(point => point.desktop > 0);
 
   return (
     <Card className="w-full h-[195px] rounded-[4.9px] border-0 bg-white p-4">
@@ -52,7 +50,6 @@ export function AreaStatCard({
           <div className="text-[37.26px] font-bold leading-[100%] tracking-[0.25%] text-black">
             {value}
           </div>
-          <h1 id="name">title</h1>
           <div className="flex items-center gap-2">
             <span
               className={cn(
@@ -94,8 +91,10 @@ export function AreaStatCard({
         >
           <AreaChart
             accessibilityLayer
-            data={chartData as ChartPoint[]}
-            margin={{ left: 0, right: 0, top: 0, bottom: 0 }}
+            data={hasValidData ? (chartData as ChartPoint[]) : []}
+            width={170}
+            height={115}
+            margin={{ left: 0, right: 0, top: 8, bottom: 0 }}
           >
             <defs>
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
@@ -109,17 +108,38 @@ export function AreaStatCard({
                 ))}
               </linearGradient>
             </defs>
+            <CartesianGrid 
+              strokeDasharray="3 3" 
+              stroke="rgba(0, 0, 0, 0.06)" 
+              vertical={false}
+              horizontal={true}
+            />
+            <XAxis 
+              dataKey="month" 
+              hide 
+              scale="point"
+            />
+            <YAxis 
+              hide 
+              domain={[0, (dataMax: number) => Math.max(dataMax * 1.1, 1)]}
+              allowDataOverflow={false}
+            />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent indicator="line" />}
             />
             <Area
               dataKey="desktop"
-              type="natural"
+              type="monotone"
               fill={`url(#${gradientId})`}
               stroke={strokeColor}
               strokeWidth={strokeWidth}
+              baseValue={0}
               style={{ filter: "none" }}
+              isAnimationActive={true}
+              connectNulls={true}
+              dot={false}
+              activeDot={false}
             />
           </AreaChart>
         </ChartContainer>

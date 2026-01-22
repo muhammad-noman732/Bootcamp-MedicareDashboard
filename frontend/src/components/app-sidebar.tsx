@@ -156,7 +156,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     )}
                   </NavLink>
                 </SidebarMenuButton>
-                </SidebarMenuItem>
+              </SidebarMenuItem>
             ))}
           </SidebarMenu>
         </SidebarGroup>

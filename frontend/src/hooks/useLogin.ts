@@ -26,7 +26,7 @@ export const useLogin = () => {
 
     const onSubmit = async (data: LoginFormValues) => {
         try {
-            await login({
+            const response = await login({
                 email: data.email,
                 password: data.password,
             }).unwrap();
@@ -36,7 +36,11 @@ export const useLogin = () => {
                 duration: 3000,
             });
 
-            navigate("/dashboard");
+            if (response.data?.user?.hasCompletedOnboarding) {
+                navigate("/dashboard");
+            } else {
+                navigate("/onboarding");
+            }
         } catch (err) {
             console.error("Login failed", err);
         }

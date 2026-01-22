@@ -1,6 +1,9 @@
 import {
     type AuthSchema,
     type LoginSchema,
+    type ChangePasswordSchema,
+    type UpdateProfileSchema,
+    type OnboardingSchema,
 } from "../schema/userSchema";
 import type { AuthRepository } from "../repositories/authRepository";
 import type { User } from "../generated/prisma/client";
@@ -9,7 +12,9 @@ import {
     NotFoundError,
     UnauthorizedError,
     InternalServerError,
+    BadRequestError,
 } from "../utils/appError";
+import type { Prisma } from "../generated/prisma/client";
 import bcryptjs from "bcryptjs";
 import { JwtService } from "../lib/jwt";
 import { AuthUserResponse } from "../types/authTypes";
@@ -380,6 +385,93 @@ export class AuthService {
         }
 
         return user;
+    }
+
+    async changePassword(userId: string, data: ChangePasswordSchema): Promise<void> {
+        const user = await this.authRepository.findByIdWithPassword(userId);
+
+        if (!user) {
+            throw new NotFoundError("User");
+        }
+
+        if (!user.password) {
+            throw new UnauthorizedError("Password change not available for Google accounts");
+        }
+
+        const isCurrentPasswordValid = await bcryptjs.compare(
+            data.currentPassword,
+            user.password
+        );
+
+        if (!isCurrentPasswordValid) {
+            throw new UnauthorizedError("Current password is incorrect");
+        }
+
+        if (data.currentPassword === data.newPassword) {
+            throw new BadRequestError("New password must be different from current password");
+        }
+
+        const hashedNewPassword = await bcryptjs.hash(data.newPassword, this.SALT_ROUNDS);
+
+        await this.authRepository.updateUser(userId, {
+            password: hashedNewPassword
+        });
+    }
+
+    async updateProfile(userId: string, data: UpdateProfileSchema): Promise<AuthUserResponse> {
+        const user = await this.authRepository.findById(userId);
+
+        if (!user) {
+            throw new NotFoundError("User");
+        }
+
+        const updateData: Prisma.UserUpdateInput = {};
+
+        if (data.userName !== undefined) {
+            if (user.userName !== data.userName) {
+                const existingUser = await this.authRepository.findByUserName(data.userName);
+                if (existingUser && existingUser.id !== userId) {
+                    throw new ConflictError("User name already exists");
+                }
+            }
+            updateData.userName = data.userName;
+        }
+
+        if (data.email !== undefined) {
+            const existingUser = await this.authRepository.findByEmail(data.email.toLowerCase());
+            if (existingUser && existingUser.id !== userId) {
+                throw new ConflictError("Email already exists");
+            }
+            updateData.email = data.email.toLowerCase();
+            updateData.isVerified = false;
+        }
+
+        if (Object.keys(updateData).length === 0) {
+            throw new BadRequestError("No valid fields provided for update");
+        }
+
+        return await this.authRepository.updateUserProfile(userId, updateData);
+    }
+
+    
+    async completeOnboarding(userId: string, data: OnboardingSchema): Promise<AuthUserResponse> {
+        const user = await this.authRepository.findById(userId);
+
+        if (!user) {
+            throw new NotFoundError("User");
+        }
+
+        if (user.hasCompletedOnboarding) {
+            throw new BadRequestError("Onboarding already completed");
+        }
+
+        return await this.authRepository.completeOnboarding(userId, {
+            name: data.name,
+            companyName: data.companyName,
+            industry: data.industry,
+            employeeCount: data.employeeCount,
+            specialty: data.specialty || null,
+        });
     }
 }
 

@@ -8,6 +8,7 @@ export interface User {
     avatar?: string;
     isVerified: boolean;
     isActive: boolean;
+    hasCompletedOnboarding: boolean;
     createdAt: string;
     updatedAt: string;
 }

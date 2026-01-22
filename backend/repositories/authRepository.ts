@@ -13,6 +13,7 @@ export class AuthRepository {
                 email: true,
                 isVerified: true,
                 isActive: true,
+                hasCompletedOnboarding: true,
                 createdAt: true,
                 updatedAt: true
             }
@@ -27,7 +28,8 @@ export class AuthRepository {
                 userName: true,
                 email: true,
                 isVerified: true,
-                isActive: true
+                isActive: true,
+                hasCompletedOnboarding: true
             }
         });
     }
@@ -41,6 +43,23 @@ export class AuthRepository {
                 email: true,
                 isVerified: true,
                 isActive: true,
+                hasCompletedOnboarding: true,
+                createdAt: true,
+                updatedAt: true
+            }
+        });
+    }
+
+    async findByUserName(userName: string): Promise<AuthUserResponse | null> {
+        return prisma.user.findFirst({
+            where: { userName },
+            select: {
+                id: true,
+                userName: true,
+                email: true,
+                isVerified: true,
+                isActive: true,
+                hasCompletedOnboarding: true,
                 createdAt: true,
                 updatedAt: true
             }
@@ -50,6 +69,49 @@ export class AuthRepository {
     async findByEmailWithPassword(email: string): Promise<User | null> {
         return prisma.user.findUnique({
             where: { email }
+        });
+    }
+
+    async findByIdWithPassword(id: string): Promise<User | null> {
+        return prisma.user.findUnique({
+            where: { id }
+        });
+    }
+
+    async updateUserProfile(id: string, data: Prisma.UserUpdateInput): Promise<AuthUserResponse> {
+        return prisma.user.update({
+            where: { id },
+            data,
+            select: {
+                id: true,
+                userName: true,
+                email: true,
+                isVerified: true,
+                isActive: true,
+                hasCompletedOnboarding: true,
+                createdAt: true,
+                updatedAt: true
+            }
+        });
+    }
+
+    async completeOnboarding(userId: string, data: Prisma.UserUpdateInput): Promise<AuthUserResponse> {
+        return prisma.user.update({
+            where: { id: userId },
+            data: {
+                ...data,
+                hasCompletedOnboarding: true
+            },
+            select: {
+                id: true,
+                userName: true,
+                email: true,
+                isVerified: true,
+                isActive: true,
+                hasCompletedOnboarding: true,
+                createdAt: true,
+                updatedAt: true
+            }
         });
     }
 
@@ -75,6 +137,7 @@ export class AuthRepository {
                 email: true,
                 isVerified: true,
                 isActive: true,
+                hasCompletedOnboarding: true,
                 createdAt: true,
                 updatedAt: true
             }

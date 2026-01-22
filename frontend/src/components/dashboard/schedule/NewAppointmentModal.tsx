@@ -1,54 +1,53 @@
-import { X, CheckCircle2, Clock, MapPin, User, ChevronDown } from "lucide-react"
-import { useMemo } from "react"
-
-type AppointmentStatus = "confirmation-required" | "confirmed"
-type AppointmentType = "first-time" | "follow-up"
-
-type Practitioner = {
-  name: string
-  specialty: string
-}
-
-type Location = {
-  clinic: string
-  room: string
-}
+import { X, CheckCircle2, Clock, MapPin, User } from "lucide-react"
+import { useState } from "react"
+import { useCreateAppointment } from "@/hooks/useCreateAppointment"
+import { useGetPatientsQuery } from "@/lib/store/services/patient/patientApi"
+import { useGetCurrentUserQuery } from "@/lib/store/services/auth/authApi"
+import { Loader2 } from "lucide-react"
 
 type NewAppointmentModalProps = {
   open: boolean
   onClose: () => void
-  practitioner?: Practitioner
-  dateLabel?: string
-  timeLabel?: string
-  location?: Location
 }
 
-const defaultPractitioner: Practitioner = {
-  name: "John Doe",
-  specialty: "General Doctor",
-}
-
-const defaultLocation: Location = {
-  clinic: "General clinic",
-  room: "Room 1",
-}
+const DURATION_OPTIONS = [10, 30, 45, 60, 90, 120] as const;
 
 export function NewAppointmentModal({
   open,
   onClose,
-  practitioner = defaultPractitioner,
-  dateLabel = "Tue, 26 October",
-  timeLabel = "9:00",
-  location = defaultLocation,
 }: NewAppointmentModalProps) {
-  const durationOptions = useMemo(() => ["10'", "30'", "45'", "60'", "90'", "120'"], [])
+  const { data: userData } = useGetCurrentUserQuery()
+  const { data: patientsData, isLoading: isPatientsLoading } = useGetPatientsQuery({ limit: 100 })
+  const { form, isLoading, onSubmit } = useCreateAppointment({ onSuccess: onClose })
+
+  const { register, watch, setValue, formState: { errors } } = form
+
+  const [isEditingDateTime, setIsEditingDateTime] = useState(false)
+  const [isEditingLocation, setIsEditingLocation] = useState(false)
 
   if (!open) return null
 
+  const selectedStatus = watch("status")
+  const selectedDuration = watch("duration")
+  const selectedType = watch("type")
+  const selectedIsOnline = watch("isOnline")
+  const selectedDate = watch("date")
+  const selectedTime = watch("time")
+  const selectedClinic = watch("clinic")
+  const selectedRoom = watch("room")
+
+  const practitionerName = userData?.data?.userName || "John Doe"
+  const practitionerSpecialty = "General Doctor"
+
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return "Select date"
+    const date = new Date(dateStr)
+    return date.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'long' })
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 px-4 py-8 sm:py-12">
-      <div className="w-full max-w-xl rounded-lg bg-white shadow-xl">
-        {/* Header */}
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 px-4 py-8 sm:py-12 overflow-y-auto">
+      <div className="w-full max-w-xl rounded-lg bg-white shadow-xl my-8">
         <div className="flex items-center justify-between bg-[#0000AC] px-6 py-4 text-white">
           <span className="text-base font-semibold">New Appointment</span>
           <button
@@ -61,205 +60,233 @@ export function NewAppointmentModal({
           </button>
         </div>
 
-        <div className="px-6 py-6 space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-            <SummaryItem
-              icon={<User size={18} className="text-[#0000AC]" />}
-              title="Practitioner"
-              primary={practitioner.name}
-              secondary={practitioner.specialty}
-            />
-            <SummaryItem
-              icon={<Clock size={18} className="text-[#0000AC]" />}
-              title="Date and Time"
-              primary={dateLabel}
-              secondary={timeLabel}
-              actionLabel="Change"
-            />
-            <SummaryItem
-              icon={<MapPin size={18} className="text-[#0000AC]" />}
-              title="Location"
-              primary={location.clinic}
-              secondary={location.room}
-              actionLabel="Change"
-            />
+        <form onSubmit={onSubmit} className="px-6 py-6 space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="rounded-md border border-[#E0E0E0] px-3 py-3 text-left">
+              <div className="flex items-center gap-2 text-sm font-semibold text-[#4F4F4F]">
+                <User size={18} className="text-[#0000AC]" />
+                <span>Practitioner</span>
+              </div>
+              <div className="mt-2 text-sm text-[#1D1D1D] font-semibold">{practitionerName}</div>
+              <div className="text-xs text-[#828282]">{practitionerSpecialty}</div>
+            </div>
+
+            <div className="rounded-md border border-[#E0E0E0] px-3 py-3 text-left">
+              <div className="flex items-center gap-2 text-sm font-semibold text-[#4F4F4F]">
+                <Clock size={18} className="text-[#0000AC]" />
+                <span>Date and Time</span>
+              </div>
+              {isEditingDateTime ? (
+                <div className="mt-2 space-y-2">
+                  <input
+                    type="date"
+                    {...register("date")}
+                    className="w-full text-xs border border-[#E0E0E0] rounded px-2 py-1 focus:border-[#0000AC] focus:outline-none"
+                  />
+                  <input
+                    type="time"
+                    {...register("time")}
+                    className="w-full text-xs border border-[#E0E0E0] rounded px-2 py-1 focus:border-[#0000AC] focus:outline-none"
+                  />
+                </div>
+              ) : (
+                <>
+                  <div className="mt-2 text-sm text-[#1D1D1D] font-semibold">{formatDate(selectedDate)}</div>
+                  <div className="text-xs text-[#828282]">{selectedTime}</div>
+                </>
+              )}
+              <button
+                type="button"
+                onClick={() => setIsEditingDateTime(!isEditingDateTime)}
+                className="mt-1 text-xs font-semibold text-[#0000AC] hover:underline"
+              >
+                {isEditingDateTime ? "Done" : "Change"}
+              </button>
+            </div>
+
+            <div className="rounded-md border border-[#E0E0E0] px-3 py-3 text-left">
+              <div className="flex items-center gap-2 text-sm font-semibold text-[#4F4F4F]">
+                <MapPin size={18} className="text-[#0000AC]" />
+                <span>Location</span>
+              </div>
+              {isEditingLocation ? (
+                <div className="mt-2 space-y-2">
+                  <input
+                    type="text"
+                    {...register("clinic")}
+                    placeholder="Clinic name"
+                    className="w-full text-xs border border-[#E0E0E0] rounded px-2 py-1 focus:border-[#0000AC] focus:outline-none"
+                  />
+                  <input
+                    type="text"
+                    {...register("room")}
+                    placeholder="Room number"
+                    className="w-full text-xs border border-[#E0E0E0] rounded px-2 py-1 focus:border-[#0000AC] focus:outline-none"
+                  />
+                </div>
+              ) : (
+                <>
+                  <div className="mt-2 text-sm text-[#1D1D1D] font-semibold">{selectedClinic || "General clinic"}</div>
+                  <div className="text-xs text-[#828282]">{selectedRoom || "Room 1"}</div>
+                </>
+              )}
+              <button
+                type="button"
+                onClick={() => setIsEditingLocation(!isEditingLocation)}
+                className="mt-1 text-xs font-semibold text-[#0000AC] hover:underline"
+              >
+                {isEditingLocation ? "Done" : "Change"}
+              </button>
+            </div>
           </div>
 
-          {/* Form body */}
           <div className="space-y-4">
-            <LabeledInput label="Patient" value="Faysal Kareem" />
-            <LabeledTextArea label="Purpose of visit" placeholder="Add a note" />
+            <div className="flex flex-col gap-1 text-sm text-[#4F4F4F]">
+              <label htmlFor="patientId">Patient</label>
+              <select
+                id="patientId"
+                {...register("patientId")}
+                disabled={isPatientsLoading || isLoading}
+                className="rounded-md border border-[#E0E0E0] px-3 py-2 text-sm text-[#1D1D1D] focus:border-[#0000AC] focus:outline-none disabled:opacity-50"
+              >
+                <option value="">Select a patient</option>
+                {patientsData?.data.data.map((patient) => (
+                  <option key={patient.id} value={patient.id}>
+                    {patient.forename} {patient.surname}
+                  </option>
+                ))}
+              </select>
+              {errors.patientId && (
+                <p className="text-xs text-destructive">{errors.patientId.message}</p>
+              )}
+            </div>
+
+            <label className="flex flex-col gap-1 text-sm text-[#4F4F4F]">
+              Purpose of visit
+              <textarea
+                {...register("purpose")}
+                rows={3}
+                placeholder="Add a note"
+                disabled={isLoading}
+                className="rounded-md border border-[#E0E0E0] px-3 py-2 text-sm text-[#1D1D1D] focus:border-[#0000AC] focus:outline-none disabled:opacity-50"
+              />
+            </label>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <StatusPicker />
-              <DurationPicker options={durationOptions} />
+              <div className="flex flex-col gap-2">
+                <div className="text-sm font-medium text-[#4F4F4F]">Appointment Status</div>
+                <div className="flex items-center gap-3">
+                  <Pill
+                    active={selectedStatus === "confirmation_required"}
+                    onClick={() => setValue("status", "confirmation_required")}
+                    disabled={isLoading}
+                  >
+                    Confirmation required
+                  </Pill>
+                  <Pill
+                    active={selectedStatus === "confirmed"}
+                    onClick={() => setValue("status", "confirmed")}
+                    disabled={isLoading}
+                  >
+                    Confirmed
+                  </Pill>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <div className="text-sm font-medium text-[#4F4F4F]">Duration</div>
+                <div className="flex flex-wrap gap-2">
+                  {DURATION_OPTIONS.map((opt) => (
+                    <Pill
+                      key={opt}
+                      active={opt === selectedDuration}
+                      onClick={() => setValue("duration", opt)}
+                      disabled={isLoading}
+                    >
+                      {opt}'
+                    </Pill>
+                  ))}
+                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <AppointmentTypePicker />
-              <OnlineConsultationToggle />
+              <div className="flex flex-col gap-2">
+                <div className="text-sm font-medium text-[#4F4F4F]">Appointment type</div>
+                <div className="flex items-center gap-2">
+                  <Pill
+                    active={selectedType === "first_time"}
+                    onClick={() => setValue("type", "first_time")}
+                    disabled={isLoading}
+                  >
+                    First time
+                  </Pill>
+                  <Pill
+                    active={selectedType === "follow_up"}
+                    onClick={() => setValue("type", "follow_up")}
+                    variant="secondary"
+                    disabled={isLoading}
+                  >
+                    Follow up visit
+                  </Pill>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <div className="text-sm font-medium text-[#4F4F4F]">Online consultation</div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setValue("isOnline", !selectedIsOnline)}
+                    disabled={isLoading}
+                    className={`inline-flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm font-semibold disabled:opacity-50 ${selectedIsOnline
+                      ? "border-[#27AE60] text-[#27AE60]"
+                      : "border-[#EB5757] text-[#EB5757]"
+                      }`}
+                  >
+                    <X size={14} />
+                    {selectedIsOnline ? "Yes" : "No"}
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <NotificationInfo />
+            <div className="flex items-start gap-3 rounded-md border border-[#E0E0E0] px-3 py-3">
+              <CheckCircle2 size={18} className="text-[#4F4F4F] mt-0.5" />
+              <div className="text-sm text-[#4F4F4F]">
+                <div className="font-semibold">Send notifications</div>
+                <div className="text-xs text-[#828282]">
+                  Appointment confirmation and reminder messages will be automatically sent to clinic SMS notification settings.
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Footer actions */}
-          <div className="flex flex-col sm:flex-row sm:justify-end sm:items-center gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row sm:justify-end sm:items-center gap-3 pt-4 border-t">
             <button
               type="button"
               onClick={onClose}
-              className="text-sm font-medium text-[#4F4F4F] hover:text-[#0000AC] transition-colors"
+              disabled={isLoading}
+              className="text-sm font-medium text-[#4F4F4F] hover:text-[#0000AC] transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
             <button
-              type="button"
-              className="inline-flex items-center justify-center rounded-md border border-[#0000AC] px-4 py-2 text-sm font-semibold text-[#0000AC] hover:bg-[#0000AC]/10 transition-colors"
+              type="submit"
+              disabled={isLoading}
+              className="inline-flex items-center justify-center rounded-md bg-[#0000AC] px-4 py-2 text-sm font-semibold text-white hover:bg-[#00008c] transition-colors disabled:opacity-50 min-w-[100px]"
             >
-              Begin Appointment
-            </button>
-            <button
-              type="button"
-              className="inline-flex items-center justify-center rounded-md bg-[#0000AC] px-4 py-2 text-sm font-semibold text-white hover:bg-[#00008c] transition-colors"
-            >
-              Save
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Save"
+              )}
             </button>
           </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// Subcomponents
-function SummaryItem({
-  icon,
-  title,
-  primary,
-  secondary,
-  actionLabel,
-}: {
-  icon: React.ReactNode
-  title: string
-  primary: string
-  secondary: string
-  actionLabel?: string
-}) {
-  return (
-    <div className="rounded-md border border-[#E0E0E0] px-3 py-3 text-left">
-      <div className="flex items-center gap-2 text-sm font-semibold text-[#4F4F4F]">
-        {icon}
-        <span>{title}</span>
-      </div>
-      <div className="mt-2 text-sm text-[#1D1D1D] font-semibold">{primary}</div>
-      <div className="text-xs text-[#828282]">{secondary}</div>
-      {actionLabel && (
-        <button
-          type="button"
-          className="mt-1 text-xs font-semibold text-[#0000AC] hover:underline"
-        >
-          {actionLabel}
-        </button>
-      )}
-    </div>
-  )
-}
-
-function LabeledInput({ label, value }: { label: string; value?: string }) {
-  return (
-    <label className="flex flex-col gap-1 text-sm text-[#4F4F4F]">
-      {label}
-      <div className="flex items-center justify-between rounded-md border border-[#E0E0E0] px-3 py-2 text-sm text-[#1D1D1D]">
-        <span>{value}</span>
-        <ChevronDown size={16} className="text-[#828282]" />
-      </div>
-    </label>
-  )
-}
-
-function LabeledTextArea({ label, placeholder }: { label: string; placeholder?: string }) {
-  return (
-    <label className="flex flex-col gap-1 text-sm text-[#4F4F4F]">
-      {label}
-      <textarea
-        rows={3}
-        placeholder={placeholder}
-        className="rounded-md border border-[#E0E0E0] px-3 py-2 text-sm text-[#1D1D1D] focus:border-[#0000AC] focus:outline-none"
-      />
-    </label>
-  )
-}
-
-function StatusPicker() {
-  const selected: AppointmentStatus = "confirmed"
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="text-sm font-medium text-[#4F4F4F]">Appointment Status</div>
-      <div className="flex items-center gap-3">
-        <Pill active={selected === "confirmation-required"}>Confirmation required</Pill>
-        <Pill active={selected === "confirmed"}>Confirmed</Pill>
-      </div>
-    </div>
-  )
-}
-
-function DurationPicker({ options }: { options: string[] }) {
-  const selected = "60'"
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="text-sm font-medium text-[#4F4F4F]">Duration</div>
-      <div className="flex flex-wrap gap-2">
-        {options.map((opt) => (
-          <Pill key={opt} active={opt === selected}>
-            {opt}
-          </Pill>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function AppointmentTypePicker() {
-  const selected: AppointmentType = "first-time"
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="text-sm font-medium text-[#4F4F4F]">Appointment type</div>
-      <div className="flex items-center gap-2">
-        <Pill active={selected === "first-time"}>First time</Pill>
-        <Pill active={selected === "follow-up"} variant="secondary">
-          Follow up visit
-        </Pill>
-      </div>
-    </div>
-  )
-}
-
-function OnlineConsultationToggle() {
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="text-sm font-medium text-[#4F4F4F]">Online consultation</div>
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          className="inline-flex items-center gap-1 rounded-md border border-[#EB5757] px-3 py-1.5 text-sm font-semibold text-[#EB5757]"
-        >
-          <X size={14} />
-          No
-        </button>
-      </div>
-    </div>
-  )
-}
-
-function NotificationInfo() {
-  return (
-    <div className="flex items-start gap-3 rounded-md border border-[#E0E0E0] px-3 py-3">
-      <CheckCircle2 size={18} className="text-[#4F4F4F] mt-0.5" />
-      <div className="text-sm text-[#4F4F4F]">
-        <div className="font-semibold">Send notifications</div>
-        <div className="text-xs text-[#828282]">
-          Appointment confirmation and reminder messages will be automatically sent to clinic SMS notification settings.
-        </div>
+        </form>
       </div>
     </div>
   )
@@ -269,16 +296,25 @@ function Pill({
   active,
   children,
   variant = "primary",
+  onClick,
+  disabled,
 }: {
   active?: boolean
   children: React.ReactNode
   variant?: "primary" | "secondary"
+  onClick?: () => void
+  disabled?: boolean
 }) {
   if (active) {
     return (
-      <div className="inline-flex items-center justify-center rounded-md bg-[#0000AC] px-3 py-1.5 text-xs font-semibold text-white shadow-sm">
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={disabled}
+        className="inline-flex items-center justify-center rounded-md bg-[#0000AC] px-3 py-1.5 text-xs font-semibold text-white shadow-sm disabled:opacity-50"
+      >
         {children}
-      </div>
+      </button>
     )
   }
 
@@ -288,8 +324,13 @@ function Pill({
       : "bg-white text-[#4F4F4F] border border-[#E0E0E0]"
 
   return (
-    <div className={`inline-flex items-center justify-center rounded-md px-3 py-1.5 text-xs font-semibold ${classes}`}>
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`inline-flex items-center justify-center rounded-md px-3 py-1.5 text-xs font-semibold ${classes} disabled:opacity-50`}
+    >
       {children}
-    </div>
+    </button>
   )
 }

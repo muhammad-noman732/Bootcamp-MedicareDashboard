@@ -34,7 +34,7 @@ export const useVerifyEmail = () => {
                 duration: 4000,
             });
 
-            navigate("/dashboard");
+            navigate("/onboarding");
         } catch (err) {
             console.error("Verification failed", err);
         }

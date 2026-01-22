@@ -10,10 +10,8 @@ export class DashboardService {
         private taskRepository: TaskRepository
     ) { }
 
-    // Helper: Calculate percentage trend
     private calculateTrend(current: number, previous: number): string {
-        // Handle edge case: if previous month is 0
-        // If current is also 0, trend is 0%
+       
         if (previous === 0) {
             return current > 0 ? "+100%" : "0%";
         }
@@ -22,12 +20,10 @@ export class DashboardService {
         const percentage = (difference / previous) * 100;
         const rounded = percentage.toFixed(2);
 
-        // Add + for positive values (negative values already have -)
         return percentage >= 0 ? `+${rounded}%` : `${rounded}%`;
     }
 
     async getDashboardStats(userId: string): Promise<DashboardStatsResponse> {
-        // Run all independent queries in parallel for maximum performance
         const [
             offlineStats,
             onlineStats,
@@ -35,7 +31,9 @@ export class DashboardService {
             onlineTotal,
             patientStats,
             taskStats,
-            recentTasks
+            recentTasks,
+            offlineChartData,
+            onlineChartData
         ] = await Promise.all([
             this.appointmentRepository.getOfflineConsultationStats(userId),
             this.appointmentRepository.getOnlineConsultationStats(userId),
@@ -43,10 +41,12 @@ export class DashboardService {
             this.appointmentRepository.getTotalCount(userId, true),
             this.patientRepository.getGenderStats(userId),
             this.getTaskStats(userId),
-            this.taskRepository.getRecentTasks(userId, 4)
+            this.taskRepository.getRecentTasks(userId, 4),
+            this.appointmentRepository.getMonthlyConsultationData(userId, false, 6),
+            this.appointmentRepository.getMonthlyConsultationData(userId, true, 6)
         ]);
 
-        // Calculate trends based on monthly comparison
+        
         const offlineTrend = this.calculateTrend(
             offlineStats.currentMonth,
             offlineStats.previousMonth
@@ -64,14 +64,20 @@ export class DashboardService {
                     currentMonthCount: offlineStats.currentMonth,
                     previousMonthCount: offlineStats.previousMonth,
                     trend: offlineTrend,
-                    chartData: [] // To be implemented with monthly aggregation later
+                    chartData: offlineChartData.map(item => ({
+                        month: item.month,
+                        value: item.count
+                    }))
                 },
                 online: {
                     count: onlineTotal,
                     currentMonthCount: onlineStats.currentMonth,
                     previousMonthCount: onlineStats.previousMonth,
                     trend: onlineTrend,
-                    chartData: []
+                    chartData: onlineChartData.map(item => ({
+                        month: item.month,
+                        value: item.count
+                    }))
                 }
             },
             patients: {

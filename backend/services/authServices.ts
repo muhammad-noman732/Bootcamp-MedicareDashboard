@@ -441,6 +441,9 @@ export class AuthService {
         if (data.employeeCount) updateData.employeeCount = data.employeeCount;
         if (data.specialty) updateData.specialty = data.specialty;
         if (data.avatar) updateData.avatar = data.avatar;
+        if (data.phoneNumber) updateData.phoneNumber = data.phoneNumber;
+        if (data.bio) updateData.bio = data.bio;
+        if (data.address) updateData.address = data.address;
 
         if (Object.keys(updateData).length === 0) {
             throw new BadRequestError("No valid fields provided for update");

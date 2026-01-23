@@ -37,6 +37,9 @@ export const updateProfileSchema = z.object({
     industry: z.string().optional(),
     employeeCount: z.string().optional(),
     specialty: z.string().optional(),
+    phoneNumber: z.string().optional(),
+    bio: z.string().optional(),
+    address: z.string().optional(),
 });
 
 export const onboardingSchema = z.object({

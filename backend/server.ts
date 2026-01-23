@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express, { type NextFunction, type Request, type Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -14,6 +15,7 @@ import patientRouter from "./routes/patientRoutes";
 import appointmentRouter from "./routes/appointmentRoutes";
 import taskRouter from "./routes/taskRoutes";
 import dashboardRouter from "./routes/dashboardRoutes";
+import analyticsRouter from "./routes/analyticsRoutes";
 
 const app = express();
 app.use(express.json({
@@ -106,6 +108,7 @@ app.use('/api/patients', apiLimiter, patientRouter);
 app.use('/api/appointments', apiLimiter, appointmentRouter);
 app.use('/api/tasks', apiLimiter, taskRouter);
 app.use('/api/dashboard', apiLimiter, dashboardRouter);
+app.use('/api/analytics', apiLimiter, analyticsRouter);
 
 
 // ROUTES

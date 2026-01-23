@@ -12,6 +12,7 @@ import OnBoardingPage from "./pages/onBoarding/onBoarding";
 import { ProtectedRoute } from "./components/auth/guards/ProtectedRoute";
 import { PublicRoute } from "./components/auth/guards/PublicRoute";
 import SettingsPage from "./pages/dashboard/settings/SettingsPage";
+import AnalyticsPage from "./pages/dashboard/analytics/AnalyticsPage";
 
 const router = createBrowserRouter([
   {
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
           {
             path: "patients",
             element: <PatientsPage />,
+          },
+          {
+            path: "analytics",
+            element: <AnalyticsPage />,
           },
           {
             path: "patients/add",

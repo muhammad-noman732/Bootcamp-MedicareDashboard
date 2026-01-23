@@ -17,6 +17,9 @@ const updateProfileSchema = z.object({
     industry: z.string().optional(),
     employeeCount: z.string().optional(),
     specialty: z.string().optional(),
+    phoneNumber: z.string().optional(),
+    bio: z.string().max(500, "Bio must be at most 500 characters").optional(),
+    address: z.string().optional(),
     avatar: z
         .any()
         .refine((files) => !files || files.length === 0 || files instanceof FileList, "Expected a file")
@@ -48,6 +51,9 @@ export const useUpdateProfile = () => {
             industry: "",
             employeeCount: "",
             specialty: "",
+            phoneNumber: "",
+            bio: "",
+            address: "",
         },
     });
 
@@ -63,6 +69,9 @@ export const useUpdateProfile = () => {
                 industry: userData.data.industry || "",
                 employeeCount: userData.data.employeeCount || "",
                 specialty: userData.data.specialty || "",
+                phoneNumber: userData.data.phoneNumber || "",
+                bio: userData.data.bio || "",
+                address: userData.data.address || ""
             });
         }
     }, [userData, form]);
@@ -89,6 +98,9 @@ export const useUpdateProfile = () => {
             if (data.industry) formData.append("industry", data.industry);
             if (data.employeeCount) formData.append("employeeCount", data.employeeCount);
             if (data.specialty) formData.append("specialty", data.specialty);
+            if (data.phoneNumber) formData.append("phoneNumber", data.phoneNumber);
+            if (data.bio) formData.append("bio", data.bio);
+            if (data.address) formData.append("address", data.address);
 
             if (data.avatar && data.avatar.length > 0) {
                 formData.append("avatar", data.avatar[0]);

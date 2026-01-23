@@ -15,6 +15,9 @@ export interface User {
     industry?: string;
     employeeCount?: string;
     specialty?: string;
+    phoneNumber?: string;
+    bio?: string;
+    address?: string;
 }
 
 
@@ -50,6 +53,9 @@ export interface UpdateProfileInput {
     industry?: string;
     employeeCount?: string;
     specialty?: string;
+    phoneNumber?: string;
+    bio?: string;
+    address?: string;
     avatar?: File;
 }
 

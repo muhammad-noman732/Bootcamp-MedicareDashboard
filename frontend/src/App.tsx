@@ -13,6 +13,7 @@ import { ProtectedRoute } from "./components/auth/guards/ProtectedRoute";
 import { PublicRoute } from "./components/auth/guards/PublicRoute";
 import SettingsPage from "./pages/dashboard/settings/SettingsPage";
 import AnalyticsPage from "./pages/dashboard/analytics/AnalyticsPage";
+import SupportPage from "./pages/dashboard/support/SupportPage";
 
 const router = createBrowserRouter([
   {
@@ -74,6 +75,10 @@ const router = createBrowserRouter([
           {
             path: "schedule",
             element: <SchedulePage />,
+          },
+          {
+            path: "support",
+            element: <SupportPage />,
           },
         ],
       },

@@ -10,6 +10,8 @@ import type {
     GoogleLoginInput,
     GoogleLoginResponse,
     User,
+    ChangePasswordInput,
+    CompleteOnboardingInput,
 } from "@/types/auth";
 import { api } from "../api";
 import type { ApiResponse } from "@/types/api";
@@ -72,19 +74,30 @@ export const authApi = api.injectEndpoints({
             }),
         }),
 
-        completeOnboarding: builder.mutation<ApiResponse<User>, {
-            name: string;
-            companyName: string;
-            industry: string;
-            employeeCount: string;
-            specialty?: string;
-        }>({
+        completeOnboarding: builder.mutation<ApiResponse<User>, CompleteOnboardingInput>({
             query: (data) => ({
                 url: "/auth/onboarding",
                 method: "POST",
                 body: data,
             }),
             invalidatesTags: ["User"],
+        }),
+
+        updateProfile: builder.mutation<ApiResponse<User>, FormData>({
+            query: (data) => ({
+                url: "/auth/update-profile",
+                method: "PATCH",
+                body: data,
+            }),
+            invalidatesTags: ["User"],
+        }),
+
+        changePassword: builder.mutation<ApiResponse<{ message: string }>, ChangePasswordInput>({
+            query: (data) => ({
+                url: "/auth/change-password",
+                method: "PATCH",
+                body: data,
+            }),
         }),
     }),
 });
@@ -97,5 +110,7 @@ export const {
     useLogoutMutation,
     useVerifyEmailMutation,
     useResendVerifyEmailMutation,
-    useCompleteOnboardingMutation
+    useCompleteOnboardingMutation,
+    useUpdateProfileMutation,
+    useChangePasswordMutation
 } = authApi;

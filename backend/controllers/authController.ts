@@ -7,6 +7,7 @@ import type { AuthUserResponse } from "../types/authTypes.ts";
 import { UnauthorizedError } from "../utils/appError.ts";
 import { OAuth2Client } from 'google-auth-library'
 import type { RequestWithVerifyUser } from "../middlewares/verifyEmailMiddleware.ts";
+import { uploadToCloudinary } from "../utils/cloudinary.ts";
 
 export interface RequestWithUser extends Request {
     user: {
@@ -233,9 +234,21 @@ export class AuthController {
 
     updateProfile = asyncHandler(async (req: Request, res: Response) => {
         const { id: userId } = (req as RequestWithUser).user;
-        const data = updateProfileSchema.parse(req.body);
 
-        const updatedUser = await this.authService.updateProfile(userId, data);
+        let avatarUrl: string | undefined;
+        if (req.file) {
+            avatarUrl = await uploadToCloudinary(req.file.buffer);
+        }
+
+        const bodyData = req.body || {};
+        const data = updateProfileSchema.parse(bodyData);
+
+        const updateData = {
+            ...data,
+            ...(avatarUrl && { avatar: avatarUrl })
+        };
+
+        const updatedUser = await this.authService.updateProfile(userId, updateData);
 
         res.status(200).json({
             status: "success",

@@ -418,7 +418,7 @@ export class AuthService {
         });
     }
 
-    async updateProfile(userId: string, data: UpdateProfileSchema): Promise<AuthUserResponse> {
+    async updateProfile(userId: string, data: UpdateProfileSchema & { avatar?: string }): Promise<AuthUserResponse> {
         const user = await this.authRepository.findById(userId);
 
         if (!user) {
@@ -427,24 +427,20 @@ export class AuthService {
 
         const updateData: Prisma.UserUpdateInput = {};
 
-        if (data.userName !== undefined) {
-            if (user.userName !== data.userName) {
-                const existingUser = await this.authRepository.findByUserName(data.userName);
-                if (existingUser && existingUser.id !== userId) {
-                    throw new ConflictError("User name already exists");
-                }
+        if (data.userName && data.userName !== user.userName) {
+            const existingUser = await this.authRepository.findByUserName(data.userName);
+            if (existingUser && existingUser.id !== userId) {
+                throw new ConflictError("User name already exists");
             }
             updateData.userName = data.userName;
         }
 
-        if (data.email !== undefined) {
-            const existingUser = await this.authRepository.findByEmail(data.email.toLowerCase());
-            if (existingUser && existingUser.id !== userId) {
-                throw new ConflictError("Email already exists");
-            }
-            updateData.email = data.email.toLowerCase();
-            updateData.isVerified = false;
-        }
+        if (data.name) updateData.name = data.name;
+        if (data.companyName) updateData.companyName = data.companyName;
+        if (data.industry) updateData.industry = data.industry;
+        if (data.employeeCount) updateData.employeeCount = data.employeeCount;
+        if (data.specialty) updateData.specialty = data.specialty;
+        if (data.avatar) updateData.avatar = data.avatar;
 
         if (Object.keys(updateData).length === 0) {
             throw new BadRequestError("No valid fields provided for update");
@@ -453,7 +449,7 @@ export class AuthService {
         return await this.authRepository.updateUserProfile(userId, updateData);
     }
 
-    
+
     async completeOnboarding(userId: string, data: OnboardingSchema): Promise<AuthUserResponse> {
         const user = await this.authRepository.findById(userId);
 

@@ -8,6 +8,7 @@ import { SendGridService } from "../lib/sendGrid.ts";
 import { verifyEmailAuth } from "../middlewares/verifyEmailMiddleware.ts";
 
 import { AuthMiddleware } from "../middlewares/authMiddleware.ts";
+import { upload } from "../middlewares/uploadMiddleware.ts";
 
 const authRouter = express.Router();
 
@@ -32,7 +33,7 @@ authRouter.post('/google', controller.googleLogin);
 // Protected routes
 authRouter.get('/me', authMiddleware.authMiddleware, controller.getMe);
 authRouter.patch('/change-password', authMiddleware.authMiddleware, controller.changePassword);
-authRouter.patch('/update-profile', authMiddleware.authMiddleware, controller.updateProfile);
+authRouter.patch('/update-profile', authMiddleware.authMiddleware, upload.single('avatar'), controller.updateProfile);
 authRouter.post('/onboarding', authMiddleware.authMiddleware, controller.completeOnboarding);
 
 

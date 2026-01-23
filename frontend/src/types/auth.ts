@@ -11,6 +11,10 @@ export interface User {
     hasCompletedOnboarding: boolean;
     createdAt: string;
     updatedAt: string;
+    companyName?: string;
+    industry?: string;
+    employeeCount?: string;
+    specialty?: string;
 }
 
 
@@ -31,6 +35,30 @@ export interface VerifyEmailInput {
 
 export interface GoogleLoginInput {
     idToken: string;
+}
+
+export interface ChangePasswordInput {
+    currentPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+}
+
+export interface UpdateProfileInput {
+    name?: string;
+    userName?: string;
+    companyName?: string;
+    industry?: string;
+    employeeCount?: string;
+    specialty?: string;
+    avatar?: File;
+}
+
+export interface CompleteOnboardingInput {
+    name: string;
+    companyName: string;
+    industry: string;
+    employeeCount: string;
+    specialty?: string;
 }
 
 export interface ResendVerifyEmailInput { }

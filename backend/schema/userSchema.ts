@@ -32,9 +32,11 @@ export const changePasswordSchema = z.object({
 
 export const updateProfileSchema = z.object({
     userName: z.string().min(5, "User name must be at least 5 characters long").optional(),
-    email: z.string().email("Must be valid email").optional(),
-}).refine((data) => Object.keys(data).length > 0, {
-    message: "At least one field must be provided for update",
+    name: z.string().min(3, "Name must be at least 3 characters").optional(),
+    companyName: z.string().min(3, "Company name must be at least 3 characters").optional(),
+    industry: z.string().optional(),
+    employeeCount: z.string().optional(),
+    specialty: z.string().optional(),
 });
 
 export const onboardingSchema = z.object({

@@ -15,10 +15,8 @@ export const TasksPage = () => {
         stats,
         isLoading,
         filter,
-        search,
         setPage,
         setFilter,
-        setSearch,
     } = useTasks();
 
     const { handleToggle } = useToggleTask();
@@ -45,8 +43,6 @@ export const TasksPage = () => {
                 <TasksHeader
                     stats={stats}
                     onAddTask={() => setIsCreateModalOpen(true)}
-                    searchValue={search}
-                    onSearchChange={setSearch}
                     filter={filter}
                     onFilterChange={setFilter}
                 />
@@ -58,7 +54,7 @@ export const TasksPage = () => {
                         tasks={tasks}
                         isLoading={isLoading}
                         onToggle={handleToggleTask}
-                        onEdit={() => {}}
+                        onEdit={() => { }}
                         onDelete={handleDeleteTask}
                     />
                 </div>

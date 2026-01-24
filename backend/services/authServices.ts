@@ -4,7 +4,9 @@ import {
     type ChangePasswordSchema,
     type UpdateProfileSchema,
     type OnboardingSchema,
+    type ResetPasswordSchema,
 } from "../schema/userSchema";
+
 import type { AuthRepository } from "../repositories/authRepository";
 import type { User } from "../generated/prisma/client";
 import {
@@ -20,7 +22,7 @@ import { JwtService } from "../lib/jwt";
 import { AuthUserResponse } from "../types/authTypes";
 import crypto from 'crypto';
 import { SendGridService } from "../lib/sendGrid";
-import { verificationEmailTemplate } from "../template/email/verificationEmail";
+import { passwordResetEmailTemplate, verificationEmailTemplate } from "../template/email/verificationEmail";
 
 
 export class AuthService {
@@ -471,6 +473,62 @@ export class AuthService {
             employeeCount: data.employeeCount,
             specialty: data.specialty || null,
         });
+    }
+
+    async forgotPassword(email: string): Promise<void> {
+        const user = await this.authRepository.findByEmail(email);
+
+        if (!user) {
+            throw new NotFoundError("User with this email not found");
+        }
+
+        if (!user.isVerified) {
+            throw new UnauthorizedError("Please verify your email before resetting password");
+        }
+
+        const userName: string = user.userName || user.name || "User";
+
+        const plainToken = crypto.randomBytes(32).toString("base64url");
+        const hashedToken = this.hashToken(plainToken);
+
+        const expiryTime = new Date(Date.now() + 15 * 60 * 1000);
+        await this.authRepository.createForgotPassword(user.id, hashedToken, expiryTime);
+
+        const msg = passwordResetEmailTemplate(userName, plainToken);
+        await this.sendGridService.sendPasswordResetEmail(user.email, userName, msg);
+    }
+
+    async resetPassword(data: ResetPasswordSchema): Promise<void> {
+        const hashedToken = this.hashToken(data.token);
+
+        const resetRecord = await this.authRepository.findResetPasswordToken(hashedToken);
+
+        if (!resetRecord) {
+            throw new UnauthorizedError("Invalid reset token");
+        }
+
+        if (new Date() > resetRecord.expiresAt) {
+            throw new UnauthorizedError("Password reset token has expired. Please request a new one.");
+        }
+
+        if (resetRecord.usedAt !== null) {
+            throw new UnauthorizedError("This reset link has already been used. Please request a new password reset.");
+        }
+
+        const user = await this.authRepository.findById(resetRecord.userId);
+        if (!user) {
+            throw new NotFoundError("User");
+        }
+
+        if (!user.isActive) {
+            throw new UnauthorizedError("User account is deactivated");
+        }
+
+        const hashedPassword = await bcryptjs.hash(data.newPassword, this.SALT_ROUNDS);
+        await this.authRepository.updatePassword(resetRecord.userId, hashedPassword);
+
+        await this.authRepository.markPasswordResetTokenAsUsed(hashedToken);
+        await this.authRepository.revokeRefreshTokensByUserId(resetRecord.userId);
     }
 }
 

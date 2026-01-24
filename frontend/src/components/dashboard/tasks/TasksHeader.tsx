@@ -1,6 +1,5 @@
-import { Plus, Search } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 type TaskFilter = "all" | "completed" | "pending";
@@ -12,8 +11,6 @@ type TasksHeaderProps = {
         pending: number;
     };
     onAddTask: () => void;
-    searchValue: string;
-    onSearchChange: (value: string) => void;
     filter: TaskFilter;
     onFilterChange: (filter: TaskFilter) => void;
 };
@@ -21,8 +18,6 @@ type TasksHeaderProps = {
 export function TasksHeader({
     stats,
     onAddTask,
-    searchValue,
-    onSearchChange,
     filter,
     onFilterChange,
 }: TasksHeaderProps) {
@@ -44,17 +39,6 @@ export function TasksHeader({
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1 relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-                    <Input
-                        type="text"
-                        placeholder="Search tasks..."
-                        value={searchValue}
-                        onChange={(e) => onSearchChange(e.target.value)}
-                        className="pl-10"
-                    />
-                </div>
-
                 <div className="flex gap-2">
                     <Button
                         variant={filter === "all" ? "default" : "outline"}

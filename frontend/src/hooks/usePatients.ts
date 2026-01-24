@@ -9,18 +9,20 @@ export function usePatients() {
 
   const page = parseInt(searchParams.get("page") || "1");
   const limit = parseInt(searchParams.get("limit") || "10");
+  const search = searchParams.get("search") || "";
 
   const { data, isLoading, isError, error } = useGetPatientsQuery({
     page,
     limit,
+    search,
   });
 
-  // Update search params and trigger re-fetch
+
   const setPage = (newPage: number) => {
     setSearchParams({ page: newPage.toString(), limit: limit.toString() });
   };
 
-  // Memoize patients data
+
   const patients = useMemo(() => {
     if (!data?.data?.data) return [];
 

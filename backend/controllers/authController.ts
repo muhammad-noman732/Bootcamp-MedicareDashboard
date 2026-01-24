@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { asyncHandler } from "../utils/asyncHandler.ts";
-import { authSchema, loginSchema, changePasswordSchema, updateProfileSchema, onboardingSchema } from "../schema/userSchema.ts";
+import { authSchema, loginSchema, changePasswordSchema, updateProfileSchema, onboardingSchema, forgotPasswordSchema, resetPasswordSchema } from "../schema/userSchema.ts";
 import { verifyEmailSchema, resendOTPSchema } from "../schema/emailVerificationSchema.ts";
 import { AuthService } from "../services/authServices.ts";
 import type { AuthUserResponse } from "../types/authTypes.ts";
@@ -111,13 +111,21 @@ export class AuthController {
             await this.authService.logoutUser(refreshToken);
         }
 
-        res.clearCookie('refreshToken');
+        const cookieOptions = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict' as const,
+        };
+
+        res.clearCookie('refreshToken', cookieOptions);
+        res.clearCookie('accessToken', cookieOptions);
 
         res.status(200).json({
             status: "success",
             message: "Logged out successfully"
         });
     });
+
 
     verifyEmail = asyncHandler(async (req: Request, res: Response) => {
         const { otp } = verifyEmailSchema.parse(req.body);
@@ -178,7 +186,7 @@ export class AuthController {
 
         const ticket = await this.googleClient.verifyIdToken({
             idToken: req.body.idToken,
-            audience: process.env.GOOGLE_CLIENT_ID
+            audience: process.env.GOOGLE_CLIENT_ID,
         });
 
         const payload = ticket.getPayload();
@@ -267,6 +275,24 @@ export class AuthController {
             status: "success",
             message: "Onboarding completed successfully",
             data: updatedUser
+        });
+    });
+
+    forgotPassword = asyncHandler(async (req: Request, res: Response) => {
+        const { email } = forgotPasswordSchema.parse(req.body);
+        await this.authService.forgotPassword(email);
+        res.status(200).json({
+            status: "success",
+            message: "Password reset email sent. Please check your inbox for instructions."
+        });
+    });
+
+    resetPassword = asyncHandler(async (req: Request, res: Response) => {
+        const data = resetPasswordSchema.parse(req.body);
+        await this.authService.resetPassword(data);
+        res.status(200).json({
+            status: "success",
+            message: "Password reset successfully. Please login with your new password."
         });
     });
 }

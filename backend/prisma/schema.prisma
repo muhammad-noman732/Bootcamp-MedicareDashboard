@@ -52,7 +52,7 @@ model User {
   password String?
   userName String
 
-  name          String? // From onboarding form
+  name          String? 
   specialty     String?
   companyName   String?
   industry      String?
@@ -62,18 +62,13 @@ model User {
   bio           String?
   address       String?
   hasCompletedOnboarding Boolean @default(false)
-  // oAuth
   googleId      String?
-  // security and status 
   isVerified    Boolean   @default(false)
   isActive      Boolean   @default(true)
   lastLoginAt   DateTime?
-  // Timestamps
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  deletedAt     DateTime? // Soft delete
-
-  // Relations
+  deletedAt     DateTime? 
   emailVerifications EmailVerification[]
   passwordResets     PasswordReset[]
   refreshTokens      RefreshToken[]
@@ -103,16 +98,16 @@ model EmailVerification {
 }
 
 model PasswordReset {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  userId String @db.ObjectId
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String    @db.ObjectId
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   hashedToken String    @unique
   expiresAt   DateTime
   usedAt      DateTime?
   ipAddress   String?
-
-  createdAt DateTime @default(now())
+  userAgent   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@index([userId, expiresAt])
   @@map("password_resets")
@@ -129,7 +124,7 @@ model Patient {
   notes        String?
   phoneNumber  String
   status       PatientStatus @default(on_treatment)
-  //  
+   
   userId       String        @db.ObjectId
   user         User          @relation(fields: [userId], references: [id])
   createdAt    DateTime      @default(now())

@@ -13,11 +13,11 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar"
 
-// Menu items data with image paths
+
 const menuItems = [
   {
     title: "Dashboard",
-    url: "/dashboard/home",
+    url: "/dashboard",
     image: "/vite.svg",
   },
   {
@@ -64,20 +64,12 @@ const generalItems = [
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar variant="sidebar" {...props}>
-      <SidebarHeader
-        className="border-b border-sidebar-border"
-        style={{
-          width: "244.1758103580214px",
-          height: "92.17882110819937px",
-          borderRightWidth: "0.98px",
-          opacity: 1,
-        }}
-      >
-        <div className="flex h-full items-center gap-3 px-4">
+      <SidebarHeader className="border-b border-sidebar-border lg:h-20 h-16 flex items-center px-4">
+        <div className="flex items-center gap-3">
           <img
             src="/logo.png"
             alt="Medicare logo"
-            className="h-10 w-10 rounded-full object-contain"
+            className="h-8 w-8 lg:h-10 lg:w-10 rounded-full object-contain"
           />
           <span className="text-xl font-semibold text-[#0000AC]">Medicare</span>
         </div>

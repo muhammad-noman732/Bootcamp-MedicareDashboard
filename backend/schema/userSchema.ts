@@ -50,9 +50,24 @@ export const onboardingSchema = z.object({
     specialty: z.string().optional(),
 });
 
+export const forgotPasswordSchema = z.object({
+    email: z.string().email("Must be valid email").toLowerCase().trim(),
+})
+
+export const resetPasswordSchema = z.object({
+    token: z.string().min(1, "Token is required"),
+    newPassword: z.string().min(8, "Password must be at least 8 characters long"),
+    confirmPassword: z.string().min(1, "Confirm password is required")
+}).refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"]
+})
+
 export type LoginSchema = z.infer<typeof loginSchema>
 export type AuthSchema = z.infer<typeof authSchema>
 export type UserSchema = z.infer<typeof userSchema>
 export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>
 export type UpdateProfileSchema = z.infer<typeof updateProfileSchema>
-export type OnboardingSchema = z.infer<typeof onboardingSchema> 
+export type OnboardingSchema = z.infer<typeof onboardingSchema>
+export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>
+export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>

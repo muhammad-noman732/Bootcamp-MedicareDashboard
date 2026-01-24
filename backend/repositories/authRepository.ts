@@ -309,6 +309,47 @@ export class AuthRepository {
             where: { id: userId },
         });
     }
+
+    async createForgotPassword(userId: string, token: string, expiryTime: Date) {
+        return await prisma.passwordReset.create({
+            data: {
+                expiresAt: expiryTime,
+                hashedToken: token,
+                userId: userId
+            }
+        })
+    }
+
+
+    async findResetPasswordToken(token: string) {
+        return await prisma.passwordReset.findUnique({
+            where: {
+                hashedToken: token
+            }
+        })
+    }
+
+    async updatePassword(userId: string, password: string): Promise<User> {
+        return prisma.user.update({
+            where: { id: userId },
+            data: { password }
+        });
+    }
+
+    async markPasswordResetTokenAsUsed(tokenHash: string): Promise<void> {
+        await prisma.passwordReset.update({
+            where: { hashedToken: tokenHash },
+            data: { usedAt: new Date() }
+        });
+    }
+
+    async deleteExpiredPasswordResetTokens(): Promise<Prisma.BatchPayload> {
+        return prisma.passwordReset.deleteMany({
+            where: { expiresAt: { lt: new Date() } }
+        });
+    }
+
+
 }
 
 

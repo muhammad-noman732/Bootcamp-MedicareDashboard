@@ -19,18 +19,20 @@ const services = new AuthService(repository, jwtService, sendGridService);
 const controller = new AuthController(services);
 const authMiddleware = new AuthMiddleware(jwtService);
 
-// Authentication routes
+
 authRouter.post('/signup', controller.signup);
 authRouter.post('/login', controller.login);
 authRouter.post('/refresh', controller.refresh);
 authRouter.post('/logout', controller.logout);
 
-// Email verification routes
+authRouter.post('/forgot-password', controller.forgotPassword);
+authRouter.post('/reset-password', controller.resetPassword);
+
 authRouter.post('/verify-email', verifyEmailAuth, controller.verifyEmail);
 authRouter.post('/resend-verification', verifyEmailAuth, controller.resendVerificationOTP);
 authRouter.post('/google', controller.googleLogin);
 
-// Protected routes
+
 authRouter.get('/me', authMiddleware.authMiddleware, controller.getMe);
 authRouter.patch('/change-password', authMiddleware.authMiddleware, controller.changePassword);
 authRouter.patch('/update-profile', authMiddleware.authMiddleware, upload.single('avatar'), controller.updateProfile);

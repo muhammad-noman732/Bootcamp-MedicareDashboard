@@ -46,6 +46,16 @@ export interface ChangePasswordInput {
     confirmPassword: string;
 }
 
+export interface ForgotPasswordInput {
+    email: string;
+}
+
+export interface ResetPasswordInput {
+    token: string;
+    newPassword: string;
+    confirmPassword: string;
+}
+
 export interface UpdateProfileInput {
     name?: string;
     userName?: string;
@@ -85,3 +95,5 @@ export type SignUpResponse = ApiResponse<SignUpResponseData>;
 export type VerifyEmailResponse = ApiResponse<AuthResponseData>;
 export type GoogleLoginResponse = ApiResponse<AuthResponseData>;
 export type ResendVerifyEmailResponse = ApiResponse<{ message: string }>;
+export type ForgotPasswordResponse = ApiResponse<{ message: string }>;
+export type ResetPasswordResponse = ApiResponse<{ message: string }>;

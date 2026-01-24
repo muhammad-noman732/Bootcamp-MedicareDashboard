@@ -8,6 +8,8 @@ import SchedulePage from "./pages/dashboard/schedule/SchedulePage";
 import SignupPage from "./pages/auth/signup/SignupPage";
 import VerifyEmailPage from "./pages/auth/verifyEmail/VerifyEmailPage";
 import LoginPage from "./pages/auth/login/LoginPage";
+import ForgotPasswordPage from "./pages/auth/forgotPassword/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/auth/resetPassword/ResetPasswordPage";
 import OnBoardingPage from "./pages/onBoarding/onBoarding";
 import { ProtectedRoute } from "./components/auth/guards/ProtectedRoute";
 import { PublicRoute } from "./components/auth/guards/PublicRoute";
@@ -34,6 +36,14 @@ const router = createBrowserRouter([
       {
         path: "/auth/login",
         element: <LoginPage />,
+      },
+      {
+        path: "/auth/forgot-password",
+        element: <ForgotPasswordPage />,
+      },
+      {
+        path: "/auth/reset-password",
+        element: <ResetPasswordPage />,
       },
     ],
   },

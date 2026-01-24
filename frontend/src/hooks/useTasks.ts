@@ -38,17 +38,6 @@ export function useTasks() {
     setSearchParams(params);
   };
 
-  const setSearch = (searchValue: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (searchValue) {
-      params.set("search", searchValue);
-    } else {
-      params.delete("search");
-    }
-    params.set("page", "1");
-    setSearchParams(params);
-  };
-
   const tasks: Task[] = useMemo(() => {
     if (!data?.data?.data) return [];
     return data.data.data;
@@ -79,7 +68,6 @@ export function useTasks() {
     search: search || "",
     setPage,
     setFilter,
-    setSearch,
   };
 }
 

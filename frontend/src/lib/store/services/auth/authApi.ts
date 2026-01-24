@@ -12,6 +12,10 @@ import type {
     User,
     ChangePasswordInput,
     CompleteOnboardingInput,
+    ForgotPasswordInput,
+    ForgotPasswordResponse,
+    ResetPasswordInput,
+    ResetPasswordResponse,
 } from "@/types/auth";
 import { api } from "../api";
 import type { ApiResponse } from "@/types/api";
@@ -99,6 +103,22 @@ export const authApi = api.injectEndpoints({
                 body: data,
             }),
         }),
+
+        forgotPassword: builder.mutation<ForgotPasswordResponse, ForgotPasswordInput>({
+            query: (data) => ({
+                url: "/auth/forgot-password",
+                method: "POST",
+                body: data,
+            }),
+        }),
+
+        resetPassword: builder.mutation<ResetPasswordResponse, ResetPasswordInput>({
+            query: (data) => ({
+                url: "/auth/reset-password",
+                method: "POST",
+                body: data,
+            }),
+        }),
     }),
 });
 
@@ -112,5 +132,7 @@ export const {
     useResendVerifyEmailMutation,
     useCompleteOnboardingMutation,
     useUpdateProfileMutation,
-    useChangePasswordMutation
+    useChangePasswordMutation,
+    useForgotPasswordMutation,
+    useResetPasswordMutation,
 } = authApi;

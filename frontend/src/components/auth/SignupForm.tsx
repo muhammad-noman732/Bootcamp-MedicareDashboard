@@ -2,6 +2,9 @@ import { Button } from "@/components/ui/button"
 import { FormField } from "./FormField"
 import { Loader2 } from "lucide-react"
 import { useSignup } from "@/hooks/useSignup"
+import { Link } from "react-router-dom"
+import GoogleSignupButton from "./GoogleSignupButton"
+
 
 export const SignupForm = () => {
   const { form, isLoading, onSubmit } = useSignup()
@@ -9,62 +12,45 @@ export const SignupForm = () => {
 
   return (
     <div className="w-full max-w-[480px] mx-auto flex flex-col font-['Mukta']">
-      <div className="space-y-1 mb-6">
-        <h1 className="text-foreground font-normal text-[32px] sm:text-[38px] leading-[100%] tracking-[0.0025em]">
-          Create your account
+      <div className="mb-6">
+        <h1 className="text-[#000000] font-normal text-[32px] leading-tight mb-1">
+          Welcome to Medicare
         </h1>
-        <p className="text-muted-foreground text-sm sm:text-base">
-          Start with your work email and set a password
+        <p className="text-[#828282] text-lg font-normal">
+          Create your account
         </p>
       </div>
 
-      <form onSubmit={onSubmit} className="flex flex-col gap-3">
-        <div className="space-y-1">
-          <FormField
-            id="userName"
-            {...register("userName")}
-            type="text"
-            label="Username"
-            placeholder="johndoe"
-          />
-          {errors.userName && (
-            <p className="text-destructive text-sm">{errors.userName.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-1">
+      <form onSubmit={onSubmit} className="flex flex-col gap-4">
+        <div className="space-y-3">
           <FormField
             id="email"
             {...register("email")}
             type="email"
             label="Email"
-            placeholder="you@company.com"
+            placeholder="Johndoe2004@gmail.com"
           />
           {errors.email && (
             <p className="text-destructive text-sm">{errors.email.message}</p>
           )}
-        </div>
 
-        <div className="space-y-1">
           <FormField
             id="password"
             {...register("password")}
             type="password"
             label="Password"
-            placeholder="••••••••"
+            placeholder="************"
           />
           {errors.password && (
             <p className="text-destructive text-sm">{errors.password.message}</p>
           )}
-        </div>
 
-        <div className="space-y-1">
           <FormField
             id="confirmPassword"
             {...register("confirmPassword")}
             type="password"
-            label="Confirm password"
-            placeholder="••••••••"
+            label="Repeat Password"
+            placeholder="************"
           />
           {errors.confirmPassword && (
             <p className="text-destructive text-sm">
@@ -73,23 +59,38 @@ export const SignupForm = () => {
           )}
         </div>
 
-        <div className="pt-2">
+        <div className="flex items-center justify-between">
+          <label className="flex items-center gap-2 cursor-pointer group">
+            <div className="w-5 h-5 border border-[#E0E0E0] rounded-md bg-[#F2F2F2] flex items-center justify-center group-hover:border-primary transition-colors">
+              <input type="checkbox" className="hidden" />
+            </div>
+            <span className="text-[#828282] text-base">Remember me</span>
+          </label>
+          <Link to="/auth/forgot-password" global-id="forgot-password-link" className="text-primary text-base font-semibold hover:underline">
+            Forgot password
+          </Link>
+        </div>
+
+        <div className="space-y-3 pt-2">
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full h-12 text-lg font-semibold bg-primary hover:bg-primary/90 rounded-xl"
+            className="w-full h-[52px] text-lg font-semibold bg-[#0000AC] hover:bg-[#00008F] text-white rounded-xl shadow-none"
           >
             {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Creating account...
-              </>
+              <Loader2 className="h-5 w-5 animate-spin text-white" />
             ) : (
-              "Create account"
+              "Create an account"
             )}
           </Button>
+
+          <GoogleSignupButton />
         </div>
       </form>
+
+      <div className="mt-6 text-center text-base text-[#828282]">
+        Have an account, <Link to="/auth/login" global-id="login-link" className="text-primary font-semibold hover:underline">Sign in</Link>
+      </div>
     </div>
   )
 }

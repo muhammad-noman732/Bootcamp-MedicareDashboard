@@ -11,9 +11,9 @@ export function PatientsHeader({ total }: PatientsHeaderProps) {
   const navigate = useNavigate()
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-2 border-[#E0E0E0] rounded-4.9">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-2 border-border rounded-4.9">
       <div>
-        <h1 className="text-2xl font-medium text-black">
+        <h1 className="text-2xl font-medium text-dark font-mukta">
           Total Patients <span className="text-muted-foreground font-normal">({total})</span>
         </h1>
       </div>
@@ -51,4 +51,3 @@ export function PatientsHeader({ total }: PatientsHeaderProps) {
     </div>
   )
 }
-

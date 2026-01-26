@@ -53,7 +53,9 @@ export const useCreateTask = ({ onSuccess }: UseCreateTaskProps = {}) => {
 
             if (onSuccess) onSuccess();
         } catch (err) {
-            console.error("Create task failed", err);
+            toast.error("Error", {
+                description: "Failed to create task.",
+            });
         }
     };
 

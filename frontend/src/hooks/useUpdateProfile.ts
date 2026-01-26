@@ -21,7 +21,8 @@ const updateProfileSchema = z.object({
     bio: z.string().max(500, "Bio must be at most 500 characters").optional(),
     address: z.string().optional(),
     avatar: z
-        .any()
+        .instanceof(FileList)
+        .optional()
         .refine((files) => !files || files.length === 0 || files instanceof FileList, "Expected a file")
         .refine(
             (files) => !files || files.length === 0 || files[0].size <= MAX_FILE_SIZE,
@@ -30,8 +31,7 @@ const updateProfileSchema = z.object({
         .refine(
             (files) => !files || files.length === 0 || ACCEPTED_IMAGE_TYPES.includes(files[0].type),
             "Only .jpg, .jpeg, .png and .webp formats are supported."
-        )
-        .optional(),
+        ),
 });
 
 export type UpdateProfileFormValues = z.infer<typeof updateProfileSchema>;
@@ -112,7 +112,9 @@ export const useUpdateProfile = () => {
                 description: "Your profile has been successfully updated.",
             });
         } catch (err) {
-            console.error("Update profile failed", err);
+            toast.error("Error", {
+                description: "Failed to update profile.",
+            });
         }
     };
 

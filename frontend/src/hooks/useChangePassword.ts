@@ -38,7 +38,9 @@ export const useChangePassword = () => {
                 description: "Your password has been successfully updated.",
             });
         } catch (err) {
-            console.error("Change password failed", err);
+            toast.error("Error", {
+                description: "Failed to change password.",
+            });
         }
     };
 

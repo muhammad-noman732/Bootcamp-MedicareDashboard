@@ -46,7 +46,9 @@ export const useSignup = () => {
             });
             navigate("/auth/verify-email");
         } catch (err) {
-            console.error("Signup failed submission", err);
+            toast.error("Error", {
+                description: "Failed to create account.",
+            });
         }
     };
 

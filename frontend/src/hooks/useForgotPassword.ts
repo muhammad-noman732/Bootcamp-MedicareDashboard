@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForgotPasswordMutation } from "@/lib/store/services/auth/authApi";
-import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import type { BackendErrorData } from "@/types";
@@ -15,7 +14,7 @@ type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
 export const useForgotPassword = () => {
     const [forgotPassword, { isLoading, isError, error }] = useForgotPasswordMutation();
-    const navigate = useNavigate();
+
 
     const form = useForm<ForgotPasswordFormValues>({
         resolver: zodResolver(forgotPasswordSchema),
@@ -26,7 +25,7 @@ export const useForgotPassword = () => {
 
     const onSubmit = async (data: ForgotPasswordFormValues) => {
         try {
-            const response = await forgotPassword({
+            await forgotPassword({
                 email: data.email,
             }).unwrap();
 
@@ -37,7 +36,6 @@ export const useForgotPassword = () => {
 
             form.reset();
 
-            // Show helpful message
             setTimeout(() => {
                 toast.info("Didn't receive the email?", {
                     description: "Check your spam folder or try again in a moment.",
@@ -45,7 +43,9 @@ export const useForgotPassword = () => {
                 });
             }, 1000);
         } catch (err) {
-            console.error("Forgot password failed", err);
+            toast.error("Error", {
+                description: "Failed to send reset email.",
+            });
         }
     };
 

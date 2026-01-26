@@ -73,7 +73,9 @@ export const useUpdateTask = ({ taskId, isOpen, onSuccess }: UseUpdateTaskProps)
             });
             onSuccess?.();
         } catch (err) {
-            console.error("Update task failed", err);
+            toast.error("Error", {
+                description: "Failed to update profile.",
+            });
         }
     };
 

@@ -64,7 +64,6 @@ export const SignupForm = () => {
             <div className="w-5 h-5 border border-[#E0E0E0] rounded-md bg-[#F2F2F2] flex items-center justify-center group-hover:border-primary transition-colors">
               <input type="checkbox" className="hidden" />
             </div>
-            <span className="text-[#828282] text-base">Remember me</span>
           </label>
           <Link to="/auth/forgot-password" global-id="forgot-password-link" className="text-primary text-base font-semibold hover:underline">
             Forgot password

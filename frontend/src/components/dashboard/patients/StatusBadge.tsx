@@ -15,11 +15,11 @@ export function StatusBadge({ status }: StatusBadgeProps) {
   const getStatusStyles = () => {
     switch (status) {
       case "recovered":
-        return "bg-[#27AE60] text-white"
+        return "bg-status-green/20 text-status-green"
       case "awaiting_surgery":
-        return "bg-[#2F80ED] text-white"
+        return "bg-status-blue/20 text-status-blue"
       case "on_treatment":
-        return "bg-[#EB5757] text-white"
+        return "bg-status-red/20 text-status-red"
       default:
         return "bg-muted text-muted-foreground"
     }

@@ -37,20 +37,20 @@ export function UpcomingScheduleCard() {
     return (
         <Card className="flex-[0_0_auto] w-full max-w-[384.41px] min-h-[624.66px] rounded-[4.9px] border-0 bg-white p-6 shadow-[0px_1.96px_15.69px_rgba(0,0,0,0.03)] relative overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between h-[30px] px-0 pt-0 mb-10">
-                <CardTitle className="text-[15.69px] font-bold text-black font-outfit">
+                <CardTitle className="text-[15.69px] font-bold text-dark font-mukta">
                     Upcoming schedule
                 </CardTitle>
 
                 <Button
                     variant="ghost"
                     onClick={openModal}
-                    className="flex items-center gap-2 text-[#0000AC] hover:text-[#0000AC] hover:bg-transparent p-0 h-auto"
+                    className="flex items-center gap-2 text-primary hover:text-primary hover:bg-transparent p-0 h-auto font-mukta"
                 >
                     <span className="text-[12.75px] font-semibold">
                         New appointment
                     </span>
-                    <div className="relative flex items-center justify-center w-[24px] h-[24px] rounded border-[0.72px] border-[#E0E0E0]">
-                        <Plus size={10} className="text-[#0000AC]" strokeWidth={2.5} />
+                    <div className="relative flex items-center justify-center w-[24px] h-[24px] rounded border-[0.72px] border-border">
+                        <Plus size={10} className="text-primary" strokeWidth={2.5} />
                     </div>
                 </Button>
             </CardHeader>
@@ -61,7 +61,7 @@ export function UpcomingScheduleCard() {
                         <Loader2 className="h-8 w-8 animate-spin text-primary" />
                     </div>
                 ) : appointments.length === 0 ? (
-                    <div className="text-center py-24 text-sm text-[#828282] bg-[#FBFBFB] rounded-lg border border-dashed border-[#E0E0E0]">
+                    <div className="text-center py-24 text-sm text-gray-3 bg-muted/30 rounded-lg border border-dashed border-border font-mukta">
                         No appointments for today
                     </div>
                 ) : (
@@ -112,12 +112,12 @@ export function UpcomingScheduleCard() {
                                                                     <div className="flex items-center gap-3">
                                                                         <div className={cn(
                                                                             "w-[12px] h-[12px] rounded-full",
-                                                                            isActive ? "bg-[#27AE60]" : "bg-[#2F80ED]"
+                                                                            isActive ? "bg-status-green" : "bg-status-blue"
                                                                         )} />
-                                                                        <span className="text-[14px] font-bold tracking-widest text-black">
+                                                                        <span className="text-[14px] font-bold tracking-widest text-dark font-mukta">
                                                                             {format(startTime, "H : mm")}
                                                                         </span>
-                                                                        <span className="text-[14px] font-bold ml-1 text-black">
+                                                                        <span className="text-[14px] font-bold ml-1 text-dark font-mukta">
                                                                             {app.patient.forename} {app.patient.surname}
                                                                         </span>
                                                                     </div>
@@ -133,19 +133,19 @@ export function UpcomingScheduleCard() {
                                                                 {isExpanded && (
                                                                     <div className="px-3 pb-3 pt-2 border-t border-[#F2F2F2] animate-in slide-in-from-top-1 duration-200">
                                                                         <div className="space-y-4 mb-5 pt-2 px-1">
-                                                                            <div className="flex items-start">
-                                                                                <span className="text-[13px] font-bold text-black min-w-[80px]">Patient</span>
-                                                                                <span className="text-[13px] font-medium text-[#4F4F4F]">{app.patient.forename} {app.patient.surname}</span>
+                                                                            <div className="flex items-start font-mukta">
+                                                                                <span className="text-[13px] font-bold text-dark min-w-[80px]">Patient</span>
+                                                                                <span className="text-[13px] font-medium text-gray-2">{app.patient.forename} {app.patient.surname}</span>
                                                                             </div>
-                                                                            <div className="flex items-start">
-                                                                                <span className="text-[13px] font-bold text-black min-w-[80px]">Time</span>
-                                                                                <span className="text-[13px] font-medium text-[#4F4F4F]">
+                                                                            <div className="flex items-start font-mukta">
+                                                                                <span className="text-[13px] font-bold text-dark min-w-[80px]">Time</span>
+                                                                                <span className="text-[13px] font-medium text-gray-2">
                                                                                     {format(startTime, "H:mm")} - {format(endTime, "H:mm")}
                                                                                 </span>
                                                                             </div>
-                                                                            <div className="flex items-start">
-                                                                                <span className="text-[13px] font-bold text-black min-w-[80px]">Purpose</span>
-                                                                                <span className="text-[13px] font-medium text-[#4F4F4F]">{app.purpose || "General check-up"}</span>
+                                                                            <div className="flex items-start font-mukta">
+                                                                                <span className="text-[13px] font-bold text-dark min-w-[80px]">Purpose</span>
+                                                                                <span className="text-[13px] font-medium text-gray-2">{app.purpose || "General check-up"}</span>
                                                                             </div>
                                                                         </div>
 
@@ -153,7 +153,7 @@ export function UpcomingScheduleCard() {
                                                                             <div className="flex items-center gap-2">
                                                                                 <button
                                                                                     onClick={(e) => { e.stopPropagation(); handleDelete(app.id); }}
-                                                                                    className="flex items-center justify-center w-[36px] h-[36px] rounded-[6px] border border-[#F2F2F2] text-[#EB5757] hover:bg-[#FFF5F5] transition-colors"
+                                                                                    className="flex items-center justify-center w-[36px] h-[36px] rounded-[6px] border border-border text-status-red hover:bg-red-50 transition-colors"
                                                                                     title="Delete Appointment"
                                                                                 >
                                                                                     <Trash2 size={18} />
@@ -163,7 +163,7 @@ export function UpcomingScheduleCard() {
                                                                                         e.stopPropagation();
                                                                                         navigate("/dashboard/patients");
                                                                                     }}
-                                                                                    className="flex items-center justify-center w-[36px] h-[36px] rounded-[6px] border border-[#F2F2F2] text-[#2F80ED] hover:bg-[#F0F5FF] transition-colors"
+                                                                                    className="flex items-center justify-center w-[36px] h-[36px] rounded-[6px] border border-border text-status-blue hover:bg-blue-50 transition-colors"
                                                                                     title="View Patient Profile"
                                                                                 >
                                                                                     <User size={18} />
@@ -173,7 +173,7 @@ export function UpcomingScheduleCard() {
                                                                                         e.stopPropagation();
                                                                                         openUpdateModal(app);
                                                                                     }}
-                                                                                    className="flex items-center justify-center w-[36px] h-[36px] rounded-[6px] border border-[#F2F2F2] text-[#2F80ED] hover:bg-[#F0F5FF] transition-colors"
+                                                                                    className="flex items-center justify-center w-[36px] h-[36px] rounded-[6px] border border-border text-status-blue hover:bg-blue-50 transition-colors"
                                                                                     title="Edit Appointment"
                                                                                 >
                                                                                     <Edit size={18} />
@@ -184,7 +184,7 @@ export function UpcomingScheduleCard() {
                                                                                     e.stopPropagation();
                                                                                     beginAppointment(app);
                                                                                 }}
-                                                                                className="bg-[#0000AC] hover:bg-[#00008C] text-white text-[13px] font-bold px-5 h-[40px] rounded-[6px]"
+                                                                                className="bg-primary hover:bg-primary/90 text-white text-[13px] font-bold px-5 h-[40px] rounded-[6px] font-mukta"
                                                                             >
                                                                                 Begin appointment
                                                                             </Button>
@@ -201,17 +201,17 @@ export function UpcomingScheduleCard() {
                                                         <div className="flex items-center gap-4 ml-1">
                                                             <div className={cn(
                                                                 "w-[10px] h-[10px] rounded-full",
-                                                                isPastApp ? "bg-[#BDBDBD]" : "bg-[#2F80ED]"
+                                                                isPastApp ? "bg-gray-4" : "bg-status-blue"
                                                             )} />
                                                             <span className={cn(
-                                                                "text-[14px] font-bold min-w-[50px] tracking-wide",
-                                                                isPastApp ? "text-[#BDBDBD]" : "text-black"
+                                                                "text-[14px] font-bold min-w-[50px] tracking-wide font-mukta",
+                                                                isPastApp ? "text-gray-4" : "text-dark"
                                                             )}>
                                                                 {format(startTime, "H : mm")}
                                                             </span>
                                                             <span className={cn(
-                                                                "text-[14px] font-medium",
-                                                                isPastApp ? "text-[#BDBDBD] line-through" : "text-[#4F4F4F]"
+                                                                "text-[14px] font-medium font-mukta",
+                                                                isPastApp ? "text-gray-4" : "text-gray-2"
                                                             )}>
                                                                 {app.patient.forename} {app.patient.surname}
                                                             </span>
@@ -228,7 +228,7 @@ export function UpcomingScheduleCard() {
                 )}
             </CardContent>
 
-            <div className="absolute bottom-6 right-6 flex items-center gap-1 text-[13px] font-bold text-[#0000AC] cursor-pointer hover:underline" onClick={() => navigate("/dashboard/schedule")}>
+            <div className="absolute bottom-6 right-6 flex items-center gap-1 text-[13px] font-bold text-primary cursor-pointer hover:underline font-mukta" onClick={() => navigate("/dashboard/schedule")}>
                 <span>View all</span>
                 <ChevronDown size={14} className="-rotate-90" />
             </div>

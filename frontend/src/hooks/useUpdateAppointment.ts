@@ -71,7 +71,9 @@ export const useUpdateAppointment = ({ appointment, onSuccess }: UseUpdateAppoin
 
             if (onSuccess) onSuccess();
         } catch (err) {
-            console.error("Update appointment failed", err);
+            toast.error("Error", {
+                description: "Failed to update profile.",
+            });
         }
     };
 

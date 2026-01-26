@@ -78,7 +78,9 @@ export const useCreateAppointment = ({ onSuccess }: UseCreateAppointmentProps = 
 
             if (onSuccess) onSuccess();
         } catch (err) {
-            console.error("Create appointment failed", err);
+            toast.error("Error", {
+                description: "Failed to schedule appointment.",
+            });
         }
     };
 

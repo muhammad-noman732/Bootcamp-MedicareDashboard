@@ -38,8 +38,7 @@ export function usePatients() {
 
 
   if (isError) {
-
-    console.error("Failed to fetch patients", error);
+    throw error;
   }
 
   return {

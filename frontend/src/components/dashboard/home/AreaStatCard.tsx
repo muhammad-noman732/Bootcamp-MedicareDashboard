@@ -40,7 +40,7 @@ export function AreaStatCard({
   return (
     <Card className="w-full h-[195px] rounded-[4.9px] border-0 bg-white p-4">
       <CardHeader className="flex flex-row flex-nowrap items-start justify-between gap-3 pb-2 px-0 pt-0 w-full">
-        <CardTitle className="text-[21.57px] font-medium leading-[100%] tracking-[0.15%] text-[#1D1D1D]">
+        <CardTitle className="text-[21.57px] font-bold leading-[100%] tracking-[0.15%] text-dark font-mukta">
           {title}
         </CardTitle>
         <MoreHorizontal className="h-5 w-5 text-[#222222] shrink-0 mt-0.5" />
@@ -53,8 +53,8 @@ export function AreaStatCard({
           <div className="flex items-center gap-2">
             <span
               className={cn(
-                "inline-flex h-[22px] w-[22px] mt-6 items-center justify-center rounded-full text-white",
-                deltaType === "positive" ? "bg-[#27AE60]" : "bg-[#EB5757]"
+                "inline-flex h-[22px] w-[22px] mt-6 items-center justify-center rounded-full text-white font-mukta",
+                deltaType === "positive" ? "bg-status-green" : "bg-status-red"
               )}
               aria-hidden
             >
@@ -77,8 +77,8 @@ export function AreaStatCard({
             </span>
             <span
               className={cn(
-                "text-[15.69px] font-bold leading-[100%] mt-6 tracking-[0.25%]",
-                deltaType === "positive" ? "text-[#27AE60]" : "text-[#EB5757]"
+                "text-[15.69px] font-bold leading-[100%] mt-6 tracking-[0.25%] font-mukta",
+                deltaType === "positive" ? "text-status-green" : "text-status-red"
               )}
             >
               {deltaLabel}
@@ -108,19 +108,19 @@ export function AreaStatCard({
                 ))}
               </linearGradient>
             </defs>
-            <CartesianGrid 
-              strokeDasharray="3 3" 
-              stroke="rgba(0, 0, 0, 0.06)" 
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="rgba(0, 0, 0, 0.06)"
               vertical={false}
               horizontal={true}
             />
-            <XAxis 
-              dataKey="month" 
-              hide 
+            <XAxis
+              dataKey="month"
+              hide
               scale="point"
             />
-            <YAxis 
-              hide 
+            <YAxis
+              hide
               domain={[0, (dataMax: number) => Math.max(dataMax * 1.1, 1)]}
               allowDataOverflow={false}
             />

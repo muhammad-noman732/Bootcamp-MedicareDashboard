@@ -57,7 +57,7 @@ export function TasksCard() {
             <CardHeader className="flex flex-row items-center justify-between h-[30px] px-0 pt-0 mb-6">
 
 
-                <CardTitle className="text-base font-bold leading-[100%] tracking-[0.25%] text-black">
+                <CardTitle className="text-base font-bold leading-[100%] tracking-[0.25%] text-dark font-mukta">
                     Tasks
                 </CardTitle>
 
@@ -66,10 +66,10 @@ export function TasksCard() {
                     onClick={openCreateModal}
                     className="flex items-center gap-2 text-primary hover:text-primary hover:bg-transparent p-0 h-auto"
                 >
-                    <span className="text-[12.75px] font-semibold leading-[100%] tracking-[0.4%] text-primary">
+                    <span className="text-[12.75px] font-semibold leading-[100%] tracking-[0.4%] text-primary font-mukta">
                         New Tasks
                     </span>
-                    <div className="relative flex items-center justify-center w-[24px] h-[24px] rounded border-[0.72px] border-[#E0E0E0] ">
+                    <div className="relative flex items-center justify-center w-[24px] h-[24px] rounded border-[0.72px] border-border ">
                         <div className="w-[12px] h-[12px] flex items-center justify-center">
                             <Plus size={10} className="text-primary " strokeWidth={2.5} />
                         </div>
@@ -91,7 +91,7 @@ export function TasksCard() {
                             {tasks.map((task) => (
                                 <div
                                     key={task.id}
-                                    className="flex items-start gap-4 p-4 min-h-[100px] rounded-lg bg-[#FBFBFB] border-[0.98px] border-[#FAFAFA] transition-all hover:border-primary/20"
+                                    className="flex items-start gap-4 p-4 min-h-[100px] rounded-lg bg-muted/30 border-[0.98px] border-border transition-all hover:border-primary/20 font-mukta"
                                 >
                                     <button
                                         onClick={() => onToggleTask(task.id, !task.isCompleted, task.title)}
@@ -99,35 +99,35 @@ export function TasksCard() {
                                         className="flex-shrink-0 mt-1 focus:outline-none"
                                     >
                                         {task.isCompleted ? (
-                                            <div className="flex items-center justify-center w-[31.38002197504261px] h-[31.38002006769375px] rounded-[5.88px] bg-[#2F80ED]">
+                                            <div className="flex items-center justify-center w-[31.38002197504261px] h-[31.38002006769375px] rounded-[5.88px] bg-status-blue">
                                                 <Check size={18} className="text-white" strokeWidth={3} />
                                             </div>
                                         ) : (
-                                            <div className="w-[31.38002197504261px] h-[31.38002006769375px] rounded-[5.88px] border-[0.98px] border-[#E0E0E0] bg-white hover:border-primary transition-colors" />
+                                            <div className="w-[31.38002197504261px] h-[31.38002006769375px] rounded-[5.88px] border-[0.98px] border-border bg-white hover:border-primary transition-colors" />
                                         )}
                                     </button>
                                     <div className="flex-1 min-w-0">
                                         <div className={cn(
-                                            "text-[15.69px] font-bold leading-[100%] tracking-[0.25%] mb-1 transition-all",
-                                            task.isCompleted ? "text-[#828282] line-through" : "text-black"
+                                            "text-[15.69px] font-bold leading-[100%] tracking-[0.25%] mb-1 transition-all font-mukta",
+                                            task.isCompleted ? "text-gray-3 line-through" : "text-dark"
                                         )}>
                                             {task.title}
                                         </div>
                                         <p className={cn(
-                                            "text-sm leading-relaxed truncate",
-                                            task.isCompleted ? "text-[#BDBDBD]" : "text-[#4F4F4F]"
+                                            "text-sm leading-relaxed truncate font-mukta",
+                                            task.isCompleted ? "text-gray-4" : "text-gray-2"
                                         )}>
                                             {task.description || task.title}
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-4 flex-shrink-0 self-center">
-                                        <span className="text-sm text-[#828282] whitespace-nowrap">
+                                        <span className="text-sm text-gray-3 whitespace-nowrap font-mukta">
                                             {formatDate(task.date)}
                                         </span>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
-                                                <button className="relative flex items-center justify-center w-[24px] h-[24px] rounded border-[0.72px] border-[#E0E0E0] bg-white p-0 hover:bg-muted/50 transition-colors">
-                                                    <MoreHorizontal size={18} className="text-[#2F80ED]" />
+                                                <button className="relative flex items-center justify-center w-[24px] h-[24px] rounded border-[0.72px] border-border bg-white p-0 hover:bg-muted/50 transition-colors">
+                                                    <MoreHorizontal size={18} className="text-status-blue" />
                                                 </button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end" className="w-40">
@@ -153,7 +153,7 @@ export function TasksCard() {
                         <div className="flex justify-end mt-2">
                             <button
                                 onClick={viewAllTasks}
-                                className="flex items-center gap-1 text-[13px] font-semibold text-primary hover:underline"
+                                className="flex items-center gap-1 text-[13px] font-semibold text-primary hover:underline font-mukta"
                             >
                                 <span>View all</span>
                                 <span className="text-primary inline-flex">›</span>

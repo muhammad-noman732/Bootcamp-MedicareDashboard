@@ -59,7 +59,9 @@ export const useAddPatient = () => {
       });
       navigate("/dashboard/patients");
     } catch (err) {
-      console.error("Add patient failed", err);
+      toast.error("Error", {
+        description: "Failed to add patient.",
+      });
     }
   };
 

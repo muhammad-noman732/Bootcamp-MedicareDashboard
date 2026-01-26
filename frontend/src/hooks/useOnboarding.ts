@@ -54,7 +54,9 @@ export const useOnboarding = () => {
                 navigate("/dashboard", { replace: true });
             }
         } catch (err) {
-            console.error("Onboarding failed", err);
+            toast.error("Error", {
+                description: "Failed to complete onboarding.",
+            });
         }
     };
 

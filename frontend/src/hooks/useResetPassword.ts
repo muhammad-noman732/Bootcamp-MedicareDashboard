@@ -57,12 +57,13 @@ export const useResetPassword = () => {
 
             form.reset();
 
-            // Redirect to login after 2 seconds
             setTimeout(() => {
                 navigate("/auth/login");
             }, 2000);
         } catch (err) {
-            console.error("Reset password failed", err);
+            toast.error("Error", {
+                description: "Failed to reset password.",
+            });
         }
     };
 

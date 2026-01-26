@@ -36,7 +36,7 @@ export const useVerifyEmail = () => {
 
             navigate("/onboarding");
         } catch (err) {
-            console.error("Verification failed", err);
+            throw err;
         }
     };
 

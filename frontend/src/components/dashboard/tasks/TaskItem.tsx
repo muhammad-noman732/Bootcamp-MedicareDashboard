@@ -34,8 +34,8 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
     return (
         <div
             className={cn(
-                "flex items-start gap-4 p-4 min-h-[100px] rounded-lg bg-[#FBFBFB] border-[0.98px] border-[#FAFAFA]",
-                "hover:bg-[#F5F5F5] transition-colors"
+                "flex items-start gap-4 p-4 min-h-[100px] rounded-lg bg-muted/30 border-[0.98px] border-border font-mukta",
+                "hover:bg-muted/50 transition-colors"
             )}
         >
             <div className="flex-shrink-0 pt-1">
@@ -45,8 +45,8 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
                     className={cn(
                         "flex items-center justify-center w-[31px] h-[31px] rounded-[6px] transition-colors",
                         task.isCompleted
-                            ? "bg-[#2F80ED] hover:bg-[#2F80ED]/90"
-                            : "border-[0.98px] border-[#E0E0E0] bg-white hover:bg-muted"
+                            ? "bg-status-blue hover:bg-status-blue/90"
+                            : "border-[0.98px] border-gray-5 bg-white hover:bg-muted"
                     )}
                     aria-label={task.isCompleted ? "Mark as pending" : "Mark as completed"}
                 >
@@ -62,7 +62,7 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
                         "text-[15.69px] font-bold leading-[100%] tracking-[0.25%] mb-1",
                         task.isCompleted
                             ? "text-muted-foreground line-through"
-                            : "text-black"
+                            : "text-dark"
                     )}
                 >
                     {task.title}

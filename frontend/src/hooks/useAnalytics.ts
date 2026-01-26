@@ -17,7 +17,6 @@ export const useAnalytics = () => {
             toast.error("Analytics Error", {
                 description: "Failed to load latest clinical insights. Please try again."
             });
-            console.error("Analytics fetch error:", error);
         }
     }, [isError, error]);
 

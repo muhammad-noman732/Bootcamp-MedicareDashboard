@@ -6,15 +6,15 @@ export function useSchedulePage() {
     const { calendarEvents, isLoading, dateRangeLabel, currentDate } = useAppointments();
 
     const handleFilter = useCallback(() => {
-        // Filter implementation
+
     }, []);
 
     const handlePrint = useCallback(() => {
-        // Print implementation
+
     }, []);
 
     const handleHelp = useCallback(() => {
-        // Help implementation
+
     }, []);
 
     const openModal = useCallback(() => setIsModalOpen(true), []);

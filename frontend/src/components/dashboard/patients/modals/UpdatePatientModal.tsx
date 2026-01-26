@@ -42,7 +42,7 @@ export function UpdatePatientModal({
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle className="text-xl font-bold text-[#1D1D1D]">
+                    <DialogTitle className="text-xl font-bold text-dark">
                         Update Patient Details
                     </DialogTitle>
                 </DialogHeader>

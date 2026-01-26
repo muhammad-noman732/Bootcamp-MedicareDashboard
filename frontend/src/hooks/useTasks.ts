@@ -44,7 +44,7 @@ export function useTasks() {
   }, [data]);
 
   if (isError) {
-    console.error("Failed to fetch tasks", error);
+    throw error;
   }
 
   return {

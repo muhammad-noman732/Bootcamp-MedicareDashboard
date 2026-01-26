@@ -42,7 +42,9 @@ export const useLogin = () => {
                 navigate("/onboarding");
             }
         } catch (err) {
-            console.error("Login failed", err);
+            toast.error("Error", {
+                description: "Failed to login.",
+            });
         }
     };
 

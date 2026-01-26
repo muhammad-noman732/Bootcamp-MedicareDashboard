@@ -39,14 +39,14 @@ export function RadialStatCard({
   return (
     <Card className="w-full h-[195px] rounded-[4.9px] border-0 bg-white p-4 overflow-hidden">
       <CardHeader className="flex flex-row flex-nowrap items-start justify-between gap-3 pb-2 px-0 pt-0 w-full">
-        <CardTitle className="text-[21.57px] font-medium leading-[100%] tracking-[0.15%] text-[#1D1D1D]">
+        <CardTitle className="text-[21.57px] font-bold leading-[100%] tracking-[0.15%] text-dark font-mukta">
           {title}
         </CardTitle>
-        <MoreHorizontal className="h-5 w-5 text-[#222222] shrink-0 mt-0.5" />
+        <MoreHorizontal className="h-5 w-5 text-gray-dark shrink-0 mt-0.5" />
       </CardHeader>
       <CardContent className="flex h-full items-start justify-between gap-4 pt-2 px-0 relative">
         <div className="flex flex-col gap-3">
-          <div className="text-[37.26px] font-bold leading-[100%] tracking-[0.25%] text-black">
+          <div className="text-[37.26px] font-bold leading-[100%] tracking-[0.25%] text-dark font-mukta">
             {total}
           </div>
         </div>

@@ -7,9 +7,9 @@ export default function DashboardLayout() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="bg-[#F8F8F8]">
+      <SidebarInset className="bg-muted/50">
         <TopBar />
-        <div className="flex flex-1 flex-col bg-[#F8F8F8]">
+        <div className="flex flex-1 flex-col bg-muted/50">
           <Outlet />
         </div>
       </SidebarInset>

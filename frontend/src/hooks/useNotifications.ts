@@ -18,7 +18,6 @@ export const useNotifications = () => {
     const [unreadCount, setUnreadCount] = useState(0);
 
     useEffect(() => {
-
         const fetchNotifications = async () => {
             try {
                 const response = await fetch(`${API_BASE_URL}/notifications`, {
@@ -30,13 +29,14 @@ export const useNotifications = () => {
                     setUnreadCount(data.filter((n) => !n.isRead).length);
                 }
             } catch (error) {
-                console.error("Failed to fetch notifications", error);
+                toast.error("Error", {
+                    description: "Failed to fetch notifications.",
+                });
             }
         };
 
         fetchNotifications();
 
-        // Listen for real-time updates via SSE
         const eventSource = new EventSource(`${API_BASE_URL}/notifications/stream`, {
             withCredentials: true
         });
@@ -47,7 +47,6 @@ export const useNotifications = () => {
             setNotifications(prev => [newNotification, ...prev]);
             setUnreadCount(prev => prev + 1);
 
-            // Show Toast
             const toastType = newNotification.type;
             const title = newNotification.title;
             const description = newNotification.message;
@@ -62,8 +61,7 @@ export const useNotifications = () => {
             else toast.info(title, { description, action });
         };
 
-        eventSource.onerror = (error: Event) => {
-            console.error("SSE Connection error", error);
+        eventSource.onerror = () => {
             eventSource.close();
         };
 
@@ -81,7 +79,9 @@ export const useNotifications = () => {
             setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
             setUnreadCount(prev => Math.max(0, prev - 1));
         } catch (error) {
-            console.error("Failed to mark notification as read", error);
+            toast.error("Error", {
+                description: "Failed to mark notification as read.",
+            });
         }
     };
 
@@ -94,7 +94,9 @@ export const useNotifications = () => {
             setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
             setUnreadCount(0);
         } catch (error) {
-            console.error("Failed to mark all as read", error);
+            toast.error("Error", {
+                description: "Failed to mark all notifications as read.",
+            });
         }
     };
 

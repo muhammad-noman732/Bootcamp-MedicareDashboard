@@ -36,12 +36,6 @@ const menuItems = [
     image: "/patient.svg",
   },
   {
-    title: "Messages",
-    url: "/dashboard/messages",
-    image: "/message.png",
-    badge: 2,
-  },
-  {
     title: "Analytics",
     url: "/dashboard/analytics",
     image: "/analytics.svg",
@@ -71,7 +65,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             alt="Medicare logo"
             className="h-8 w-8 lg:h-10 lg:w-10 rounded-full object-contain"
           />
-          <span className="text-xl font-semibold text-[#0000AC]">Medicare</span>
+          <span className="text-xl font-bold text-primary font-mukta">Medicare</span>
         </div>
       </SidebarHeader>
 
@@ -88,7 +82,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   asChild
                   className="group relative h-11 data-[active=true]:bg-transparent data-[active=true]:text-primary hover:bg-accent"
                 >
-                  <NavLink to={item.url} className="relative">
+                  <NavLink to={item.url} className="relative" end={item.url === '/dashboard'}>
                     {({ isActive }) => (
                       <>
                         {isActive && (
@@ -102,11 +96,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         <span className={`${isActive ? 'font-medium text-primary' : 'text-muted-foreground'}`}>
                           {item.title}
                         </span>
-                        {item.badge && (
-                          <span className="ml-10 bg-destructive text-white text-xs font-medium  rounded-full h-5 w-5 flex items-center justify-center">
-                            {item.badge}
-                          </span>
-                        )}
                       </>
                     )}
                   </NavLink>

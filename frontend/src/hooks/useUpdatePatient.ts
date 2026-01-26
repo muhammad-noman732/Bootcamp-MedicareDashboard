@@ -85,7 +85,9 @@ export const useUpdatePatient = ({ patientId, isOpen, onSuccess }: UseUpdatePati
             });
             onSuccess?.();
         } catch (err) {
-            console.error("Update patient failed", err);
+            toast.error("Error", {
+                description: "Failed to update profile.",
+            });
         }
     };
 

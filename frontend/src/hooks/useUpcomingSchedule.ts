@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetAppointmentsQuery, useDeleteAppointmentMutation } from "@/lib/store/services/appointment/appointmentApi";
-import { isSameDay, isPast, isFuture, addMinutes } from "date-fns";
+import { isSameDay, isFuture, addMinutes } from "date-fns";
 import { toast } from "sonner";
 import type { AppointmentWithPatient } from "@/types/appointment";
 

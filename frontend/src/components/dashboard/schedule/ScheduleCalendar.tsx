@@ -31,59 +31,47 @@ export const ScheduleCalendar = ({ events = [], currentDate = new Date() }: Sche
         const { extendedProps } = eventInfo.event
         const { variant, status, type, location } = extendedProps
 
-        const styles = {
-            red: {
-                bg: 'bg-[#FFE5E5]',
-                border: 'border-l-[4px] border-l-[#EB5757]',
-                text: 'text-[#EB5757]',
-                badge: 'bg-[#EB5757] text-white'
-            },
-            green: {
-                bg: 'bg-[#E8F5E9]',
-                border: 'border-l-[4px] border-l-[#27AE60]',
-                text: 'text-[#27AE60]',
-                badge: 'bg-[#27AE60] text-white'
-            },
-            blue: {
-                bg: 'bg-[#E3F2FD]',
-                border: 'border-l-[4px] border-l-[#2F80ED]',
-                text: 'text-[#2F80ED]',
-                badge: 'bg-[#2F80ED] text-white'
-            },
-            yellow: {
-                bg: 'bg-[#FFF9E6]',
-                border: 'border-l-[4px] border-l-[#F2C94C]',
-                text: 'text-[#F2C94C]',
-                badge: 'bg-[#F2C94C] text-white'
-            }
-        }
+        const palettes = {
+            red: { solid: '#EB5757', bg: 'rgba(235, 87, 87, 0.1)', header: 'rgba(235, 87, 87, 0.2)' },
+            blue: { solid: '#2F80ED', bg: 'rgba(47, 128, 237, 0.1)', header: 'rgba(47, 128, 237, 0.2)' },
+            yellow: { solid: '#E2B93B', bg: 'rgba(226, 185, 59, 0.1)', header: 'rgba(226, 185, 59, 0.2)' }
+        };
 
-        const style = styles[variant as keyof typeof styles] || styles.red
+        const style = palettes[variant as keyof typeof palettes] || palettes.red;
 
         return (
-            <div className={`w-full h-full p-3 rounded-md ${style.border} ${style.bg} flex flex-col gap-1.5 overflow-hidden font-mukta shadow-sm`}>
-                <div className="flex items-center gap-1">
-                    <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${style.badge}`}>{status}</span>
+            <div
+                className="w-full h-full rounded-lg flex flex-col overflow-hidden font-mukta shadow-sm"
+                style={{ backgroundColor: style.bg }}
+            >
+                <div
+                    className="px-2 py-1 flex items-center relative"
+                    style={{ backgroundColor: style.header }}
+                >
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-[65%] rounded-r-full" style={{ backgroundColor: style.solid }}></div>
+                    <span className="ml-2 text-[13px] font-bold" style={{ color: style.solid }}>{status}</span>
                 </div>
 
-                <div className="flex items-center gap-2 mt-0.5">
-                    <User size={14} className={style.text} />
-                    <span className={`truncate font-medium text-sm ${style.text}`}>{eventInfo.event.title}</span>
-                </div>
+                <div className="p-1.5 flex flex-col gap-1">
+                    <div className="flex items-center gap-1.5">
+                        <User size={12} style={{ color: style.solid }} strokeWidth={2.5} />
+                        <span className="truncate font-bold text-xs" style={{ color: style.solid }}>{eventInfo.event.title}</span>
+                    </div>
 
-                <div className="flex items-center gap-2">
-                    <FileText size={14} className={style.text} />
-                    <span className={`truncate text-sm ${style.text}`}>{type}</span>
-                </div>
+                    <div className="flex items-center gap-1.5">
+                        <FileText size={12} style={{ color: style.solid }} strokeWidth={2.5} />
+                        <span className="truncate text-xs font-semibold" style={{ color: style.solid }}>{type}</span>
+                    </div>
 
-                <div className="flex items-center gap-2">
-                    <Clock size={14} className={style.text} />
-                    <span className={`text-sm font-medium ${style.text}`}>{eventInfo.timeText}</span>
-                </div>
+                    <div className="flex items-center gap-1.5">
+                        <Clock size={12} style={{ color: style.solid }} strokeWidth={2.5} />
+                        <span className="text-xs font-bold" style={{ color: style.solid }}>{eventInfo.timeText}</span>
+                    </div>
 
-                <div className="flex items-center gap-2">
-                    <MapPin size={14} className={style.text} />
-                    <span className={`truncate text-sm ${style.text}`}>{location}</span>
+                    <div className="flex items-center gap-1.5">
+                        <MapPin size={12} style={{ color: style.solid }} strokeWidth={2.5} />
+                        <span className="truncate text-xs font-semibold" style={{ color: style.solid }}>{location}</span>
+                    </div>
                 </div>
             </div>
         )
@@ -94,7 +82,7 @@ export const ScheduleCalendar = ({ events = [], currentDate = new Date() }: Sche
         const dayNumber = arg.date.getDate()
 
         return (
-            <div className="fc-col-header-cell-cushion font-semibold">
+            <div className="h-[90px] flex items-center justify-center font-bold">
                 {dayName}({dayNumber})
             </div>
         )
@@ -102,16 +90,18 @@ export const ScheduleCalendar = ({ events = [], currentDate = new Date() }: Sche
 
     return (
         <div className='schedule-calendar h-full w-full 
-            [&_.fc-event]:bg-transparent [&_.fc-event]:border-none [&_.fc-event]:shadow-none
-            [&_.fc-v-event]:bg-transparent [&_.fc-v-event]:border-none [&_.fc-v-event]:shadow-none
-            [&_.fc-timegrid-event]:rounded-md
+            [&_.fc-event]:!bg-transparent [&_.fc-event]:!border-none [&_.fc-event]:!shadow-none
+            [&_.fc-v-event]:!bg-transparent [&_.fc-v-event]:!border-none [&_.fc-v-event]:!shadow-none
+            [&_.fc-timegrid-event-harness]:!m-0
+            [&_.fc-timegrid-event]:!m-0
             [&_.fc-event-time]:hidden [&_.fc-event-title]:hidden
-            [&_.fc-col-header-cell]:bg-white [&_.fc-col-header-cell]:border-b-2 [&_.fc-col-header-cell]:border-gray-200
-            [&_.fc-scrollgrid]:border [&_.fc-scrollgrid]:border-gray-200
-            [&_.fc-timegrid-slot]:border-gray-100
-            [&_.fc-timegrid-axis]:border-gray-200
-            [&_.fc-timegrid-divider]:border-gray-200
-            [&_.fc-col-header]:border-gray-200
+            [&_.fc-col-header-cell]:bg-white [&_.fc-col-header-cell]:border-gray-100 [&_.fc-col-header-cell]:border-x
+            [&_.fc-scrollgrid]:!border-none
+            [&_.fc-timegrid-slot]:border-gray-50
+            [&_.fc-timegrid-divider]:hidden
+            [&_.fc-col-header]:!border-none
+            [&_.fc-col-header-cell]:!min-w-[350px] 
+            [&_.fc-timegrid-col]:!min-w-[350px]
         '>
             <FullCalendar
                 plugins={[timeGridPlugin, interactionPlugin]}
@@ -134,10 +124,9 @@ export const ScheduleCalendar = ({ events = [], currentDate = new Date() }: Sche
                 eventMinHeight={140}
                 slotDuration="01:00:00"
                 slotLabelInterval="01:00"
-                height="100%"
-                contentHeight="auto"
-                dayHeaderClassNames="py-3 text-[#1D1D1D] font-bold text-base font-mukta"
-                slotLabelClassNames="text-sm text-gray-600 font-medium pr-3 font-mukta"
+                contentHeight="2200px"
+                dayHeaderClassNames="py-0 text-dark font-bold text-base font-mukta"
+                slotLabelClassNames="text-sm text-gray-3 font-medium pr-3 font-mukta"
             />
         </div>
     )

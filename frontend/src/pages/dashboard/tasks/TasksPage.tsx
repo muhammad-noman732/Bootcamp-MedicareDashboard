@@ -1,12 +1,8 @@
-import { useState } from "react";
 import { TasksHeader } from "@/components/dashboard/tasks/TasksHeader";
 import { TasksList } from "@/components/dashboard/tasks/TasksList";
 import { TasksPagination } from "@/components/dashboard/tasks/TasksPagination";
 import { CreateTaskModal } from "@/components/dashboard/tasks/modals/CreateTaskModal";
-import { useTasks } from "@/hooks/useTasks";
-import { useToggleTask } from "@/hooks/useToggleTask";
-import { useDeleteTask } from "@/hooks/useDeleteTask";
-import type { Task } from "@/types/task";
+import { useTasksPage } from "@/hooks/useTasksPage";
 
 export const TasksPage = () => {
     const {
@@ -17,23 +13,12 @@ export const TasksPage = () => {
         filter,
         setPage,
         setFilter,
-    } = useTasks();
-
-    const { handleToggle } = useToggleTask();
-    const { handleDelete } = useDeleteTask();
-
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
-    const handleToggleTask = (id: string, isCompleted: boolean) => {
-        const task = tasks.find((t) => t.id === id);
-        if (task) {
-            handleToggle(id, isCompleted, task.title);
-        }
-    };
-
-    const handleDeleteTask = (id: string, title: string) => {
-        handleDelete(id, title);
-    };
+        handleToggleTask,
+        handleDeleteTask,
+        isCreateModalOpen,
+        openCreateModal,
+        closeCreateModal,
+    } = useTasksPage();
 
     return (
         <div className="w-full max-w-[1169px] mx-auto max-h-[83vh] flex flex-col px-[26px] pt-[15px]">
@@ -42,7 +27,7 @@ export const TasksPage = () => {
             <div className="mb-4">
                 <TasksHeader
                     stats={stats}
-                    onAddTask={() => setIsCreateModalOpen(true)}
+                    onAddTask={openCreateModal}
                     filter={filter}
                     onFilterChange={setFilter}
                 />
@@ -72,7 +57,7 @@ export const TasksPage = () => {
 
             <CreateTaskModal
                 isOpen={isCreateModalOpen}
-                onClose={() => setIsCreateModalOpen(false)}
+                onClose={closeCreateModal}
             />
         </div>
     );

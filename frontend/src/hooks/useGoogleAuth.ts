@@ -7,15 +7,12 @@ export const useGoogleAuth = () => {
     const navigate = useNavigate();
 
     const handleGoogleLoginSuccess = async (response: CredentialResponse) => {
-        console.log(response);
-
         if (!response.credential) {
             toast.error("Google login failed. Please try again.");
             return;
         }
         try {
             const result = await googleLogin({ idToken: response.credential }).unwrap();
-            console.log(result);
             if (result.status === "success") {
                 toast.success(result.message);
 

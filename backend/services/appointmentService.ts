@@ -2,37 +2,39 @@ import type { CreateAppointmentSchema, UpdateAppointmentSchema } from "../schema
 import { AppointmentRepository } from "../repositories/appointmentRepository";
 import { BadRequestError, NotFoundError, UnauthorizedError, InternalServerError } from "../utils/appError";
 import type { AppointmentWithPatient, AppointmentWithDetails } from "../types/appointmentTypes";
+import { NotificationService } from "./notificationService";
 
 export class AppointmentService {
 
     constructor(
-        private appointmentRepository: AppointmentRepository
+        private appointmentRepository: AppointmentRepository,
+        private notificationService: NotificationService
     ) { }
+
 
     async createAppointment(
         userId: string,
         data: CreateAppointmentSchema
     ): Promise<AppointmentWithDetails> {
 
-        const appointmentDate = new Date(data.date);
-
-        if (isNaN(appointmentDate.getTime())) {
-            throw new BadRequestError("Invalid date format");
-        }
-
+        const [year, month, day] = (data.date as string).split("-").map(Number);
         const [hours, minutes] = data.time.split(":").map(Number);
 
-        if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
-            throw new BadRequestError("Invalid time format");
+        if (isNaN(year) || isNaN(month) || isNaN(day)) {
+            throw new BadRequestError("Invalid date format. Expected YYYY-MM-DD");
         }
 
-        const startTime = new Date(appointmentDate);
-        startTime.setHours(hours, minutes, 0, 0);
+        if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+            throw new BadRequestError("Invalid time format. Expected HH:mm");
+        }
+
+        const startTime = new Date(year, month - 1, day, hours, minutes, 0, 0);
 
         const now = new Date();
         if (startTime < now) {
-            throw new BadRequestError("Cannot create appointments in the past");
+            throw new BadRequestError(`Cannot create appointments in the past. Selection: ${startTime.toLocaleString()}, Current: ${now.toLocaleString()}`);
         }
+
 
         const endTime = new Date(startTime);
         endTime.setMinutes(endTime.getMinutes() + data.duration);
@@ -67,22 +69,33 @@ export class AppointmentService {
             notifications: data.notifications,
         });
 
-        return appointment;
+        // Trigger Notification
+        await this.notificationService.createNotification(
+            userId,
+            "New Appointment Scheduled",
+            `Appointment scheduled for ${startTime.toLocaleString()} at ${data.clinic}`,
+            "success",
+            `/dashboard/schedule`
+        );
+
+        return this.formatAppointment(appointment);
     }
 
-    async getUserAppointments(userId: string): Promise<AppointmentWithPatient[]> {
-        return await this.appointmentRepository.findByUserId(userId);
+    async getUserAppointments(userId: string): Promise<(AppointmentWithPatient & { formattedDate: string; formattedTime: string })[]> {
+        const apps = await this.appointmentRepository.findByUserId(userId);
+        return apps.map(app => this.formatAppointment(app));
     }
 
-    async getAppointmentById(id: string): Promise<AppointmentWithDetails | null> {
-        return await this.appointmentRepository.findById(id);
+    async getAppointmentById(id: string): Promise<AppointmentWithDetails & { formattedDate: string; formattedTime: string } | null> {
+        const app = await this.appointmentRepository.findById(id);
+        return app ? this.formatAppointment(app) : null;
     }
 
     async updateAppointment(
         id: string,
         userId: string,
         data: UpdateAppointmentSchema
-    ): Promise<AppointmentWithDetails> {
+    ): Promise<AppointmentWithDetails & { formattedDate: string; formattedTime: string }> {
         const existingAppointment = await this.appointmentRepository.findById(id);
 
         if (!existingAppointment) {
@@ -93,21 +106,46 @@ export class AppointmentService {
             throw new UnauthorizedError("Unauthorized to update this appointment");
         }
 
-        const updateData: Record<string, unknown> = {};
+        const updateData: Partial<UpdateAppointmentSchema> & { startTime?: Date; endTime?: Date } = {};
+
+        const getLocalDateParts = (d: Date) => ({
+            year: d.getFullYear(),
+            month: d.getMonth(),
+            date: d.getDate(),
+            hours: d.getHours(),
+            minutes: d.getMinutes()
+        });
 
         if (data.date || data.time || data.duration) {
-            const appointmentDate = new Date(data.date || existingAppointment.startTime);
-            const timeString = data.time ||
-                `${existingAppointment.startTime.getHours()}:${existingAppointment.startTime.getMinutes()}`;
+            const currentParts = getLocalDateParts(existingAppointment.startTime);
 
-            const [hours, minutes] = timeString.split(":").map(Number);
+            let year = currentParts.year;
+            let month = currentParts.month;
+            let day = currentParts.date;
+            let hours = currentParts.hours;
+            let minutes = currentParts.minutes;
 
-            const startTime = new Date(appointmentDate);
-            startTime.setHours(hours, minutes, 0, 0);
+            if (data.date && typeof data.date === "string") {
+                const [y, m, dayPart] = data.date.split("-").map(Number);
+                year = y;
+                month = m - 1;
+                day = dayPart;
+            }
 
-            const endTime = new Date(startTime);
+            if (data.time) {
+                const [h, min] = data.time.split(":").map(Number);
+                hours = h;
+                minutes = min;
+            }
+
+            const startTime = new Date(year, month, day, hours, minutes, 0, 0);
             const duration = data.duration || existingAppointment.duration;
-            endTime.setMinutes(endTime.getMinutes() + duration);
+            const endTime = new Date(startTime.getTime() + duration * 60000);
+
+            const now = new Date();
+            if (startTime < now && startTime.getTime() !== existingAppointment.startTime.getTime()) {
+                throw new BadRequestError(`Cannot reschedule appointment to a past time. Selection: ${startTime.toLocaleString()}`);
+            }
 
             updateData.startTime = startTime;
             updateData.endTime = endTime;
@@ -124,13 +162,17 @@ export class AppointmentService {
 
         await this.appointmentRepository.update(id, updateData);
 
-        const updatedAppointment = await this.appointmentRepository.findById(id);
+        const updated = await this.appointmentRepository.findById(id);
+        if (!updated) throw new InternalServerError("Update failed");
 
-        if (!updatedAppointment) {
-            throw new InternalServerError("Failed to retrieve updated appointment");
-        }
+        return this.formatAppointment(updated);
+    }
 
-        return updatedAppointment;
+    private formatAppointment<T extends { startTime: Date }>(app: T) {
+        const d = app.startTime;
+        const formattedDate = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+        const formattedTime = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+        return { ...app, formattedDate, formattedTime };
     }
 
 
@@ -146,6 +188,15 @@ export class AppointmentService {
         }
 
         await this.appointmentRepository.delete(id);
+
+        // Trigger Notification
+        await this.notificationService.createNotification(
+            userId,
+            "Appointment Cancelled",
+            `The appointment on ${existingAppointment.startTime.toLocaleString()} has been removed.`,
+            "warning",
+            `/dashboard/schedule`
+        );
     }
 
     async getAppointmentsByDateRange(

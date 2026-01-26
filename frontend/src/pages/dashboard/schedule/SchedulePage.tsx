@@ -1,24 +1,21 @@
-import { useState } from "react"
 import { ScheduleHeader } from "@/components/dashboard/schedule/ScheduleHeader"
 import { ScheduleCalendar } from "@/components/dashboard/schedule/ScheduleCalendar"
 import { NewAppointmentModal } from "@/components/dashboard/schedule/NewAppointmentModal"
-import { useAppointments } from "@/hooks/useAppointments"
+import { useSchedulePage } from "@/hooks/useSchedulePage"
 
 export const SchedulePage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const { calendarEvents, isLoading, dateRangeLabel, currentDate } = useAppointments()
-
-  const handleFilter = () => {
-    console.log("Filter clicked")
-  }
-
-  const handlePrint = () => {
-    console.log("Print clicked")
-  }
-
-  const handleHelp = () => {
-    console.log("Help clicked")
-  }
+  const {
+    isModalOpen,
+    openModal,
+    closeModal,
+    calendarEvents,
+    isLoading,
+    dateRangeLabel,
+    currentDate,
+    handleFilter,
+    handlePrint,
+    handleHelp,
+  } = useSchedulePage()
 
   return (
     <div className="w-full max-w-[1169px] mx-auto flex flex-col px-[26px] pt-[15px] overflow-y-auto">
@@ -27,7 +24,7 @@ export const SchedulePage = () => {
       <div className="flex-shrink-0 mb-6">
         <ScheduleHeader
           dateRange={dateRangeLabel}
-          onAdd={() => setIsModalOpen(true)}
+          onAdd={openModal}
           onFilter={handleFilter}
           onPrint={handlePrint}
           onHelp={handleHelp}
@@ -49,7 +46,7 @@ export const SchedulePage = () => {
         </div>
       </div>
 
-      <NewAppointmentModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <NewAppointmentModal open={isModalOpen} onClose={closeModal} />
     </div>
   )
 }

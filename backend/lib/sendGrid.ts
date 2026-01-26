@@ -6,7 +6,6 @@ export class SendGridService {
     private readonly fromName: string;
 
     constructor() {
-        // Check if API key exists
         if (!process.env.SENDGRID_API_KEY) {
             throw new NotFoundError("SENDGRID_API_KEY is required in environment variables");
         }
@@ -32,7 +31,6 @@ export class SendGridService {
                 html: htmlContent,
             });
         } catch (error) {
-            console.error('SendGrid Error:', error);
             throw new InternalServerError(
                 `Failed to send verification email: ${error instanceof Error ? error.message : 'Unknown error'}`
             );
@@ -51,7 +49,6 @@ export class SendGridService {
                 html: htmlContent,
             });
         } catch (error) {
-            console.error('SendGrid Error:', error);
             throw new InternalServerError(
                 `Failed to send password reset email: ${error instanceof Error ? error.message : 'Unknown error'}`
             );

@@ -33,7 +33,7 @@ export class PatientServices {
         return await this.patientRepository.createPatient(createData);
     }
 
-    // getPatient by id
+
     async getPatientById(patientId: string): Promise<Patient> {
         const patinetData = await this.patientRepository.findPatientById(patientId);
 
@@ -81,16 +81,11 @@ export class PatientServices {
 
         const skip = (page - 1) * limit;
 
-        // where condition .
-        // where userId (for doctor referral and deletedAt null for not deleted)
         const where: Prisma.PatientWhereInput = {
             userId: userId.trim(),
             deletedAt: null,
         };
 
-        // for search  condition
-        // search in forename, surname, diagnosis, phoneNumber, recordNumber
-        // should contain any of these 
         if (search) {
             where.OR = [
                 { forename: { contains: search, mode: "insensitive" } },
@@ -132,7 +127,7 @@ export class PatientServices {
         };
     }
 
-    //   Private method of class
+
     private generateRecordNumber(): string {
         const random = crypto.randomBytes(4).toString("hex").toUpperCase();
         return `REC-${random}`;

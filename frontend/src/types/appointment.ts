@@ -28,6 +28,8 @@ export interface Appointment {
     type: AppointmentType;
     isOnline: boolean;
     notifications: boolean;
+    formattedDate: string;
+    formattedTime: string;
     createdAt: string;
     updatedAt: string;
 }

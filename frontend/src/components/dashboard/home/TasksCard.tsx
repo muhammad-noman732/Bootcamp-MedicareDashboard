@@ -1,5 +1,4 @@
-import { Check, MoreHorizontal, Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Check, MoreHorizontal, Plus, Edit, Trash2 } from "lucide-react";
 import {
     Card,
     CardContent,
@@ -7,9 +6,18 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useGetTasksQuery } from "@/lib/store/services/task/taskApi";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Loader2 } from "lucide-react";
-import type { Task } from "@/types/task";
+import { CreateTaskModal } from "../tasks/modals/CreateTaskModal";
+import { UpdateTaskModal } from "../tasks/modals/UpdateTaskModal";
+import { DeleteTaskModal } from "../tasks/modals/DeleteTaskModal";
+import { cn } from "@/lib/utils";
+import { useTasksCard } from "@/hooks/useTasksCard";
 
 const formatDate = (dateString: string | null): string => {
     if (!dateString) return "No date";
@@ -26,24 +34,36 @@ const formatDate = (dateString: string | null): string => {
 };
 
 export function TasksCard() {
-    const navigate = useNavigate();
-    const { data, isLoading } = useGetTasksQuery({
-        page: 1,
-        limit: 4,
-    });
-
-    const tasks: Task[] = data?.data?.data || [];
+    const {
+        tasks,
+        isLoading,
+        isToggling,
+        onToggleTask,
+        isCreateModalOpen,
+        openCreateModal,
+        closeCreateModal,
+        selectedTask,
+        isUpdateModalOpen,
+        openUpdateModal,
+        closeUpdateModal,
+        isDeleteModalOpen,
+        openDeleteModal,
+        closeDeleteModal,
+        viewAllTasks
+    } = useTasksCard();
 
     return (
-        <Card className="w-full max-w-[709px] rounded-[4.9px] border-0 bg-white p-6">
-            <CardHeader className="flex flex-row items-center justify-between h-[30px] px-0 pt-0">
+        <Card className="flex-1 max-w-[570px] min-h-[611.91px] rounded-[4.9px] border-0 bg-white p-6 shadow-[0px_1.96px_15.69px_rgba(0,0,0,0.03)]">
+            <CardHeader className="flex flex-row items-center justify-between h-[30px] px-0 pt-0 mb-6">
+
+
                 <CardTitle className="text-base font-bold leading-[100%] tracking-[0.25%] text-black">
                     Tasks
                 </CardTitle>
 
                 <Button
                     variant="ghost"
-                    onClick={() => navigate("/dashboard/tasks")}
+                    onClick={openCreateModal}
                     className="flex items-center gap-2 text-primary hover:text-primary hover:bg-transparent p-0 h-auto"
                 >
                     <span className="text-[12.75px] font-semibold leading-[100%] tracking-[0.4%] text-primary">
@@ -67,52 +87,102 @@ export function TasksCard() {
                     </div>
                 ) : (
                     <>
-                        {tasks.map((task) => (
-                            <div
-                                key={task.id}
-                                className="flex items-start gap-4 p-4 min-h-[100px] rounded-lg bg-[#FBFBFB] border-[0.98px] border-[#FAFAFA]"
-                            >
-                                <div className="flex-shrink-0">
-                                    {task.isCompleted ? (
-                                        <div className="flex items-center justify-center w-[31.38002197504261px] h-[31.38002006769375px] rounded-[5.88px] bg-[#2F80ED]">
-                                            <Check size={18} className="text-white" strokeWidth={3} />
-                                        </div>
-                                    ) : (
-                                        <div className="w-[31.38002197504261px] h-[31.38002006769375px] rounded-[5.88px] border-[0.98px] border-[#E0E0E0] bg-white" />
-                                    )}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="text-[15.69px] font-bold leading-[100%] tracking-[0.25%] text-black mb-1">
-                                        {task.statusText || task.title}
-                                    </div>
-                                    <div className="text-sm text-muted-foreground">
-                                        {task.description || task.title}
-                                    </div>
-                                </div>
-                                <div className="flex items-end gap-4 flex-shrink-0 pb-1">
-                                    <span className="text-sm text-muted-foreground whitespace-nowrap">
-                                        {formatDate(task.date)}
-                                    </span>
-                                    <button className="relative flex items-center justify-center w-[24px] h-[24px] rounded border-[0.72px] border-[#E0E0E0] bg-white p-0 hover:bg-muted/50 transition-colors">
-                                        <MoreHorizontal size={18} className="text-[#2F80ED]" />
+                        <div className="space-y-3">
+                            {tasks.map((task) => (
+                                <div
+                                    key={task.id}
+                                    className="flex items-start gap-4 p-4 min-h-[100px] rounded-lg bg-[#FBFBFB] border-[0.98px] border-[#FAFAFA] transition-all hover:border-primary/20"
+                                >
+                                    <button
+                                        onClick={() => onToggleTask(task.id, !task.isCompleted, task.title)}
+                                        disabled={isToggling}
+                                        className="flex-shrink-0 mt-1 focus:outline-none"
+                                    >
+                                        {task.isCompleted ? (
+                                            <div className="flex items-center justify-center w-[31.38002197504261px] h-[31.38002006769375px] rounded-[5.88px] bg-[#2F80ED]">
+                                                <Check size={18} className="text-white" strokeWidth={3} />
+                                            </div>
+                                        ) : (
+                                            <div className="w-[31.38002197504261px] h-[31.38002006769375px] rounded-[5.88px] border-[0.98px] border-[#E0E0E0] bg-white hover:border-primary transition-colors" />
+                                        )}
                                     </button>
+                                    <div className="flex-1 min-w-0">
+                                        <div className={cn(
+                                            "text-[15.69px] font-bold leading-[100%] tracking-[0.25%] mb-1 transition-all",
+                                            task.isCompleted ? "text-[#828282] line-through" : "text-black"
+                                        )}>
+                                            {task.title}
+                                        </div>
+                                        <p className={cn(
+                                            "text-sm leading-relaxed truncate",
+                                            task.isCompleted ? "text-[#BDBDBD]" : "text-[#4F4F4F]"
+                                        )}>
+                                            {task.description || task.title}
+                                        </p>
+                                    </div>
+                                    <div className="flex items-center gap-4 flex-shrink-0 self-center">
+                                        <span className="text-sm text-[#828282] whitespace-nowrap">
+                                            {formatDate(task.date)}
+                                        </span>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <button className="relative flex items-center justify-center w-[24px] h-[24px] rounded border-[0.72px] border-[#E0E0E0] bg-white p-0 hover:bg-muted/50 transition-colors">
+                                                    <MoreHorizontal size={18} className="text-[#2F80ED]" />
+                                                </button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end" className="w-40">
+                                                <DropdownMenuItem
+                                                    onClick={() => openUpdateModal(task)}
+                                                >
+                                                    <Edit className="mr-2 h-4 w-4" />
+                                                    Edit
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    className="text-destructive focus:text-destructive"
+                                                    onClick={() => openDeleteModal(task)}
+                                                >
+                                                    <Trash2 className="mr-2 h-4 w-4" />
+                                                    Delete
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                        <div className="flex justify-end pt-2">
-                            <Button
-                                variant="ghost"
-                                onClick={() => navigate("/dashboard/tasks")}
-                                className="flex items-center gap-1 text-primary hover:text-primary hover:bg-transparent p-0 h-auto"
+                            ))}
+                        </div>
+                        <div className="flex justify-end mt-2">
+                            <button
+                                onClick={viewAllTasks}
+                                className="flex items-center gap-1 text-[13px] font-semibold text-primary hover:underline"
                             >
-                                <span className="text-primary font-medium">View all</span>
-                                <span className="text-primary">›</span>
-                            </Button>
+                                <span>View all</span>
+                                <span className="text-primary inline-flex">›</span>
+                            </button>
                         </div>
                     </>
                 )}
             </CardContent>
+
+            <CreateTaskModal
+                isOpen={isCreateModalOpen}
+                onClose={closeCreateModal}
+            />
+
+            {selectedTask && (
+                <>
+                    <UpdateTaskModal
+                        isOpen={isUpdateModalOpen}
+                        onClose={closeUpdateModal}
+                        taskId={selectedTask.id}
+                    />
+                    <DeleteTaskModal
+                        isOpen={isDeleteModalOpen}
+                        onClose={closeDeleteModal}
+                        taskId={selectedTask.id}
+                        taskTitle={selectedTask.title}
+                    />
+                </>
+            )}
         </Card>
     );
 }
-

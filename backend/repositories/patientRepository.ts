@@ -3,8 +3,6 @@ import { prisma } from "../lib/prisma";
 
 export class PatientRepository {
 
-
-    // patientUncheckedCreateInput is used to create a patient without any relations as in this we can get the id of the user 
     async createPatient(data: Prisma.PatientUncheckedCreateInput): Promise<Patient> {
         return await prisma.patient.create({
             data
@@ -62,8 +60,6 @@ export class PatientRepository {
         skip: number,
         take: number
     ) {
-
-        console.log("where", where);
         const [patients, totalCount] = await Promise.all([
             prisma.patient.findMany({
                 where,

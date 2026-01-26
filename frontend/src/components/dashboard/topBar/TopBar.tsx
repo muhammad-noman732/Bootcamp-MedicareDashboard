@@ -1,43 +1,17 @@
-import { Bell, LogOut, Mail, Search, Loader2 } from "lucide-react"
+import { LogOut, Mail, Search, Loader2 } from "lucide-react"
 import { SidebarTrigger } from "@/components/ui/sidebar"
-import { useSearchParams } from "react-router-dom"
-import { useState, useEffect, useMemo } from "react"
-import { useDebounce } from "@/hooks/useDebounce"
-import { useGetCurrentUserQuery } from "@/lib/store/services/auth/authApi"
-import { useLogout } from "@/hooks/useLogout"
+import { useTopBar } from "@/hooks/useTopBar"
+import { NotificationDropdown } from "./NotificationDropdown"
 
 export function TopBar() {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const [searchValue, setSearchValue] = useState(searchParams.get("search") || "")
-  const debouncedSearch = useDebounce(searchValue, 400)
-
-  // Move all hooks to the top
-  const { data: userResponse } = useGetCurrentUserQuery()
-  const { handleLogout, isLoading: isLoggingOut } = useLogout()
-
-  const formattedDate = useMemo(() => {
-    return new Intl.DateTimeFormat('en-GB', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    }).format(new Date()).replace(/(\d+)\s/, '$1, ')
-  }, [])
-
-  const user = userResponse?.data
-
-  useEffect(() => {
-    const newParams = new URLSearchParams(searchParams)
-    if (debouncedSearch) {
-      newParams.set("search", debouncedSearch)
-    } else {
-      newParams.delete("search")
-    }
-
-    if (newParams.get("search") !== searchParams.get("search")) {
-      newParams.set("page", "1")
-      setSearchParams(newParams, { replace: true })
-    }
-  }, [debouncedSearch, setSearchParams, searchParams])
+  const {
+    searchValue,
+    setSearchValue,
+    user,
+    isLoggingOut,
+    handleLogout,
+    formattedDate
+  } = useTopBar()
 
   return (
     <header className="flex w-full items-center border-b border-[#E0E0E0] bg-white lg:h-20 h-16 px-0 sticky top-0 z-30">
@@ -78,11 +52,9 @@ export function TopBar() {
               <Mail size={20} strokeWidth={1.5} />
               <span className="absolute right-0 top-0 block h-2 w-2 rounded-full bg-destructive" />
             </button>
-            <button className="relative p-1 hover:text-primary transition-colors">
-              <Bell size={20} strokeWidth={1.5} />
-              <span className="absolute right-0 top-0 block h-2 w-2 rounded-full bg-destructive" />
-            </button>
+            <NotificationDropdown />
             <button
+
               onClick={handleLogout}
               disabled={isLoggingOut}
               className="p-1 hover:text-destructive transition-colors disabled:opacity-50"

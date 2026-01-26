@@ -36,7 +36,7 @@ export const useForgotPassword = () => {
             });
 
             form.reset();
-            
+
             // Show helpful message
             setTimeout(() => {
                 toast.info("Didn't receive the email?", {

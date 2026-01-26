@@ -2,13 +2,14 @@ import express from "express";
 import { AppointmentRepository } from "../repositories/appointmentRepository.ts";
 import { AppointmentService } from "../services/appointmentService.ts";
 import { AppointmentController } from "../controllers/appintmentController.ts";
+import { notificationServiceInstance } from "./notificationRoutes.ts";
 import { AuthMiddleware } from "../middlewares/authMiddleware.ts";
 import { JwtService } from "../lib/jwt.ts";
 
 const appointmentRouter = express.Router();
 
 const repository = new AppointmentRepository();
-const service = new AppointmentService(repository);
+const service = new AppointmentService(repository, notificationServiceInstance);
 const controller = new AppointmentController(service);
 
 const jwtService = new JwtService();

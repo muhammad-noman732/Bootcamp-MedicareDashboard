@@ -12,14 +12,14 @@ export function verificationEmailTemplate(userName: string, otp: string): string
                 <tr>
                     <td align="center">
                         <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                            <!-- Header -->
+                           
                             <tr>
                                 <td style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); padding: 40px 20px; text-align: center;">
                                     <h1 style="color: #ffffff; margin: 0; font-size: 28px;">Medicare Dashboard</h1>
                                 </td>
                             </tr>
                             
-                            <!-- Content -->
+                            
                             <tr>
                                 <td style="padding: 40px 30px;">
                                     <h2 style="color: #1f2937; margin: 0 0 20px 0; font-size: 24px;">Verify Your Email</h2>
@@ -30,7 +30,7 @@ export function verificationEmailTemplate(userName: string, otp: string): string
                                         Thank you for signing up! Please use the following One-Time Password (OTP) to verify your email address:
                                     </p>
                                     
-                                    <!-- OTP Display -->
+                                   
                                     <div style="background-color: #f3f4f6; border-radius: 8px; padding: 30px; text-align: center; margin: 30px 0;">
                                         <div style="color: #6b7280; font-size: 14px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Your Verification Code</div>
                                         <div style="font-size: 36px; font-weight: bold; color: #2563eb; letter-spacing: 8px; font-family: 'Courier New', monospace;">
@@ -47,7 +47,7 @@ export function verificationEmailTemplate(userName: string, otp: string): string
                                 </td>
                             </tr>
                             
-                            <!-- Footer -->
+                          
                             <tr>
                                 <td style="background-color: #f9fafb; padding: 20px 30px; border-top: 1px solid #e5e7eb;">
                                     <p style="color: #6b7280; font-size: 12px; line-height: 1.5; margin: 0; text-align: center;">
@@ -83,14 +83,13 @@ export function passwordResetEmailTemplate(userName: string, resetToken: string)
                 <tr>
                     <td align="center">
                         <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                            <!-- Header -->
+                           
                             <tr>
                                 <td style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); padding: 40px 20px; text-align: center;">
                                     <h1 style="color: #ffffff; margin: 0; font-size: 28px;">Password Reset</h1>
                                 </td>
                             </tr>
-                            
-                            <!-- Content -->
+                        
                             <tr>
                                 <td style="padding: 40px 30px;">
                                     <h2 style="color: #1f2937; margin: 0 0 20px 0; font-size: 24px;">Reset Your Password</h2>
@@ -100,8 +99,6 @@ export function passwordResetEmailTemplate(userName: string, resetToken: string)
                                     <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
                                         We received a request to reset your password. Click the button below to proceed:
                                     </p>
-                                    
-                                    <!-- Button -->
                                     <div style="text-align: center; margin: 30px 0;">
                                         <a href="${resetLink}" 
                                            target="_blank"
@@ -109,8 +106,7 @@ export function passwordResetEmailTemplate(userName: string, resetToken: string)
                                             Reset Password
                                         </a>
                                     </div>
-                                    
-                                    <!-- Fallback Link -->
+                                   
                                     <p style="color: #6b7280; font-size: 12px; line-height: 1.6; margin: 30px 0 0 0; word-break: break-all;">
                                         If the button above doesn't work, copy and paste this link into your browser:<br>
                                         <a href="${resetLink}" style="color: #2563eb; text-decoration: underline;">${resetLink}</a>
@@ -122,7 +118,6 @@ export function passwordResetEmailTemplate(userName: string, resetToken: string)
                                 </td>
                             </tr>
                             
-                            <!-- Footer -->
                             <tr>
                                 <td style="background-color: #f9fafb; padding: 20px 30px; border-top: 1px solid #e5e7eb;">
                                     <p style="color: #6b7280; font-size: 12px; line-height: 1.5; margin: 0; text-align: center;">

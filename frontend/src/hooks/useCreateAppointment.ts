@@ -27,13 +27,19 @@ interface UseCreateAppointmentProps {
 }
 
 export const useCreateAppointment = ({ onSuccess }: UseCreateAppointmentProps = {}) => {
-    const [createAppointment, { isLoading, isError, error, isSuccess }] = useCreateAppointmentMutation();
+    const [createAppointment, { isLoading, isError, error }] = useCreateAppointmentMutation();
+
+    const todayStr = [
+        new Date().getFullYear(),
+        (new Date().getMonth() + 1).toString().padStart(2, '0'),
+        new Date().getDate().toString().padStart(2, '0')
+    ].join('-');
 
     const form = useForm<CreateAppointmentFormValues>({
         resolver: zodResolver(createAppointmentSchema),
         defaultValues: {
             patientId: "",
-            date: new Date().toISOString().split("T")[0],
+            date: todayStr,
             time: "09:00",
             duration: 60,
             clinic: "General clinic",
@@ -45,6 +51,7 @@ export const useCreateAppointment = ({ onSuccess }: UseCreateAppointmentProps = 
             notifications: true,
         },
     });
+
 
     const onSubmit = async (data: CreateAppointmentFormValues) => {
         try {

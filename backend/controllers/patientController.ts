@@ -10,7 +10,6 @@ export class PatientController {
 
   createPatient = asyncHandler(async (req: Request, res: Response) => {
     const body = createPatientSchema.parse(req.body);
-    console.log("data of patinet schema ", body);
     const userId = req.user.id;
 
     const patient = await this.patientServices.createPatient(body, userId);

@@ -37,7 +37,7 @@ export const appointmentApi = api.injectEndpoints({
                 method: "POST",
                 body: data,
             }),
-            invalidatesTags: (result, error) =>
+            invalidatesTags: (error) =>
                 error ? [] : [{ type: "Appointments", id: "LIST" }],
         }),
 

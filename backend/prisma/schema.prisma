@@ -75,11 +75,29 @@ model User {
   appointments       Appointment[]
   tasks              Task[]
   patients           Patient[]
+  notifications      Notification[]
 
   @@index([googleId])
   @@index([isVerified, isActive])
   @@map("users")
 }
+
+model Notification {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  title     String  
+  message   String   
+  type      String   
+  isRead    Boolean  @default(false)
+  link      String?  
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("notifications")
+}
+
 
 model EmailVerification {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId

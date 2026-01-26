@@ -2,14 +2,12 @@ import { asyncHandler } from "../utils/asyncHandler";
 import type { Request, Response } from "express";
 import { DashboardService } from "../services/dashboardService";
 import { UnauthorizedError } from '../utils/appError';
-import type { RequestWithUser } from "./authController";
-
 export class DashboardController {
 
     constructor(private dashboardService: DashboardService) { }
 
     getStats = asyncHandler(async (req: Request, res: Response) => {
-        const userId = (req as RequestWithUser).user.id;
+        const userId = req.user.id;
 
         if (!userId) {
             throw new UnauthorizedError("Unauthorized to get dashboard stats");

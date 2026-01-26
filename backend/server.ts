@@ -16,6 +16,7 @@ import appointmentRouter from "./routes/appointmentRoutes";
 import taskRouter from "./routes/taskRoutes";
 import dashboardRouter from "./routes/dashboardRoutes";
 import analyticsRouter from "./routes/analyticsRoutes";
+import notificationRouter from "./routes/notificationRoutes";
 
 const app = express();
 app.use(express.json({
@@ -23,30 +24,21 @@ app.use(express.json({
 }));
 
 
-// global middlewares
-// for parsing the json into object in request body
-// based on endpoint the data they have
 app.use('/api/uploads', express.json({ limit: '50mb' }));
 app.use('/api/', express.json({
   limit: '10kb',
 }));
 
 
-// for parsing the url encoded data in the request body
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
-
-// cookie parser
 app.use(cookieParser());
-
-// cors policy
 const corsOptions = {
   origin: process.env.ALLOWED_ORIGINS || "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  credentials: true, // allow cookies
+  credentials: true,
 }
 app.use(cors(corsOptions))
 
-// helmet(protect agains vulnerabilities)
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -57,50 +49,39 @@ app.use(helmet({
     },
   },
   hsts: {
-    maxAge: 31536000, // 1 year in seconds
+    maxAge: 31536000,
     includeSubDomains: true,
     preload: true
   }
 }));
 
-// compression => gzip the data
 app.use(compression())
 
-// 5. RATE LIMITING
-// General API rate limiter
 const apiLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  windowMs: 1 * 60 * 1000,
+  max: 100,
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
 });
 
-// Stricter rate limiter for auth routes
 const authLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
-  max: 15, // Only 5 requests per 15 minutes
-  skipSuccessfulRequests: true, // Don't count successful requests
+  max: 15,
+  skipSuccessfulRequests: true,
   message: 'Too many login attempts, please try again later.'
 });
 
 
-// Prevent HTTP Parameter Pollution
+
 app.use(hpp({
-  whitelist: ['sort', 'filter', 'page'] // Allow these params to appear multiple times
+  whitelist: ['sort', 'filter', 'page']
 }));
 
 
-// HTTP request logger (only in development)
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
-
-// Request logger
-app.use((req: Request, res: Response, next: NextFunction) => {
-  console.log(`${req.method} ${req.path}`);
-  next(); // Continue to next middleware
-});
 
 app.use('/api/', apiLimiter);
 app.use('/api/auth', authLimiter, authRouter);
@@ -109,9 +90,8 @@ app.use('/api/appointments', apiLimiter, appointmentRouter);
 app.use('/api/tasks', apiLimiter, taskRouter);
 app.use('/api/dashboard', apiLimiter, dashboardRouter);
 app.use('/api/analytics', apiLimiter, analyticsRouter);
+app.use('/api/notifications', apiLimiter, notificationRouter);
 
-
-// ROUTES
 app.get('/health', (req, res) => {
   res.json({
     success: true,
@@ -120,16 +100,10 @@ app.get('/health', (req, res) => {
   });
 });
 
-// not found handler
 app.use(notFoundHandler);
-
 app.use(errorHandler)
 
-
-// SERVER
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 

@@ -4,8 +4,24 @@ import interactionPlugin from '@fullcalendar/interaction'
 import { Clock, FileText, MapPin, User } from 'lucide-react'
 import type { EventContentArg } from '@fullcalendar/core'
 
+interface CalendarEvent {
+    id: string
+    title: string
+    start: string | Date
+    end?: string | Date
+    extendedProps: {
+        type: string
+        location: string
+        status: string
+        variant: string
+        purpose?: string | null
+        room?: string
+        isOnline?: boolean
+    }
+}
+
 interface ScheduleCalendarProps {
-    events?: any[]
+    events?: CalendarEvent[]
     currentDate?: Date
 }
 
@@ -73,7 +89,7 @@ export const ScheduleCalendar = ({ events = [], currentDate = new Date() }: Sche
         )
     }
 
-    const renderHeader = (arg: any) => {
+    const renderHeader = (arg: { date: Date }) => {
         const dayName = arg.date.toLocaleDateString('en-US', { weekday: 'short' })
         const dayNumber = arg.date.getDate()
 

@@ -37,7 +37,6 @@ export const useRegister = () => {
 
         setLoading(true);
         setTimeout(() => {
-            console.log('Form submitted:', formData);
             setLoading(false);
         }, 1000);
     };

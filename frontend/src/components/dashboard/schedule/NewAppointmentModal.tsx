@@ -1,9 +1,6 @@
 import { X, CheckCircle2, Clock, MapPin, User } from "lucide-react"
-import { useState } from "react"
-import { useCreateAppointment } from "@/hooks/useCreateAppointment"
-import { useGetPatientsQuery } from "@/lib/store/services/patient/patientApi"
-import { useGetCurrentUserQuery } from "@/lib/store/services/auth/authApi"
 import { Loader2 } from "lucide-react"
+import { useNewAppointmentModal } from "@/hooks/useNewAppointmentModal"
 
 type NewAppointmentModalProps = {
   open: boolean
@@ -16,34 +13,32 @@ export function NewAppointmentModal({
   open,
   onClose,
 }: NewAppointmentModalProps) {
-  const { data: userData } = useGetCurrentUserQuery()
-  const { data: patientsData, isLoading: isPatientsLoading } = useGetPatientsQuery({ limit: 100 })
-  const { form, isLoading, onSubmit } = useCreateAppointment({ onSuccess: onClose })
-
-  const { register, watch, setValue, formState: { errors } } = form
-
-  const [isEditingDateTime, setIsEditingDateTime] = useState(false)
-  const [isEditingLocation, setIsEditingLocation] = useState(false)
+  const {
+    practitionerName,
+    practitionerSpecialty,
+    patientsData,
+    isPatientsLoading,
+    isLoading,
+    onSubmit,
+    register,
+    errors,
+    isEditingDateTime,
+    toggleEditingDateTime,
+    isEditingLocation,
+    toggleEditingLocation,
+    selectedStatus,
+    selectedDuration,
+    selectedType,
+    selectedIsOnline,
+    selectedDate,
+    selectedTime,
+    selectedClinic,
+    selectedRoom,
+    formatDate,
+    setValue
+  } = useNewAppointmentModal(onClose)
 
   if (!open) return null
-
-  const selectedStatus = watch("status")
-  const selectedDuration = watch("duration")
-  const selectedType = watch("type")
-  const selectedIsOnline = watch("isOnline")
-  const selectedDate = watch("date")
-  const selectedTime = watch("time")
-  const selectedClinic = watch("clinic")
-  const selectedRoom = watch("room")
-
-  const practitionerName = userData?.data?.userName || "John Doe"
-  const practitionerSpecialty = "General Doctor"
-
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return "Select date"
-    const date = new Date(dateStr)
-    return date.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'long' })
-  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 px-4 py-8 sm:py-12 overflow-y-auto">
@@ -97,7 +92,7 @@ export function NewAppointmentModal({
               )}
               <button
                 type="button"
-                onClick={() => setIsEditingDateTime(!isEditingDateTime)}
+                onClick={toggleEditingDateTime}
                 className="mt-1 text-xs font-semibold text-[#0000AC] hover:underline"
               >
                 {isEditingDateTime ? "Done" : "Change"}
@@ -132,7 +127,7 @@ export function NewAppointmentModal({
               )}
               <button
                 type="button"
-                onClick={() => setIsEditingLocation(!isEditingLocation)}
+                onClick={toggleEditingLocation}
                 className="mt-1 text-xs font-semibold text-[#0000AC] hover:underline"
               >
                 {isEditingLocation ? "Done" : "Change"}

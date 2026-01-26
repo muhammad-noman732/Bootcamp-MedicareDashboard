@@ -9,12 +9,7 @@ import { OAuth2Client } from 'google-auth-library'
 import type { RequestWithVerifyUser } from "../middlewares/verifyEmailMiddleware.ts";
 import { uploadToCloudinary } from "../utils/cloudinary.ts";
 
-export interface RequestWithUser extends Request {
-    user: {
-        id: string;
-        [key: string]: any;
-    };
-}
+
 
 
 export class AuthController {
@@ -56,7 +51,7 @@ export class AuthController {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 10 * 60 * 1000 // 10 minutes matches token expiry
+            maxAge: 10 * 60 * 1000
         });
 
         res.status(201).json({
@@ -219,7 +214,7 @@ export class AuthController {
     });
 
     getMe = asyncHandler(async (req: Request, res: Response) => {
-        const { id: userId } = (req as RequestWithUser).user;
+        const { id: userId } = req.user;
         const user = await this.authService.getCurrentUser(userId);
 
         res.status(200).json({
@@ -229,7 +224,7 @@ export class AuthController {
     });
 
     changePassword = asyncHandler(async (req: Request, res: Response) => {
-        const { id: userId } = (req as RequestWithUser).user;
+        const { id: userId } = req.user;
         const data = changePasswordSchema.parse(req.body);
 
         await this.authService.changePassword(userId, data);
@@ -241,7 +236,7 @@ export class AuthController {
     });
 
     updateProfile = asyncHandler(async (req: Request, res: Response) => {
-        const { id: userId } = (req as RequestWithUser).user;
+        const { id: userId } = req.user;
 
         let avatarUrl: string | undefined;
         if (req.file) {
@@ -266,7 +261,7 @@ export class AuthController {
     });
 
     completeOnboarding = asyncHandler(async (req: Request, res: Response) => {
-        const { id: userId } = (req as RequestWithUser).user;
+        const { id: userId } = req.user;
         const data = onboardingSchema.parse(req.body);
 
         const updatedUser = await this.authService.completeOnboarding(userId, data);

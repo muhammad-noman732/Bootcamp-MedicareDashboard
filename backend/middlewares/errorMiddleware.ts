@@ -7,17 +7,16 @@ export const errorHandler = (
     res: Response,
     next: NextFunction
 ): void => {
-    // If it's our custom AppError
     if (err instanceof AppError) {
         res.status(err.statusCode).json({
             message: err.message,
             status: err.status,
             ...(err instanceof ValidationError && { error: err.errors })
         });
-        return; // CRITICAL: Prevent further execution
+        return;
     }
 
-    // If it's an unknown error (programming error)
+
     res.status(500).json({
         status: 'error',
         message: process.env.NODE_ENV === 'development'

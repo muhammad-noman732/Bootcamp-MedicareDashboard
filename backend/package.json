@@ -7,8 +7,7 @@
     "dev": "tsx watch server.ts",
     "typecheck": "tsc --noEmit",
     "build": "npx prisma generate",
-    "start": "tsx server.ts",
-    "postinstall": "npx prisma generate"
+    "start": "tsx server.ts"
   },
   "keywords": [],
   "author": "",

@@ -2,6 +2,10 @@
     "name": "medicare-dashboard-root",
     "version": "1.0.0",
     "description": "Root configuration for Medicare Dashboard mono-repo",
+    "workspaces": [
+        "frontend",
+        "backend"
+    ],
     "scripts": {
         "build": "npm run build --prefix backend",
         "start": "npm start --prefix backend",
@@ -12,9 +16,13 @@
         "test:e2e": "concurrently \"npm run dev:frontend\" \"wait-on http://localhost:5173 && cypress open\"",
         "test:e2e:ci": "concurrently \"npm run dev:frontend\" \"wait-on http://localhost:5173 && cypress run\""
     },
+    "dependencies": {
+        "@prisma/client": "6.1.0"
+    },
     "devDependencies": {
         "concurrently": "^9.2.1",
         "cypress": "^15.9.0",
+        "prisma": "6.1.0",
         "typescript": "^5.9.3",
         "wait-on": "^9.0.3"
     }

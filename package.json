@@ -1,0 +1,19 @@
+{
+    "name": "medicare-dashboard-root",
+    "version": "1.0.0",
+    "description": "Root configuration for Medicare Dashboard mono-repo",
+    "scripts": {
+        "dev:frontend": "npm run dev --prefix frontend",
+        "dev:backend": "npm run dev --prefix backend",
+        "cy:open": "cypress open",
+        "cy:run": "cypress run",
+        "test:e2e": "concurrently \"npm run dev:frontend\" \"wait-on http://localhost:5173 && cypress open\"",
+        "test:e2e:ci": "concurrently \"npm run dev:frontend\" \"wait-on http://localhost:5173 && cypress run\""
+    },
+    "devDependencies": {
+        "concurrently": "^9.2.1",
+        "cypress": "^15.9.0",
+        "typescript": "^5.9.3",
+        "wait-on": "^9.0.3"
+    }
+}

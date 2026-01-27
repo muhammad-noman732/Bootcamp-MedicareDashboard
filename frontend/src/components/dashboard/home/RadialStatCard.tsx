@@ -28,11 +28,11 @@ export function RadialStatCard({
   const chartConfig = {
     female: {
       label: "Female",
-      color: "var(--chart-1)",
+      color: "#EB5757",
     },
     male: {
       label: "Male",
-      color: "var(--chart-3)",
+      color: "#2F80ED",
     },
   }
 
@@ -94,16 +94,16 @@ export function RadialStatCard({
             <RadialBar
               dataKey="female"
               stackId="a"
-              cornerRadius={8}
+              cornerRadius={0}
               fill="var(--color-female)"
-              className="stroke-transparent stroke-[3]"
+              className="stroke-transparent stroke-0"
             />
             <RadialBar
               dataKey="male"
               stackId="a"
-              cornerRadius={8}
+              cornerRadius={0}
               fill="var(--color-male)"
-              className="stroke-transparent stroke-[3]"
+              className="stroke-transparent stroke-0"
             />
           </RadialBarChart>
         </ChartContainer>

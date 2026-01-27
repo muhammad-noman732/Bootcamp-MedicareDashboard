@@ -1,21 +1,45 @@
-import DashboardLayout from "./components/dashboard/DashboardLayout";
-import { DashboardHome } from "./pages/dashboard/home/DashboardHome";
+import { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import PatientsPage from "./pages/dashboard/patients/PatientsPage";
-import AddPatientPage from "./pages/dashboard/patients/AddPatientPage";
-import TasksPage from "./pages/dashboard/tasks/TasksPage";
-import SchedulePage from "./pages/dashboard/schedule/SchedulePage";
-import SignupPage from "./pages/auth/signup/SignupPage";
-import VerifyEmailPage from "./pages/auth/verifyEmail/VerifyEmailPage";
-import LoginPage from "./pages/auth/login/LoginPage";
-import ForgotPasswordPage from "./pages/auth/forgotPassword/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/auth/resetPassword/ResetPasswordPage";
-import OnBoardingPage from "./pages/onBoarding/onBoarding";
+import { Loader2 } from "lucide-react";
+
+// Eager load - Critical components needed immediately
 import { ProtectedRoute } from "./components/auth/guards/ProtectedRoute";
 import { PublicRoute } from "./components/auth/guards/PublicRoute";
-import SettingsPage from "./pages/dashboard/settings/SettingsPage";
-import AnalyticsPage from "./pages/dashboard/analytics/AnalyticsPage";
-import SupportPage from "./pages/dashboard/support/SupportPage";
+
+// Lazy load - Auth pages (loaded when user visits auth routes)
+const SignupPage = lazy(() => import("./pages/auth/signup/SignupPage"));
+const LoginPage = lazy(() => import("./pages/auth/login/LoginPage"));
+const VerifyEmailPage = lazy(() => import("./pages/auth/verifyEmail/VerifyEmailPage"));
+const ForgotPasswordPage = lazy(() => import("./pages/auth/forgotPassword/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("./pages/auth/resetPassword/ResetPasswordPage"));
+
+// Lazy load - Onboarding
+const OnBoardingPage = lazy(() => import("./pages/onBoarding/onBoarding"));
+
+// Lazy load - Dashboard layout and pages
+const DashboardLayout = lazy(() => import("./components/dashboard/DashboardLayout"));
+const DashboardHome = lazy(() => import("./pages/dashboard/home/DashboardHome").then(m => ({ default: m.DashboardHome })));
+const PatientsPage = lazy(() => import("./pages/dashboard/patients/PatientsPage"));
+const AddPatientPage = lazy(() => import("./pages/dashboard/patients/AddPatientPage"));
+const TasksPage = lazy(() => import("./pages/dashboard/tasks/TasksPage"));
+const SchedulePage = lazy(() => import("./pages/dashboard/schedule/SchedulePage"));
+const SettingsPage = lazy(() => import("./pages/dashboard/settings/SettingsPage"));
+const AnalyticsPage = lazy(() => import("./pages/dashboard/analytics/AnalyticsPage"));
+const SupportPage = lazy(() => import("./pages/dashboard/support/SupportPage"));
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-screen bg-background">
+    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+  </div>
+);
+
+// Wrap lazy components with Suspense
+const withSuspense = (Component: React.LazyExoticComponent<React.ComponentType>) => (
+  <Suspense fallback={<PageLoader />}>
+    <Component />
+  </Suspense>
+);
 
 const router = createBrowserRouter([
   {
@@ -23,27 +47,27 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <SignupPage />,
+        element: withSuspense(SignupPage),
       },
       {
         path: "/auth/signup",
-        element: <SignupPage />,
+        element: withSuspense(SignupPage),
       },
       {
         path: "/auth/verify-email",
-        element: <VerifyEmailPage />,
+        element: withSuspense(VerifyEmailPage),
       },
       {
         path: "/auth/login",
-        element: <LoginPage />,
+        element: withSuspense(LoginPage),
       },
       {
         path: "/auth/forgot-password",
-        element: <ForgotPasswordPage />,
+        element: withSuspense(ForgotPasswordPage),
       },
       {
         path: "/auth/reset-password",
-        element: <ResetPasswordPage />,
+        element: withSuspense(ResetPasswordPage),
       },
     ],
   },
@@ -52,43 +76,43 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/onboarding",
-        element: <OnBoardingPage />,
+        element: withSuspense(OnBoardingPage),
       },
       {
         path: "/dashboard",
-        element: <DashboardLayout />,
+        element: withSuspense(DashboardLayout),
         children: [
           {
             index: true,
-            element: <DashboardHome />,
+            element: withSuspense(DashboardHome),
           },
           {
             path: "settings",
-            element: <SettingsPage />,
+            element: withSuspense(SettingsPage),
           },
           {
             path: "patients",
-            element: <PatientsPage />,
+            element: withSuspense(PatientsPage),
           },
           {
             path: "analytics",
-            element: <AnalyticsPage />,
+            element: withSuspense(AnalyticsPage),
           },
           {
             path: "patients/add",
-            element: <AddPatientPage />,
+            element: withSuspense(AddPatientPage),
           },
           {
             path: "tasks",
-            element: <TasksPage />,
+            element: withSuspense(TasksPage),
           },
           {
             path: "schedule",
-            element: <SchedulePage />,
+            element: withSuspense(SchedulePage),
           },
           {
             path: "support",
-            element: <SupportPage />,
+            element: withSuspense(SupportPage),
           },
         ],
       },
@@ -97,7 +121,6 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-
   return (
     <RouterProvider router={router} />
   )

@@ -24,7 +24,7 @@ type TaskItemProps = {
     onDelete: (id: string, title: string) => void;
 };
 
-export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
+export function TaskItem({ task, onToggle, onEdit: _onEdit, onDelete: _onDelete }: TaskItemProps) {
     const formattedDate = formatDate(task.date);
 
     const handleToggle = () => {

@@ -24,6 +24,17 @@ export const SignupForm = () => {
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <div className="space-y-3">
           <FormField
+            id="userName"
+            {...register("userName")}
+            type="text"
+            label="Full Name"
+            placeholder="John Doe"
+          />
+          {errors.userName && (
+            <p className="text-destructive text-sm">{errors.userName.message}</p>
+          )}
+
+          <FormField
             id="email"
             {...register("email")}
             type="email"

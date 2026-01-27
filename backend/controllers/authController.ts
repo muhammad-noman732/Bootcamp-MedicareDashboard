@@ -25,7 +25,7 @@ export class AuthController {
         const cookieOptions = {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict' as const,
+            sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'strict') as 'none' | 'strict',
             maxAge: 7 * 24 * 60 * 60 * 1000
         };
 
@@ -50,7 +50,7 @@ export class AuthController {
         res.cookie('verify_token', result.verifyToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'strict') as 'none' | 'strict',
             maxAge: 10 * 60 * 1000
         });
 
@@ -82,14 +82,14 @@ export class AuthController {
 
         res.cookie("refreshToken", newRefreshToken, {
             httpOnly: true,
-            sameSite: 'strict' as const,
+            sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'strict') as 'none' | 'strict',
             secure: process.env.NODE_ENV === 'production',
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
-            sameSite: 'strict' as const,
+            sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'strict') as 'none' | 'strict',
             secure: process.env.NODE_ENV === 'production',
             maxAge: 15 * 60 * 1000 // 15 minutes
         });
@@ -109,7 +109,7 @@ export class AuthController {
         const cookieOptions = {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict' as const,
+            sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'strict') as 'none' | 'strict',
         };
 
         res.clearCookie('refreshToken', cookieOptions);
@@ -135,7 +135,7 @@ export class AuthController {
         const cookieOptions = {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict' as const,
+            sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'strict') as 'none' | 'strict',
             maxAge: 7 * 24 * 60 * 60 * 1000
         };
 
@@ -166,7 +166,7 @@ export class AuthController {
         res.cookie('verify_token', result.verifyToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'strict') as 'none' | 'strict',
             maxAge: 10 * 60 * 1000 // 10 minutes
         });
 

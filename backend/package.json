@@ -22,7 +22,6 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.0.2",
     "prisma": "6.19",
-    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "dependencies": {
@@ -50,6 +49,7 @@
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "streamifier": "^0.1.1",
+    "tsx": "^4.21.0",
     "zod": "^4.2.1"
   }
 }

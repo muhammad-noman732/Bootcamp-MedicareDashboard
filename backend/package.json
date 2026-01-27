@@ -21,11 +21,12 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.0.2",
-    "prisma": "6.19",
     "typescript": "^5.9.3"
   },
   "dependencies": {
     "@prisma/client": "6.19",
+    "prisma": "6.19",
+    "tsx": "^4.21.0",
     "@sendgrid/mail": "^8.1.6",
     "@types/hpp": "^0.2.7",
     "@types/multer": "^2.0.0",
@@ -49,7 +50,6 @@
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "streamifier": "^0.1.1",
-    "tsx": "^4.21.0",
     "zod": "^4.2.1"
   }
 }

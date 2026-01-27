@@ -19,6 +19,7 @@ import analyticsRouter from "./routes/analyticsRoutes";
 import notificationRouter from "./routes/notificationRoutes";
 
 const app = express();
+app.set('trust proxy', 1);
 app.use(express.json({
   limit: "10kb"
 }));

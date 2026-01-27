@@ -93,7 +93,6 @@ export interface AddPatientFormErrors {
 }
 
 export interface SignupFormValues {
-    userName: string;
     email: string;
     password: string;
     confirmPassword: string;

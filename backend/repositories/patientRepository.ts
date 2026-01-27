@@ -1,4 +1,4 @@
-import { Patient, Prisma } from "../generated/prisma/client";
+import { Patient, Prisma } from "@prisma/client";
 import { prisma } from "../lib/prisma";
 
 export class PatientRepository {

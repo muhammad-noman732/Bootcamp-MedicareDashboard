@@ -19,7 +19,7 @@ export const createPatientSchema = z.object({
     diagnosis: z.string().min(3, "Diagnosis must be at least 3 characters long"),
     sex: z.enum(["male", "female"]),
     notes: z.string().optional(),
-    phoneNumber: internationalPhoneSchema,
+    phoneNumber: z.string().min(10, "Phone number must be at least 10 characters long"),
 })
 
 export const updatePatientSchema = createPatientSchema.partial();

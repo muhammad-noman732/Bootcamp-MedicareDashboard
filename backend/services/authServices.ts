@@ -52,9 +52,11 @@ export class AuthService {
         }
 
         const hashPassword = await bcryptjs.hash(data.password, this.SALT_ROUNDS);
+        const userName = emailLower.split('@')[0];
 
         const user = await this.authRepository.createUser({
             ...data,
+            userName,
             email: emailLower,
             password: hashPassword,
         });

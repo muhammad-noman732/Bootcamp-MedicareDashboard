@@ -9,7 +9,6 @@ import type { SignupFormValues, BackendErrorData } from "@/types";
 
 const signupSchema = z
     .object({
-        userName: z.string().min(3, "Username must be at least 3 characters"),
         email: z.string().email("Please enter a valid email"),
         password: z.string().min(8, "Password must be at least 8 characters"),
         confirmPassword: z.string(),
@@ -26,7 +25,6 @@ export const useSignup = () => {
     const form = useForm<SignupFormValues>({
         resolver: zodResolver(signupSchema),
         defaultValues: {
-            userName: "",
             email: "",
             password: "",
             confirmPassword: "",
@@ -38,7 +36,6 @@ export const useSignup = () => {
             await signUp({
                 email: data.email,
                 password: data.password,
-                userName: data.userName,
             }).unwrap();
 
             toast.success("Account created!", {

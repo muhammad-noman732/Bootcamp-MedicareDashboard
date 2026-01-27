@@ -47,11 +47,7 @@ export const LoginForm = () => {
         </div>
 
         <div className="flex items-center justify-between">
-          <label className="flex items-center gap-2 cursor-pointer group">
-            <div className="w-5 h-5 border border-[#E0E0E0] rounded-md bg-[#F2F2F2] flex items-center justify-center group-hover:border-primary transition-colors">
-              <input type="checkbox" className="hidden" />
-            </div>
-          </label>
+
           <Link to="/auth/forgot-password" global-id="forgot-password-link" className="text-primary text-base font-semibold hover:underline">
             Forgot password
           </Link>

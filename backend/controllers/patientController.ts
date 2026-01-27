@@ -24,7 +24,7 @@ export class PatientController {
   });
 
   getPatient = asyncHandler(async (req: Request, res: Response) => {
-    const patientId = req.params.id;
+    const patientId = req.params.id as string;
     const patient = await this.patientServices.getPatientById(patientId);
     if (!patient) {
       throw new UnauthorizedError("Failed to get patient ");
@@ -37,7 +37,7 @@ export class PatientController {
   });
 
   deletePatient = asyncHandler(async (req: Request, res: Response) => {
-    const patientId = req.params.id;
+    const patientId = req.params.id as string;
     const patient = await this.patientServices.deletePatient(patientId);
     if (!patient) {
       throw new UnauthorizedError("Failed to get patient ");
@@ -50,7 +50,7 @@ export class PatientController {
   });
 
   updatePatient = asyncHandler(async (req: Request, res: Response) => {
-    const patientId = req.params.id;
+    const patientId = req.params.id as string;
     const body = updatePatientSchema.parse(req.body);
 
     const patient = await this.patientServices.updatePatient(patientId, body);

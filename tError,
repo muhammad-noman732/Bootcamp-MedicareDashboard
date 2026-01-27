@@ -1,0 +1,71 @@
+[1mdiff --git a/backend/controllers/notificationController.ts b/backend/controllers/notificationController.ts[m
+[1mindex 9b08d12..bc8683c 100644[m
+[1m--- a/backend/controllers/notificationController.ts[m
+[1m+++ b/backend/controllers/notificationController.ts[m
+[36m@@ -14,7 +14,7 @@[m [mexport class NotificationController {[m
+ [m
+ [m
+     markAsRead = asyncHandler(async (req: Request, res: Response) => {[m
+[31m-        const { id } = req.params;[m
+[32m+[m[32m        const id = req.params.id as string;[m
+         await this.service.markAsRead(id);[m
+         res.status(200).json({ message: "Notification marked as read" });[m
+     });[m
+[1mdiff --git a/backend/controllers/patientController.ts b/backend/controllers/patientController.ts[m
+[1mindex 279f546..4f28d3a 100644[m
+[1m--- a/backend/controllers/patientController.ts[m
+[1m+++ b/backend/controllers/patientController.ts[m
+[36m@@ -24,7 +24,7 @@[m [mexport class PatientController {[m
+   });[m
+ [m
+   getPatient = asyncHandler(async (req: Request, res: Response) => {[m
+[31m-    const patientId = req.params.id;[m
+[32m+[m[32m    const patientId = req.params.id as string;[m
+     const patient = await this.patientServices.getPatientById(patientId);[m
+     if (!patient) {[m
+       throw new UnauthorizedError("Failed to get patient ");[m
+[36m@@ -37,7 +37,7 @@[m [mexport class PatientController {[m
+   });[m
+ [m
+   deletePatient = asyncHandler(async (req: Request, res: Response) => {[m
+[31m-    const patientId = req.params.id;[m
+[32m+[m[32m    const patientId = req.params.id as string;[m
+     const patient = await this.patientServices.deletePatient(patientId);[m
+     if (!patient) {[m
+       throw new UnauthorizedError("Failed to get patient ");[m
+[36m@@ -50,7 +50,7 @@[m [mexport class PatientController {[m
+   });[m
+ [m
+   updatePatient = asyncHandler(async (req: Request, res: Response) => {[m
+[31m-    const patientId = req.params.id;[m
+[32m+[m[32m    const patientId = req.params.id as string;[m
+     const body = updatePatientSchema.parse(req.body);[m
+ [m
+     const patient = await this.patientServices.updatePatient(patientId, body);[m
+[1mdiff --git a/backend/package.json b/backend/package.json[m
+[1mindex 2909b9b..7c0273a 100644[m
+[1m--- a/backend/package.json[m
+[1m+++ b/backend/package.json[m
+[36m@@ -6,7 +6,7 @@[m
+   "scripts": {[m
+     "dev": "tsx watch server.ts",[m
+     "typecheck": "tsc --noEmit",[m
+[31m-    "build": "npx prisma generate",[m
+[32m+[m[32m    "build": "prisma generate",[m
+     "start": "tsx server.ts"[m
+   },[m
+   "keywords": [],[m
+[1mdiff --git a/backend/repositories/notificationRepository.ts b/backend/repositories/notificationRepository.ts[m
+[1mindex d4d8915..c68e602 100644[m
+[1m--- a/backend/repositories/notificationRepository.ts[m
+[1m+++ b/backend/repositories/notificationRepository.ts[m
+[36m@@ -1,4 +1,4 @@[m
+[31m-import { PrismaClient } from "../generated/prisma/client.ts";[m
+[32m+[m[32mimport { PrismaClient } from "@prisma/client";[m
+ import { prisma } from "../lib/prisma.ts";[m
+ [m
+ export class NotificationRepository {[m
+[1mdiff --git a/sdklfa.zip b/sdklfa.zip[m
+[1mnew file mode 100644[m
+[1mindex 0000000..da7f7f0[m
+Binary files /dev/null and b/sdklfa.zip differ

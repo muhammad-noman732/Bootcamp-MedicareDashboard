@@ -22,7 +22,6 @@ export interface User {
 
 
 export interface SignUpInput {
-    userName: string;
     email: string;
     password: string;
 }

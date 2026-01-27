@@ -51,7 +51,7 @@ describe('Login Page', () => {
         cy.contains('button', /google/i).should('be.visible');
     });
 
-    // ✅ REAL LOGIN TEST with your credentials
+
     it('should successfully login with valid credentials', () => {
         // Load user fixtures
         cy.fixture('users').then((users) => {

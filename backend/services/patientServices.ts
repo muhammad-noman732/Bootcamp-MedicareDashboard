@@ -1,6 +1,6 @@
 import { PatientRepository } from "../repositories/patientRepository";
 import { CreatePatientSchema, UpdatePatientSchema } from "../schema/patientSchema";
-import { Patient, PatientStatus, Prisma } from "../generated/prisma/client";
+import { Patient, PatientStatus, Prisma } from "@prisma/client";
 import { ConflictError, InternalServerError, NotFoundError } from "../utils/appError";
 import crypto from "crypto";
 import { PaginationQuery } from "../schema/paginationQuerySchema";

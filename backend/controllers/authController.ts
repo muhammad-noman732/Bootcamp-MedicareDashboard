@@ -22,10 +22,11 @@ export class AuthController {
     private sendTokenResponse(res: Response, result: { user: AuthUserResponse, accessToken: string, refreshToken: string }, message: string) {
         const { user, accessToken, refreshToken } = result;
 
+        const isProd = process.env.NODE_ENV === 'production';
         const cookieOptions = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'strict') as 'none' | 'strict',
+            secure: isProd,
+            sameSite: (isProd ? 'none' : 'lax') as 'none' | 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000
         };
 
@@ -47,10 +48,11 @@ export class AuthController {
         const body = authSchema.parse(req.body);
         const result = await this.authService.createUser(body);
 
+        const isProd = process.env.NODE_ENV === 'production';
         res.cookie('verify_token', result.verifyToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'strict') as 'none' | 'strict',
+            secure: isProd,
+            sameSite: (isProd ? 'none' : 'lax') as 'none' | 'lax',
             maxAge: 10 * 60 * 1000
         });
 
@@ -80,17 +82,18 @@ export class AuthController {
 
         const { accessToken, refreshToken: newRefreshToken } = await this.authService.refreshAccessToken(refreshToken);
 
+        const isProd = process.env.NODE_ENV === 'production';
         res.cookie("refreshToken", newRefreshToken, {
             httpOnly: true,
-            sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'strict') as 'none' | 'strict',
-            secure: process.env.NODE_ENV === 'production',
+            sameSite: (isProd ? 'none' : 'lax') as 'none' | 'lax',
+            secure: isProd,
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
-            sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'strict') as 'none' | 'strict',
-            secure: process.env.NODE_ENV === 'production',
+            sameSite: (isProd ? 'none' : 'lax') as 'none' | 'lax',
+            secure: isProd,
             maxAge: 15 * 60 * 1000 // 15 minutes
         });
         res.status(200).json({
@@ -106,10 +109,11 @@ export class AuthController {
             await this.authService.logoutUser(refreshToken);
         }
 
+        const isProd = process.env.NODE_ENV === 'production';
         const cookieOptions = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'strict') as 'none' | 'strict',
+            secure: isProd,
+            sameSite: (isProd ? 'none' : 'lax') as 'none' | 'lax',
         };
 
         res.clearCookie('refreshToken', cookieOptions);
@@ -132,10 +136,11 @@ export class AuthController {
 
         const result = await this.authService.verifyEmail(verifyUser.userId, otp);
 
+        const isProd = process.env.NODE_ENV === 'production';
         const cookieOptions = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'strict') as 'none' | 'strict',
+            secure: isProd,
+            sameSite: (isProd ? 'none' : 'lax') as 'none' | 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000
         };
 
@@ -163,10 +168,11 @@ export class AuthController {
 
         const result = await this.authService.resendVerificationOTP(verifyUser.userId);
 
+        const isProd = process.env.NODE_ENV === 'production';
         res.cookie('verify_token', result.verifyToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'strict') as 'none' | 'strict',
+            secure: isProd,
+            sameSite: (isProd ? 'none' : 'lax') as 'none' | 'lax',
             maxAge: 10 * 60 * 1000 // 10 minutes
         });
 

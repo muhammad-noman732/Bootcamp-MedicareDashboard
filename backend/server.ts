@@ -33,7 +33,10 @@ app.use('/api/', express.json({
 
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 app.use(cookieParser());
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:5173").split(",").map(origin => origin.trim());
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:5173")
+  .split(",")
+  .map(origin => origin.trim())
+  .filter(origin => origin !== "");
 
 const corsOptions = {
   origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {

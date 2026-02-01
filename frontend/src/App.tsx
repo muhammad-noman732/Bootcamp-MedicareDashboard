@@ -1,22 +1,15 @@
 import { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Loader2 } from "lucide-react";
-
-// Eager load - Critical components needed immediately
 import { ProtectedRoute } from "./components/auth/guards/ProtectedRoute";
 import { PublicRoute } from "./components/auth/guards/PublicRoute";
 
-// Lazy load - Auth pages (loaded when user visits auth routes)
 const SignupPage = lazy(() => import("./pages/auth/signup/SignupPage"));
 const LoginPage = lazy(() => import("./pages/auth/login/LoginPage"));
 const VerifyEmailPage = lazy(() => import("./pages/auth/verifyEmail/VerifyEmailPage"));
 const ForgotPasswordPage = lazy(() => import("./pages/auth/forgotPassword/ForgotPasswordPage"));
 const ResetPasswordPage = lazy(() => import("./pages/auth/resetPassword/ResetPasswordPage"));
-
-// Lazy load - Onboarding
 const OnBoardingPage = lazy(() => import("./pages/onBoarding/onBoarding"));
-
-// Lazy load - Dashboard layout and pages
 const DashboardLayout = lazy(() => import("./components/dashboard/DashboardLayout"));
 const DashboardHome = lazy(() => import("./pages/dashboard/home/DashboardHome").then(m => ({ default: m.DashboardHome })));
 const PatientsPage = lazy(() => import("./pages/dashboard/patients/PatientsPage"));
@@ -26,15 +19,11 @@ const SchedulePage = lazy(() => import("./pages/dashboard/schedule/SchedulePage"
 const SettingsPage = lazy(() => import("./pages/dashboard/settings/SettingsPage"));
 const AnalyticsPage = lazy(() => import("./pages/dashboard/analytics/AnalyticsPage"));
 const SupportPage = lazy(() => import("./pages/dashboard/support/SupportPage"));
-
-// Loading fallback component
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-screen bg-background">
     <Loader2 className="h-8 w-8 animate-spin text-primary" />
   </div>
 );
-
-// Wrap lazy components with Suspense
 const withSuspense = (Component: React.LazyExoticComponent<React.ComponentType>) => (
   <Suspense fallback={<PageLoader />}>
     <Component />

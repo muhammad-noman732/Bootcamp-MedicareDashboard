@@ -4,10 +4,8 @@ describe('Forgot Password Page', () => {
     });
 
     it('should display forgot password form elements', () => {
-        // Check form fields exist
         cy.get('input#email').should('be.visible');
 
-        // Check submit button exists
         cy.get('button[type="submit"]').should('be.visible');
     });
 

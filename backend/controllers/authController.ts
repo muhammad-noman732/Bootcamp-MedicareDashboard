@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { asyncHandler } from "../utils/asyncHandler.ts";
-import { authSchema, loginSchema, changePasswordSchema, updateProfileSchema, onboardingSchema, forgotPasswordSchema, resetPasswordSchema } from "../schema/userSchema.ts";
-import { verifyEmailSchema, resendOTPSchema } from "../schema/emailVerificationSchema.ts";
+import { authSchema, loginSchema, changePasswordSchema, updateProfileSchema, onboardingSchema, forgotPasswordSchema, resetPasswordSchema } from "../validations/userSchema.ts";
+import { verifyEmailSchema, resendOTPSchema } from "../validations/emailVerificationSchema.ts";
 import { AuthService } from "../services/authServices.ts";
 import type { AuthUserResponse } from "../types/authTypes.ts";
 import { UnauthorizedError } from "../utils/appError.ts";
@@ -72,7 +72,6 @@ export class AuthController {
         this.sendTokenResponse(res, result, "Login successful");
     });
 
-    // refresh access token
     refresh = asyncHandler(async (req: Request, res: Response) => {
         const refreshToken = req.cookies.refreshToken;
 
@@ -94,7 +93,7 @@ export class AuthController {
             httpOnly: true,
             sameSite: (isProd ? 'none' : 'lax') as 'none' | 'lax',
             secure: isProd,
-            maxAge: 15 * 60 * 1000 // 15 minutes
+            maxAge: 15 * 60 * 1000
         });
         res.status(200).json({
             status: "success",
@@ -173,7 +172,7 @@ export class AuthController {
             httpOnly: true,
             secure: isProd,
             sameSite: (isProd ? 'none' : 'lax') as 'none' | 'lax',
-            maxAge: 10 * 60 * 1000 // 10 minutes
+            maxAge: 10 * 60 * 1000
         });
 
         res.status(200).json({
@@ -198,7 +197,6 @@ export class AuthController {
 
         const { email, name, picture, sub, email_verified, iss } = payload;
 
-        // 1. Payload Safety Checks
         if (!email || !sub) {
             throw new UnauthorizedError("Invalid Google account data: email or sub missing");
         }
@@ -297,5 +295,4 @@ export class AuthController {
         });
     });
 }
-
 

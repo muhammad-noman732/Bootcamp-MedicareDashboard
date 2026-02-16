@@ -4,15 +4,12 @@ describe('Login Page', () => {
     });
 
     it('should display login form elements', () => {
-        // Check page title/header
         cy.contains('Welcome to Medicare').should('be.visible');
         cy.contains('Login to your account').should('be.visible');
 
-        // Check form fields exist
         cy.get('input#email').should('be.visible');
         cy.get('input#password').should('be.visible');
 
-        // Check buttons
         cy.contains('button', 'Login').should('be.visible');
         cy.contains('Forgot password').should('be.visible');
     });
@@ -20,7 +17,6 @@ describe('Login Page', () => {
     it('should show validation errors for empty form submission', () => {
         cy.contains('button', 'Login').click();
 
-        // Should show validation error messages
         cy.get('.text-destructive').should('exist');
     });
 
@@ -53,21 +49,15 @@ describe('Login Page', () => {
 
 
     it('should successfully login with valid credentials', () => {
-        // Load user fixtures
         cy.fixture('users').then((users) => {
-            // Type email
             cy.get('input#email').clear().type(users.validUser.email);
 
-            // Type password
             cy.get('input#password').clear().type(users.validUser.password);
 
-            // Click login button
             cy.contains('button', 'Login').click();
 
-            // Wait for redirect to dashboard (with increased timeout for API call)
             cy.url().should('include', '/dashboard', { timeout: 15000 });
 
-            // Verify dashboard elements are visible
             cy.contains('Dashboard', { timeout: 10000 }).should('be.visible');
         });
     });
@@ -78,8 +68,6 @@ describe('Login Page', () => {
             cy.get('input#password').clear().type(users.invalidUser.password);
             cy.contains('button', 'Login').click();
 
-            // Should show error message (toast or inline error)
-            // Adjust selector based on how your app shows login errors
             cy.contains(/invalid|incorrect|error|failed/i, { timeout: 10000 }).should('be.visible');
         });
     });

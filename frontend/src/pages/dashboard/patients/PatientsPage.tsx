@@ -32,4 +32,3 @@ export const PatientsPage = () => {
 }
 
 export default PatientsPage
-

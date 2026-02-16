@@ -16,4 +16,3 @@ export function FormRow({ label, htmlFor, children }: FormRowProps) {
     </div>
   )
 }
-

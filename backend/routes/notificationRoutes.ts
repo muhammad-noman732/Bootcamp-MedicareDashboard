@@ -14,13 +14,11 @@ const controller = new NotificationController(service);
 const jwtService = new JwtService();
 const authMiddleware = new AuthMiddleware(jwtService);
 
-// Persistent history routes
 notificationRouter.get("/", authMiddleware.authMiddleware, controller.getNotifications);
 notificationRouter.patch("/read-all", authMiddleware.authMiddleware, controller.markAllRead);
 notificationRouter.patch("/:id/read", authMiddleware.authMiddleware, controller.markAsRead);
 
-// Real-time SSE route
 notificationRouter.get("/stream", authMiddleware.authMiddleware, controller.subscribe);
 
 export default notificationRouter;
-export { service as notificationServiceInstance }; // Export service instance for cross-service use
+export { service as notificationServiceInstance };  

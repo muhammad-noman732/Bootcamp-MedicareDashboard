@@ -10,7 +10,6 @@ import { prisma } from "../lib/prisma";
 
 const dashboardRouter = express.Router();
 
-// Initialize dependencies
 const appointmentRepository = new AppointmentRepository();
 const patientRepository = new PatientRepository();
 const taskRepository = new TaskRepository();
@@ -26,7 +25,6 @@ const dashboardController = new DashboardController(dashboardService);
 const jwtService = new JwtService();
 const authMiddleware = new AuthMiddleware(jwtService);
 
-// Routes
 dashboardRouter.get(
     '/stats',
     authMiddleware.authMiddleware,

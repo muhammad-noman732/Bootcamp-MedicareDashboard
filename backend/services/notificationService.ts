@@ -7,7 +7,6 @@ export class NotificationService {
     async createNotification(userId: string, title: string, message: string, type: string, link?: string) {
         const notification = await this.repository.create({ userId, title, message, type, link });
 
-        // Broadcast via SSE
         notificationManager.sendNotification(userId, notification);
 
         return notification;

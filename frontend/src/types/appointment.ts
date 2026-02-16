@@ -106,6 +106,6 @@ export interface DeleteAppointmentResponse {
 }
 
 export interface DateRangeQueryParams {
-    startDate: string; // ISO Date string
-    endDate: string; // ISO Date string
+    startDate: string;  
+    endDate: string;  
 }

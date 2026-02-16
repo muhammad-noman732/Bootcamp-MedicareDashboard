@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler";
 import type { Request, Response } from "express";
 import { AppointmentService } from "../services/appointmentService";
-import { appointmentSchema, updateAppointmentSchema, appointmentIdSchema, dateRangeQuerySchema } from "../schema/appointmentSchema";
+import { appointmentSchema, updateAppointmentSchema, appointmentIdSchema, dateRangeQuerySchema } from "../validations/appointmentSchema";
 import { BadRequestError, InternalServerError, UnauthorizedError } from '../utils/appError';
 
 export class AppointmentController {

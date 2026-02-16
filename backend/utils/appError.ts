@@ -1,9 +1,8 @@
 import type { ValidationErrorDetail } from "../types/errorTypes";
 
 export class AppError extends Error {
-    public status: string; // Will be "fail" or "error"
+    public status: string;  
 
-    // here in constructur with public we are directly assigning the value as well
     constructor(
         public statusCode: number,
         message: string,

@@ -42,4 +42,3 @@ export function PatientsTable({ patients }: PatientsTableProps) {
     </div>
   )
 }
-

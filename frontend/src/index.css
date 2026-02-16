@@ -28,7 +28,6 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Custom Palette from Image */
   --color-status-blue: #2F80ED;
   --color-status-green: #27AE60;
   --color-status-yellow: #E2B93B;
@@ -139,7 +138,6 @@
   }
 }
 
-/* Schedule calendar tweaks */
 .schedule-calendar .fc-scroller,
 .schedule-calendar .fc-scroller-liquid-absolute {
   overflow: visible !important;

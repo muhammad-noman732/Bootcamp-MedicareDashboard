@@ -5,16 +5,13 @@ describe('Public Routes Navigation', () => {
     });
 
     it('should navigate between auth pages correctly', () => {
-        // Start at signup
         cy.visit('/auth/signup');
         cy.contains('Create your account').should('be.visible');
 
-        // Go to login
         cy.contains('Sign in').click();
         cy.url().should('include', '/auth/login');
         cy.contains('Login to your account').should('be.visible');
 
-        // Go to signup from login
         cy.contains('Sign up').click();
         cy.url().should('include', '/auth/signup');
         cy.contains('Create your account').should('be.visible');
@@ -27,9 +24,7 @@ describe('Public Routes Navigation', () => {
     });
 
     it('should redirect unauthenticated users from protected routes', () => {
-        // Try to access dashboard directly (should redirect to login/signup)
         cy.visit('/dashboard');
-        // User should be redirected to auth pages since they are not logged in
         cy.url().should('not.include', '/dashboard');
     });
 });

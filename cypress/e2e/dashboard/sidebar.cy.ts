@@ -1,23 +1,7 @@
-/**
- * Dashboard Sidebar Tests
- * 
- * NOTE: These tests require a logged-in user session.
- * To run these tests, you need to either:
- * 1. Use cy.session() with real credentials
- * 2. Mock the auth state by setting localStorage/cookies
- * 3. Use a test user that is already seeded in the database
- * 
- * For now, these tests are written for reference and will need
- * the authentication setup in cypress/support/commands.ts
- */
 
 describe('Dashboard Sidebar Navigation', () => {
-    // Skip these tests until auth is configured
-    // Remove .skip when you set up authentication in commands.ts
     describe.skip('Authenticated User', () => {
         beforeEach(() => {
-            // TODO: Add login command in cypress/support/commands.ts
-            // cy.login('test@example.com', 'password123');
             cy.visit('/dashboard');
         });
 
@@ -72,10 +56,8 @@ describe('Dashboard Sidebar Navigation', () => {
         });
 
         it('should highlight active navigation item', () => {
-            // Dashboard should be active by default
             cy.contains('Dashboard').parent().should('have.class', 'font-medium');
 
-            // Click on Tasks and verify it becomes active
             cy.contains('Tasks').click();
             cy.contains('Tasks').should('have.class', 'font-medium');
         });

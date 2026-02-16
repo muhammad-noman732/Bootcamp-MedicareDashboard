@@ -4,23 +4,19 @@ describe('Signup Page', () => {
     });
 
     it('should display signup form elements', () => {
-        // Check page title/header
         cy.contains('Welcome to Medicare').should('be.visible');
         cy.contains('Create your account').should('be.visible');
 
-        // Check form fields exist
         cy.get('input#email').should('be.visible');
         cy.get('input#password').should('be.visible');
         cy.get('input#confirmPassword').should('be.visible');
 
-        // Check button
         cy.contains('button', 'Create an account').should('be.visible');
     });
 
     it('should show validation errors for empty form submission', () => {
         cy.contains('button', 'Create an account').click();
 
-        // Should show validation error messages
         cy.get('.text-destructive').should('exist');
     });
 

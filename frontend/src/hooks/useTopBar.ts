@@ -9,6 +9,9 @@ export function useTopBar() {
     const [searchValue, setSearchValue] = useState(searchParams.get("search") || "");
     const debouncedSearch = useDebounce(searchValue, 400);
 
+    const activeSearch = searchParams.get("search") || "";
+    const [shouldClearUrl, setShouldClearUrl] = useState(true);
+
     const { data: userResponse } = useGetCurrentUserQuery();
     const { handleLogout, isLoading: isLoggingOut } = useLogout();
 
@@ -26,22 +29,45 @@ export function useTopBar() {
         const newParams = new URLSearchParams(searchParams);
         if (debouncedSearch) {
             newParams.set("search", debouncedSearch);
-        } else {
+            setShouldClearUrl(true);
+        } else if (shouldClearUrl) {
             newParams.delete("search");
         }
 
-        if (newParams.get("search") !== searchParams.get("search")) {
-            newParams.set("page", "1");
+        if (newParams.toString() !== searchParams.toString()) {
+            if (newParams.get("search")) {
+                newParams.set("page", "1");
+            }
             setSearchParams(newParams, { replace: true });
         }
-    }, [debouncedSearch, setSearchParams, searchParams]);
+    }, [debouncedSearch, setSearchParams, searchParams, shouldClearUrl]);
+
+    const handleSearchSubmit = () => {
+        if (searchValue) {
+            const newParams = new URLSearchParams(searchParams);
+            newParams.set("search", searchValue); // Ensure URL is set immediately
+            newParams.set("page", "1");
+            setSearchParams(newParams, { replace: true });
+
+            setShouldClearUrl(false);
+            setSearchValue("");
+        }
+    };
+
+    const handleClearSearch = () => {
+        setShouldClearUrl(true);
+        setSearchValue("");
+    };
 
     return {
         searchValue,
         setSearchValue,
+        activeSearch,
         user,
         isLoggingOut,
         handleLogout,
-        formattedDate
+        formattedDate,
+        handleSearchSubmit,
+        handleClearSearch
     };
 }

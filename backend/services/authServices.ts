@@ -5,7 +5,7 @@ import {
     type UpdateProfileSchema,
     type OnboardingSchema,
     type ResetPasswordSchema,
-} from "../schema/userSchema";
+} from "../validations/userSchema";
 
 import type { AuthRepository } from "../repositories/authRepository";
 import type { User } from "../generated/prisma/client";
@@ -533,4 +533,3 @@ export class AuthService {
         await this.authRepository.revokeRefreshTokensByUserId(resetRecord.userId);
     }
 }
-

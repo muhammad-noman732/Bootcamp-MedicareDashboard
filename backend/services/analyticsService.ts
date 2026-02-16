@@ -27,12 +27,11 @@ export class AnalyticsService {
         ] = await Promise.all([
             this.analyticsRepository.getSummaryStats(userId),
             this.analyticsRepository.getPatientStatusDistribution(userId),
-            this.analyticsRepository.getAppointmentTrends(userId, 30), // Last 30 days
+            this.analyticsRepository.getAppointmentTrends(userId, 30),  
             this.analyticsRepository.getGenderDistribution(userId),
             this.analyticsRepository.getAgeData(userId)
         ]);
 
-        // 1. Process Summary
         const summary: AnalyticsSummary = {
             totalPatients: {
                 count: summaryData.totalPatients,

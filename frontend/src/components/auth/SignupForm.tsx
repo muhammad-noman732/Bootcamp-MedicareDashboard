@@ -3,7 +3,7 @@ import { FormField } from "./FormField"
 import { Loader2 } from "lucide-react"
 import { useSignup } from "@/hooks/useSignup"
 import { Link } from "react-router-dom"
-import GoogleSignupButton from "./GoogleSignupButton"
+import { GoogleLoginButton } from "./GoogleLoginButton"
 
 
 export const SignupForm = () => {
@@ -72,7 +72,7 @@ export const SignupForm = () => {
             )}
           </Button>
 
-          <GoogleSignupButton />
+          <GoogleLoginButton />
         </div>
       </form>
 

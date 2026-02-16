@@ -13,7 +13,6 @@ export const PublicRoute = () => {
         );
     }
 
-    // If user is logged in, redirect to dashboard
     if (data?.data) {
         return <Navigate to="/dashboard" replace />;
     }

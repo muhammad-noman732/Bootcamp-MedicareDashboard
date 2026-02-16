@@ -1,4 +1,4 @@
-import { LogOut, Mail, Search, Loader2 } from "lucide-react"
+import { LogOut, Mail, Search, Loader2, X } from "lucide-react"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useTopBar } from "@/hooks/useTopBar"
 import { NotificationDropdown } from "./NotificationDropdown"
@@ -10,7 +10,10 @@ export function TopBar() {
     user,
     isLoggingOut,
     handleLogout,
-    formattedDate
+    formattedDate,
+    handleSearchSubmit,
+    handleClearSearch,
+    activeSearch
   } = useTopBar()
 
   return (
@@ -22,13 +25,23 @@ export function TopBar() {
             <input
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search patients, tasks, or more..."
+              onKeyDown={(e) => e.key === "Enter" && handleSearchSubmit()}
+              placeholder={activeSearch ? `Searching for: ${activeSearch}` : "Search patients, tasks, or more..."}
               className="h-10 w-full rounded-md border border-border px-4 pr-10 text-sm text-dark placeholder:text-gray-3 focus:outline-none focus:ring-2 focus:ring-primary/20 font-mukta"
             />
-            <Search
-              size={18}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-3"
-            />
+            {searchValue || activeSearch ? (
+              <button
+                onClick={handleClearSearch}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-3 hover:text-dark"
+              >
+                <X size={18} />
+              </button>
+            ) : (
+              <Search
+                size={18}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-3"
+              />
+            )}
           </div>
           <button className="md:hidden p-2 text-gray-3">
             <Search size={20} />
@@ -69,8 +82,7 @@ export function TopBar() {
           </div>
         </div>
       </div>
-    </header>
+    </header >
   )
 }
-
 

@@ -33,4 +33,3 @@ export const AddPatientHeader = ({ onSave }: AddPatientHeaderProps) => {
     </div>
   )
 }
-

@@ -70,7 +70,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       <SidebarContent className="pr-3">
-        {/* MENU Section */}
+        { }
         <SidebarGroup className="mt-3">
           <SidebarGroupLabel className="text-xs font-medium text-muted-foreground mb-2 px-2">
             MENU
@@ -107,7 +107,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
         <SidebarSeparator className="mx-4 my-4" />
 
-        {/* GENERAL Section */}
+        { }
         <SidebarGroup className="mt-7">
           <SidebarGroupLabel className="text-xs font-medium text-muted-foreground mb-2 px-2">
             GENERAL

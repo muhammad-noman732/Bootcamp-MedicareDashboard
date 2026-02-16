@@ -1,4 +1,4 @@
-import type { CreateAppointmentSchema, UpdateAppointmentSchema } from "../schema/appointmentSchema";
+import type { CreateAppointmentSchema, UpdateAppointmentSchema } from "../validations/appointmentSchema";
 import { AppointmentRepository } from "../repositories/appointmentRepository";
 import { BadRequestError, NotFoundError, UnauthorizedError, InternalServerError } from "../utils/appError";
 import type { AppointmentWithPatient, AppointmentWithDetails } from "../types/appointmentTypes";
@@ -69,7 +69,6 @@ export class AppointmentService {
             notifications: data.notifications,
         });
 
-        // Trigger Notification
         await this.notificationService.createNotification(
             userId,
             "New Appointment Scheduled",
@@ -189,7 +188,6 @@ export class AppointmentService {
 
         await this.appointmentRepository.delete(id);
 
-        // Trigger Notification
         await this.notificationService.createNotification(
             userId,
             "Appointment Cancelled",

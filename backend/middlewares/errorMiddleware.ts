@@ -24,4 +24,3 @@ export const errorHandler = (
             : 'Something went wrong'
     });
 }
-

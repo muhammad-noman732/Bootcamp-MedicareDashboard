@@ -11,7 +11,6 @@ export class DashboardService {
     ) { }
 
     private calculateTrend(current: number, previous: number): string {
-       
         if (previous === 0) {
             return current > 0 ? "+100%" : "0%";
         }
@@ -46,7 +45,6 @@ export class DashboardService {
             this.appointmentRepository.getMonthlyConsultationData(userId, true, 6)
         ]);
 
-        
         const offlineTrend = this.calculateTrend(
             offlineStats.currentMonth,
             offlineStats.previousMonth

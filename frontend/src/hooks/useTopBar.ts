@@ -34,13 +34,7 @@ export function useTopBar() {
     }, [location.pathname]);
 
     useEffect(() => {
-        // Only sync debouncedValue to URL if:
-        // 1. the value actually changed
-        // 2. and it's NOT just the empty value from a tab switch (unless user explicitly cleared it)
-
         if (searchValue === "" && urlSearch !== "") {
-            // If input is empty but URL has search, we leave it alone (placeholder handles UI)
-            // unless this was a manual clear? No, clear button handles manual clear.
             return;
         }
 

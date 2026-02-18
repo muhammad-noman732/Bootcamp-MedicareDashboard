@@ -9,12 +9,12 @@ export const VerifyEmailForm = () => {
     const { control, formState: { errors } } = form
 
     return (
-        <div className="w-full max-w-[480px] mx-auto flex flex-col font-['Mukta']">
+        <div className="w-full max-w-[452px] mx-auto flex flex-col font-mukta">
             <div className="space-y-1 mb-6">
-                <h1 className="text-foreground font-normal text-[32px] sm:text-[38px] leading-[100%] tracking-[0.0025em]">
+                <h1 className="text-black font-normal text-[32px] sm:text-[38px] leading-[100%] tracking-[0.0025em]">
                     Check your email
                 </h1>
-                <p className="text-muted-foreground text-sm sm:text-base">
+                <p className="text-sm sm:text-base font-medium text-gray-2 mt-2">
                     We sent a verification code to your email.
                 </p>
             </div>
@@ -47,7 +47,7 @@ export const VerifyEmailForm = () => {
                     >
                         {isLoading ? (
                             <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin text-white" />
                                 Verifying...
                             </>
                         ) : (
@@ -56,12 +56,12 @@ export const VerifyEmailForm = () => {
                     </Button>
 
                     <div className="flex items-center justify-center gap-2 text-sm">
-                        <span className="text-muted-foreground">Didn't receive the code?</span>
+                        <span className="text-gray-2">Didn't receive the code?</span>
                         <button
                             type="button"
                             onClick={handleResendOtp}
                             disabled={isResending || isLoading}
-                            className="text-primary font-semibold hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="text-primary font-semibold hover:underline disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                         >
                             {isResending ? "Sending..." : "Click to resend"}
                         </button>

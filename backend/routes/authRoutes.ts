@@ -18,8 +18,8 @@ import {
     changePasswordSchema,
     updateProfileSchema,
     onboardingSchema
-} from "../validations/userSchema.ts";
-import { verifyEmailSchema } from "../validations/emailVerificationSchema.ts";
+} from "../validations/userSchemaValidation.ts";
+import { verifyEmailSchema } from "../validations/emailVerificationValidition.ts";
 
 
 const authRouter = express.Router();

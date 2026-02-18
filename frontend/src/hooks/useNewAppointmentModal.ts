@@ -56,6 +56,7 @@ export function useNewAppointmentModal(onClose: () => void) {
         selectedTime,
         selectedClinic,
         selectedRoom,
-        formatDate
+        formatDate,
+        onBeginAppointment: onSubmit
     }
 }

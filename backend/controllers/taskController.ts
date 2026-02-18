@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler";
 import type { Request, Response } from "express";
 import { TaskService } from "../services/taskService";
-import { createTaskSchema, updateTaskSchema, taskIdSchema, toggleTaskCompletionSchema, taskQuerySchema } from "../validations/taskSchema";
+import { createTaskSchema, updateTaskSchema, taskIdSchema, toggleTaskCompletionSchema, taskQuerySchema } from "../validations/tasksValidation";
 import { InternalServerError, UnauthorizedError } from '../utils/appError';
 
 export class TaskController {

@@ -5,7 +5,7 @@ import {
     type UpdateProfileSchema,
     type OnboardingSchema,
     type ResetPasswordSchema,
-} from "../validations/userSchema";
+} from "../validations/userSchemaValidation";
 
 import type { AuthRepository } from "../repositories/authRepository";
 import type { User } from "../generated/prisma/client";

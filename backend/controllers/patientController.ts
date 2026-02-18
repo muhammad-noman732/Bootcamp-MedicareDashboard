@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { createPatientSchema, updatePatientSchema } from "../validations/patientSchema";
+import { createPatientSchema, updatePatientSchema } from "../validations/patientsValidation";
 import { PatientServices } from "../services/patientServices";
 import { InternalServerError, UnauthorizedError } from "../utils/appError";
 import { asyncHandler } from "../utils/asyncHandler";
-import { paginationQuerySchema } from "../validations/paginationQuerySchema";
+import { paginationQuerySchema } from "../validations/paginationQueryValidation";
 
 export class PatientController {
   constructor(private patientServices: PatientServices) { }

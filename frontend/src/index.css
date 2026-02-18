@@ -64,7 +64,7 @@
   --card-foreground: #1D1D1D;
   --popover: #FFFFFF;
   --popover-foreground: #1D1D1D;
-  --primary: #2F80ED;
+  --primary: #0000AC;
   --primary-foreground: #FFFFFF;
   --secondary: #F2F2F2;
   --secondary-foreground: #4F4F4F;
@@ -96,6 +96,8 @@
   --status-awaiting-surgery-overlay: rgba(47, 128, 237, 0.1);
   --status-on-treatment: #EB5757;
   --status-on-treatment-overlay: rgba(235, 87, 87, 0.2);
+  --sidebar-inactive-color: #828282;
+  --primary-dark: #00008c;
 }
 
 .dark {
@@ -136,7 +138,17 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-text-fill-color: #000000 !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
 }
+
+
 
 .schedule-calendar .fc-scroller,
 .schedule-calendar .fc-scroller-liquid-absolute {

@@ -17,7 +17,7 @@ export function NotificationDropdown() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button className="relative p-1 hover:text-primary transition-colors focus:outline-none">
+                <button className="relative p-1 hover:text-primary transition-colors focus:outline-none cursor-pointer">
                     <Bell size={20} strokeWidth={1.5} />
                     {unreadCount > 0 && (
                         <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-white">
@@ -35,7 +35,7 @@ export function NotificationDropdown() {
                                 e.preventDefault();
                                 markAllRead();
                             }}
-                            className="text-[11px] text-primary hover:underline flex items-center gap-1"
+                            className="text-[11px] text-primary hover:underline flex items-center gap-1 cursor-pointer"
                         >
                             <Check size={12} />
                             Mark all as read
@@ -83,7 +83,7 @@ export function NotificationDropdown() {
                     <>
                         <DropdownMenuSeparator />
                         <div className="p-2 text-center">
-                            <button className="text-[11px] text-[#828282] hover:text-black">
+                            <button className="text-[11px] text-[#828282] hover:text-black cursor-pointer">
                                 View all notifications
                             </button>
                         </div>

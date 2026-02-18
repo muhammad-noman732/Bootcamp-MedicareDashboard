@@ -22,21 +22,21 @@ export function TaskActions({ task }: TaskActionsProps) {
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <button className="p-1 hover:bg-muted rounded-md transition-colors outline-none focus:ring-2 focus:ring-primary/20">
-                        <MoreHorizontal size={18} className="text-[#828282]" />
+                    <button className="p-1 hover:bg-muted rounded-md transition-colors outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer">
+                        <MoreHorizontal size={18} className="text-gray-3" />
                     </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[160px]">
                     <DropdownMenuItem
                         onClick={() => setShowUpdate(true)}
-                        className="cursor-pointer gap-2 text-[#1D1D1D]"
+                        className="cursor-pointer gap-2 text-dark"
                     >
                         <Pencil size={16} />
                         Edit
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         onClick={() => setShowDelete(true)}
-                        className="cursor-pointer gap-2 text-[#EB5757] focus:text-[#EB5757] focus:bg-red-50"
+                        className="cursor-pointer gap-2 text-status-red focus:text-status-red focus:bg-red-50"
                     >
                         <Trash2 size={16} />
                         Delete

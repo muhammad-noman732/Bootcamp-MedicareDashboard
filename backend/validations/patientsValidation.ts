@@ -3,13 +3,13 @@ import parsePhoneNumber from 'libphonenumber-js';
 
 const internationalPhoneSchema = z.string().refine((value) => {
     try {
-        const phoneNumber = parsePhoneNumber(value);
+        const phoneNumber = parsePhoneNumber(value, 'PK');
         return phoneNumber?.isValid();
     } catch {
         return false;
     }
 }, {
-    message: 'Invalid international phone number',
+    message: 'Invalid phone number (e.g. +923001234567 or 03001234567)',
 });
 
 export const createPatientSchema = z.object({
@@ -19,7 +19,7 @@ export const createPatientSchema = z.object({
     diagnosis: z.string().min(3, "Diagnosis must be at least 3 characters long"),
     sex: z.enum(["male", "female"]),
     notes: z.string().optional(),
-    phoneNumber: z.string().min(10, "Phone number must be at least 10 characters long"),
+    phoneNumber: internationalPhoneSchema,
 })
 
 export const updatePatientSchema = createPatientSchema.partial();

@@ -8,8 +8,8 @@ type FormFieldProps = React.InputHTMLAttributes<HTMLInputElement> & {
 export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
   ({ id, name, label, type = "text", placeholder, className, ...props }, ref) => {
     return (
-      <label htmlFor={id} className="flex flex-col gap-1 w-full">
-        <span className="text-sm font-medium text-muted-foreground">{label}</span>
+      <label htmlFor={id} className="flex flex-col gap-1 w-full h-[68px]">
+        <span className="text-[16px] font-medium text-gray-2 leading-[100%] tracking-[0.001em] font-mukta">{label}</span>
         <input
           ref={ref}
           id={id}
@@ -17,7 +17,7 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
           type={type}
           placeholder={placeholder}
           className={cn(
-            "w-full bg-transparent border-b border-muted-foreground/40 py-1.5 text-lg font-bold text-foreground focus:outline-none focus:border-primary transition-colors placeholder:text-muted-foreground/30",
+            "w-full bg-transparent border-b border-gray-3 py-2 text-[22px] font-medium text-black leading-[100%] tracking-[0.0015em] font-mukta focus:outline-none focus:border-primary transition-colors placeholder:text-gray-3/30 h-full appearance-none",
             className
           )}
           {...props}

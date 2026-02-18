@@ -11,7 +11,7 @@ import {
     taskIdSchema,
     taskQuerySchema,
     toggleTaskCompletionSchema
-} from "../validations/taskSchema.ts";
+} from "../validations/tasksValidation.ts";
 
 
 const taskRouter = express.Router();

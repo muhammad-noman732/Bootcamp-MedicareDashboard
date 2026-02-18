@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { asyncHandler } from "../utils/asyncHandler.ts";
-import { authSchema, loginSchema, changePasswordSchema, updateProfileSchema, onboardingSchema, forgotPasswordSchema, resetPasswordSchema } from "../validations/userSchema.ts";
-import { verifyEmailSchema, resendOTPSchema } from "../validations/emailVerificationSchema.ts";
+import { authSchema, loginSchema, changePasswordSchema, updateProfileSchema, onboardingSchema, forgotPasswordSchema, resetPasswordSchema } from "../validations/userSchemaValidation.ts";
+import { verifyEmailSchema, resendOTPSchema } from "../validations/emailVerificationValidition.ts";
 import { AuthService } from "../services/authServices.ts";
 import type { AuthUserResponse } from "../types/authTypes.ts";
 import { UnauthorizedError } from "../utils/appError.ts";

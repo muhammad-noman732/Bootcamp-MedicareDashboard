@@ -5,8 +5,8 @@ import { PatientController } from "../controllers/patientController";
 import { AuthMiddleware } from "../middlewares/authMiddleware";
 import { JwtService } from "../lib/jwt";
 import { validate } from "../middlewares/validateMiddleware.ts";
-import { createPatientSchema, updatePatientSchema } from "../validations/patientSchema.ts";
-import { paginationQuerySchema } from "../validations/paginationQuerySchema.ts";
+import { createPatientSchema, updatePatientSchema } from "../validations/patientsValidation.ts";
+import { paginationQuerySchema } from "../validations/paginationQueryValidation.ts";
 
 const patientRouter = express.Router();
 

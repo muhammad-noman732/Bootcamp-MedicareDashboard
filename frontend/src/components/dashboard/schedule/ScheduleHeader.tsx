@@ -22,28 +22,28 @@ export function ScheduleHeader({
         <button
           type="button"
           onClick={onAdd}
-          className="h-10 w-10 rounded-lg border border-border hover:bg-muted flex items-center justify-center transition-colors"
+          className="h-10 w-10 rounded-lg border border-border hover:bg-muted flex items-center justify-center transition-colors cursor-pointer"
         >
           <Plus size={20} className="text-foreground" />
         </button>
         <button
           type="button"
           onClick={onFilter}
-          className="h-10 w-10 rounded-lg border border-border hover:bg-muted flex items-center justify-center transition-colors"
+          className="h-10 w-10 rounded-lg border border-border hover:bg-muted flex items-center justify-center transition-colors cursor-pointer"
         >
           <Filter size={20} className="text-foreground" />
         </button>
         <button
           type="button"
           onClick={onPrint}
-          className="h-10 w-10 rounded-lg border border-border hover:bg-muted flex items-center justify-center transition-colors"
+          className="h-10 w-10 rounded-lg border border-border hover:bg-muted flex items-center justify-center transition-colors cursor-pointer"
         >
           <Printer size={20} className="text-foreground" />
         </button>
         <button
           type="button"
           onClick={onHelp}
-          className="h-10 w-10 rounded-lg border border-border hover:bg-muted flex items-center justify-center transition-colors"
+          className="h-10 w-10 rounded-lg border border-border hover:bg-muted flex items-center justify-center transition-colors cursor-pointer"
         >
           <HelpCircle size={20} className="text-foreground" />
         </button>

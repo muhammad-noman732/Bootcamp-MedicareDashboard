@@ -22,7 +22,7 @@ export function PatientActions({ patient }: PatientActionsProps) {
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <button className="p-1 hover:bg-muted rounded-md transition-colors outline-none focus:ring-2 focus:ring-primary/20">
+                    <button className="p-1 hover:bg-muted rounded-md transition-colors outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer">
                         <MoreHorizontal size={18} className="text-gray-3" />
                     </button>
                 </DropdownMenuTrigger>

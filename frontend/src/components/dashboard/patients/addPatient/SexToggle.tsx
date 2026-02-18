@@ -20,7 +20,7 @@ export const SexToggle = forwardRef<HTMLDivElement, SexToggleProps>(
             onClick={() => onChange?.("male")}
             disabled={disabled}
             className={cn(
-              "flex-1 px-4 py-2 rounded-md border text-sm font-medium transition-colors",
+              "flex-1 px-4 py-2 rounded-md border text-sm font-medium transition-colors cursor-pointer",
               value === "male"
                 ? "bg-primary text-primary-foreground border-primary"
                 : "bg-muted text-muted-foreground border-border hover:bg-muted/80",
@@ -34,7 +34,7 @@ export const SexToggle = forwardRef<HTMLDivElement, SexToggleProps>(
             onClick={() => onChange?.("female")}
             disabled={disabled}
             className={cn(
-              "flex-1 px-4 py-2 rounded-md border text-sm font-medium transition-colors",
+              "flex-1 px-4 py-2 rounded-md border text-sm font-medium transition-colors cursor-pointer",
               value === "female"
                 ? "bg-primary text-primary-foreground border-primary"
                 : "bg-muted text-muted-foreground border-border hover:bg-muted/80",

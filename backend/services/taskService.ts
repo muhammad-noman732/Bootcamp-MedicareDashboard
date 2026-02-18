@@ -1,5 +1,5 @@
 import { TaskRepository } from "../repositories/taskRepository";
-import { CreateTaskSchema, UpdateTaskSchema } from "../validations/taskSchema";
+import { CreateTaskSchema, UpdateTaskSchema } from "../validations/tasksValidation";
 import { Prisma, Task } from "../generated/prisma/client";
 import { NotFoundError, UnauthorizedError } from "../utils/appError";
 import { TaskQueryResponse } from "../types/taskTypes";

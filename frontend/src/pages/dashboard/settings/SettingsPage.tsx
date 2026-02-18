@@ -30,7 +30,7 @@ export default function SettingsPage() {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={cn(
-                                    "justify-start rounded-md px-3 py-2 text-sm font-medium hover:bg-muted text-left transition-colors",
+                                    "justify-start rounded-md px-3 py-2 text-sm font-medium hover:bg-muted text-left transition-colors cursor-pointer",
                                     activeTab === tab.id
                                         ? "bg-muted text-primary"
                                         : "text-muted-foreground bg-transparent"

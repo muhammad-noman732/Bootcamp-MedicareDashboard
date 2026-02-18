@@ -1,9 +1,9 @@
 import { PatientRepository } from "../repositories/patientRepository";
-import { CreatePatientSchema, UpdatePatientSchema } from "../validations/patientSchema";
+import { CreatePatientSchema, UpdatePatientSchema } from "../validations/patientsValidation";
 import { Patient, PatientStatus, Prisma } from "@prisma/client";
 import { ConflictError, InternalServerError, NotFoundError } from "../utils/appError";
 import crypto from "crypto";
-import { PaginationQuery } from "../validations/paginationQuerySchema";
+import { PaginationQuery } from "../validations/paginationQueryValidation";
 
 export class PatientServices {
     constructor(private patientRepository: PatientRepository) { }

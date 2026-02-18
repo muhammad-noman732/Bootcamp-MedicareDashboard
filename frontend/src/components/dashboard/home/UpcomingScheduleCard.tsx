@@ -153,7 +153,7 @@ export function UpcomingScheduleCard() {
                                                                             <div className="flex items-center gap-2">
                                                                                 <button
                                                                                     onClick={(e) => { e.stopPropagation(); handleDelete(app.id); }}
-                                                                                    className="flex items-center justify-center w-[36px] h-[36px] rounded-[6px] border border-border text-status-red hover:bg-red-50 transition-colors"
+                                                                                    className="flex items-center justify-center w-[36px] h-[36px] rounded-[6px] border border-border text-status-red hover:bg-red-50 transition-colors cursor-pointer"
                                                                                     title="Delete Appointment"
                                                                                 >
                                                                                     <Trash2 size={18} />
@@ -163,7 +163,7 @@ export function UpcomingScheduleCard() {
                                                                                         e.stopPropagation();
                                                                                         navigate("/dashboard/patients");
                                                                                     }}
-                                                                                    className="flex items-center justify-center w-[36px] h-[36px] rounded-[6px] border border-border text-status-blue hover:bg-blue-50 transition-colors"
+                                                                                    className="flex items-center justify-center w-[36px] h-[36px] rounded-[6px] border border-border text-status-blue hover:bg-blue-50 transition-colors cursor-pointer"
                                                                                     title="View Patient Profile"
                                                                                 >
                                                                                     <User size={18} />
@@ -173,7 +173,7 @@ export function UpcomingScheduleCard() {
                                                                                         e.stopPropagation();
                                                                                         openUpdateModal(app);
                                                                                     }}
-                                                                                    className="flex items-center justify-center w-[36px] h-[36px] rounded-[6px] border border-border text-status-blue hover:bg-blue-50 transition-colors"
+                                                                                    className="flex items-center justify-center w-[36px] h-[36px] rounded-[6px] border border-border text-status-blue hover:bg-blue-50 transition-colors cursor-pointer"
                                                                                     title="Edit Appointment"
                                                                                 >
                                                                                     <Edit size={18} />

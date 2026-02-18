@@ -1,4 +1,4 @@
-import type { CreateAppointmentSchema, UpdateAppointmentSchema } from "../validations/appointmentSchema";
+import type { CreateAppointmentSchema, UpdateAppointmentSchema } from "../validations/appointmentValidation";
 import { AppointmentRepository } from "../repositories/appointmentRepository";
 import { BadRequestError, NotFoundError, UnauthorizedError, InternalServerError } from "../utils/appError";
 import type { AppointmentWithPatient, AppointmentWithDetails } from "../types/appointmentTypes";

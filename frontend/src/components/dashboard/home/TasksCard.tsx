@@ -96,7 +96,7 @@ export function TasksCard() {
                                     <button
                                         onClick={() => onToggleTask(task.id, !task.isCompleted, task.title)}
                                         disabled={isToggling}
-                                        className="flex-shrink-0 mt-1 focus:outline-none"
+                                        className="flex-shrink-0 mt-1 focus:outline-none cursor-pointer"
                                     >
                                         {task.isCompleted ? (
                                             <div className="flex items-center justify-center w-[31.38002197504261px] h-[31.38002006769375px] rounded-[5.88px] bg-status-blue">
@@ -126,7 +126,7 @@ export function TasksCard() {
                                         </span>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
-                                                <button className="relative flex items-center justify-center w-[24px] h-[24px] rounded border-[0.72px] border-border bg-white p-0 hover:bg-muted/50 transition-colors">
+                                                <button className="relative flex items-center justify-center w-[24px] h-[24px] rounded border-[0.72px] border-border bg-white p-0 hover:bg-muted/50 transition-colors cursor-pointer">
                                                     <MoreHorizontal size={18} className="text-status-blue" />
                                                 </button>
                                             </DropdownMenuTrigger>
@@ -153,7 +153,7 @@ export function TasksCard() {
                         <div className="flex justify-end mt-2">
                             <button
                                 onClick={viewAllTasks}
-                                className="flex items-center gap-1 text-[13px] font-semibold text-primary hover:underline font-mukta"
+                                className="flex items-center gap-1 text-[13px] font-semibold text-primary hover:underline font-mukta cursor-pointer"
                             >
                                 <span>View all</span>
                                 <span className="text-primary inline-flex">›</span>

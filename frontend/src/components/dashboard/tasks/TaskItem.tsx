@@ -43,7 +43,7 @@ export function TaskItem({ task, onToggle, onEdit: _onEdit, onDelete: _onDelete 
                     type="button"
                     onClick={handleToggle}
                     className={cn(
-                        "flex items-center justify-center w-[31px] h-[31px] rounded-[6px] transition-colors",
+                        "flex items-center justify-center w-[31px] h-[31px] rounded-[6px] transition-colors cursor-pointer",
                         task.isCompleted
                             ? "bg-status-blue hover:bg-status-blue/90"
                             : "border-[0.98px] border-gray-5 bg-white hover:bg-muted"

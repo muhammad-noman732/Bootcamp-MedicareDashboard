@@ -12,7 +12,6 @@ const onboardingSchema = z.object({
     companyName: z.string().min(3, "Company name must be at least 3 characters long"),
     industry: z.string().min(3, "Industry must be at least 3 characters long"),
     employeeCount: z.string().min(1, "Employee count is required"),
-    specialty: z.string().optional(),
 });
 
 export type OnboardingFormValues = z.infer<typeof onboardingSchema>;
@@ -29,7 +28,7 @@ export const useOnboarding = () => {
             companyName: "",
             industry: "",
             employeeCount: "",
-            specialty: "",
+
         },
     });
 
@@ -39,8 +38,7 @@ export const useOnboarding = () => {
                 name: data.name,
                 companyName: data.companyName,
                 industry: data.industry,
-                employeeCount: data.employeeCount,
-                specialty: data.specialty,
+                employeeCount: data.employeeCount
             }).unwrap();
 
             toast.success("Onboarding Complete!", {

@@ -11,59 +11,65 @@ export const SignupForm = () => {
   const { register, formState: { errors } } = form
 
   return (
-    <div className="w-full max-w-[480px] mx-auto flex flex-col font-['Mukta']">
+    <div className="w-full max-w-[452px] mx-auto flex flex-col font-mukta">
       <div className="mb-6">
-        <h1 className="text-[#000000] font-normal text-[32px] leading-tight mb-1">
+        <h1 className="text-black font-normal text-[32px] leading-tight mb-1">
           Welcome to Medicare
         </h1>
-        <p className="text-[#828282] text-lg font-normal">
+        <p className="text-sm sm:text-base font-medium text-gray-2 mt-2">
           Create your account
         </p>
       </div>
 
-      <form onSubmit={onSubmit} className="flex flex-col gap-4">
-        <div className="space-y-3">
+      <form onSubmit={onSubmit} className="flex flex-col">
+        <div className="flex flex-col gap-[21px]">
+          <div className="flex flex-col">
+            <FormField
+              id="email"
+              {...register("email")}
+              type="email"
+              label="Email"
+              placeholder="Johndoe2004@gmail.com"
+            />
+            {errors.email && (
+              <p className="text-destructive text-sm mt-1">{errors.email.message}</p>
+            )}
+          </div>
 
-          <FormField
-            id="email"
-            {...register("email")}
-            type="email"
-            label="Email"
-            placeholder="Johndoe2004@gmail.com"
-          />
-          {errors.email && (
-            <p className="text-destructive text-sm">{errors.email.message}</p>
-          )}
+          <div className="flex flex-col">
+            <FormField
+              id="password"
+              {...register("password")}
+              type="password"
+              label="Password"
+              placeholder="************"
+            />
+            {errors.password && (
+              <p className="text-destructive text-sm mt-1">{errors.password.message}</p>
+            )}
+          </div>
 
-          <FormField
-            id="password"
-            {...register("password")}
-            type="password"
-            label="Password"
-            placeholder="************"
-          />
-          {errors.password && (
-            <p className="text-destructive text-sm">{errors.password.message}</p>
-          )}
-
-          <FormField
-            id="confirmPassword"
-            {...register("confirmPassword")}
-            type="password"
-            label="Repeat Password"
-            placeholder="************"
-          />
-          {errors.confirmPassword && (
-            <p className="text-destructive text-sm">
-              {errors.confirmPassword.message}
-            </p>
-          )}
+          <div className="flex flex-col">
+            <FormField
+              id="confirmPassword"
+              {...register("confirmPassword")}
+              type="password"
+              label="Repeat Password"
+              placeholder="************"
+            />
+            {errors.confirmPassword && (
+              <p className="text-destructive text-sm mt-1">
+                {errors.confirmPassword.message}
+              </p>
+            )}
+          </div>
         </div>
-        <div className="space-y-3 pt-2">
+
+        <div className="space-y-4 pt-8">
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full h-[52px] text-lg font-semibold bg-[#0000AC] hover:bg-[#00008F] text-white rounded-xl shadow-none"
+            className="w-full h-[52px] text-lg font-semibold bg-primary hover:bg-primary/90 text-white rounded-xl shadow-none"
           >
             {isLoading ? (
               <Loader2 className="h-5 w-5 animate-spin text-white" />
@@ -76,7 +82,7 @@ export const SignupForm = () => {
         </div>
       </form>
 
-      <div className="mt-6 text-center text-base text-[#828282]">
+      <div className="mt-6 text-center text-base text-gray-2">
         Have an account, <Link to="/auth/login" global-id="login-link" className="text-primary font-semibold hover:underline">Sign in</Link>
       </div>
     </div>

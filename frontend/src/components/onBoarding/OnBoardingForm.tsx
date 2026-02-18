@@ -8,21 +8,21 @@ export const OnBoardingForm = () => {
     const { register, formState: { errors } } = form;
 
     return (
-        <div className="w-full max-w-[480px] mx-auto flex flex-col font-['Mukta']">
-            <div className="space-y-1 mb-6">
-                <h1 className="text-foreground font-normal text-[32px] sm:text-[38px] leading-[100%] tracking-[0.0025em]">
+        <div className="w-full max-w-[452px] mx-auto flex flex-col font-mukta">
+            <div className="mb-6 text-left">
+                <h1 className="text-black font-normal text-[38px] leading-[100%] tracking-[0.0025em]">
                     Welcome to Medicare
                 </h1>
-                <p className="text-muted-foreground text-sm sm:text-base">
+                <p className="text-sm sm:text-base font-medium text-gray-2 mt-2">
                     Tell us about your company
                 </p>
             </div>
 
-            <form onSubmit={onSubmit} className="flex flex-col gap-3">
-                <div className="flex flex-col gap-1">
+            <form onSubmit={onSubmit} className="flex flex-col">
+                <div className="flex flex-col h-[68px]">
                     <label
                         htmlFor="name"
-                        className="text-sm font-medium text-muted-foreground"
+                        className="text-[16px] font-medium text-gray-2 leading-[100%] tracking-[0.001em]"
                     >
                         Name
                     </label>
@@ -31,21 +31,21 @@ export const OnBoardingForm = () => {
                         type="text"
                         {...register("name")}
                         className={cn(
-                            "w-full bg-transparent border-b border-muted-foreground/40 py-1.5 text-lg font-bold text-foreground focus:outline-none focus:border-primary transition-colors placeholder:text-muted-foreground/30",
+                            "w-full bg-transparent border-b border-gray-3 py-2 text-[22px] font-medium text-black leading-[100%] tracking-[0.0015em] focus:outline-none focus:border-primary transition-colors placeholder:text-gray-3/30 h-full appearance-none",
                             errors.name && "border-destructive"
                         )}
                         placeholder="John Doe"
                         disabled={isLoading}
                     />
                     {errors.name && (
-                        <p className="text-xs text-destructive">{errors.name.message}</p>
+                        <p className="text-xs text-destructive mt-1">{errors.name.message}</p>
                     )}
                 </div>
 
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col h-[68px] mt-[21px]">
                     <label
                         htmlFor="companyName"
-                        className="text-sm font-medium text-muted-foreground"
+                        className="text-[16px] font-medium text-gray-2 leading-[100%] tracking-[0.001em]"
                     >
                         Company Name
                     </label>
@@ -54,21 +54,21 @@ export const OnBoardingForm = () => {
                         type="text"
                         {...register("companyName")}
                         className={cn(
-                            "w-full bg-transparent border-b border-muted-foreground/40 py-1.5 text-lg font-bold text-foreground focus:outline-none focus:border-primary transition-colors placeholder:text-muted-foreground/30",
+                            "w-full bg-transparent border-b border-gray-3 py-2 text-[22px] font-medium text-black leading-[100%] tracking-[0.0015em] focus:outline-none focus:border-primary transition-colors placeholder:text-gray-3/30 h-full appearance-none",
                             errors.companyName && "border-destructive"
                         )}
                         placeholder="Manilla"
                         disabled={isLoading}
                     />
                     {errors.companyName && (
-                        <p className="text-xs text-destructive">{errors.companyName.message}</p>
+                        <p className="text-xs text-destructive mt-1">{errors.companyName.message}</p>
                     )}
                 </div>
 
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col h-[68px] mt-[21px]">
                     <label
                         htmlFor="industry"
-                        className="text-sm font-medium text-muted-foreground"
+                        className="text-[16px] font-medium text-gray-2 leading-[100%] tracking-[0.001em]"
                     >
                         Industry
                     </label>
@@ -77,21 +77,21 @@ export const OnBoardingForm = () => {
                         type="text"
                         {...register("industry")}
                         className={cn(
-                            "w-full bg-transparent border-b border-muted-foreground/40 py-1.5 text-lg font-bold text-foreground focus:outline-none focus:border-primary transition-colors placeholder:text-muted-foreground/30",
+                            "w-full bg-transparent border-b border-gray-3 py-2 text-[22px] font-medium text-black leading-[100%] tracking-[0.0015em] focus:outline-none focus:border-primary transition-colors placeholder:text-gray-3/30 h-full appearance-none",
                             errors.industry && "border-destructive"
                         )}
                         placeholder="Healthcare"
                         disabled={isLoading}
                     />
                     {errors.industry && (
-                        <p className="text-xs text-destructive">{errors.industry.message}</p>
+                        <p className="text-xs text-destructive mt-1">{errors.industry.message}</p>
                     )}
                 </div>
 
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col h-[68px] mt-[21px]">
                     <label
                         htmlFor="employeeCount"
-                        className="text-sm font-medium text-muted-foreground"
+                        className="text-[16px] font-medium text-gray-2 leading-[100%] tracking-[0.001em]"
                     >
                         How many employees do you have?
                     </label>
@@ -100,41 +100,18 @@ export const OnBoardingForm = () => {
                         type="text"
                         {...register("employeeCount")}
                         className={cn(
-                            "w-full bg-transparent border-b border-muted-foreground/40 py-1.5 text-lg font-bold text-foreground focus:outline-none focus:border-primary transition-colors placeholder:text-muted-foreground/30",
+                            "w-full bg-transparent border-b border-gray-3 py-2 text-[22px] font-medium text-black leading-[100%] tracking-[0.0015em] focus:outline-none focus:border-primary transition-colors placeholder:text-gray-3/30 h-full appearance-none",
                             errors.employeeCount && "border-destructive"
                         )}
                         placeholder="1 - 9"
                         disabled={isLoading}
                     />
                     {errors.employeeCount && (
-                        <p className="text-xs text-destructive">{errors.employeeCount.message}</p>
+                        <p className="text-xs text-destructive mt-1">{errors.employeeCount.message}</p>
                     )}
                 </div>
 
-                <div className="flex flex-col gap-1">
-                    <label
-                        htmlFor="specialty"
-                        className="text-sm font-medium text-muted-foreground"
-                    >
-                        Specialty (Optional)
-                    </label>
-                    <input
-                        id="specialty"
-                        type="text"
-                        {...register("specialty")}
-                        className={cn(
-                            "w-full bg-transparent border-b border-muted-foreground/40 py-1.5 text-lg font-bold text-foreground focus:outline-none focus:border-primary transition-colors placeholder:text-muted-foreground/30",
-                            errors.specialty && "border-destructive"
-                        )}
-                        placeholder="Cardiology"
-                        disabled={isLoading}
-                    />
-                    {errors.specialty && (
-                        <p className="text-xs text-destructive">{errors.specialty.message}</p>
-                    )}
-                </div>
-
-                <div className="pt-4">
+                <div className="pt-8">
                     <Button
                         type="submit"
                         className="w-full h-12 text-lg font-semibold bg-primary hover:bg-primary/90 rounded-xl"

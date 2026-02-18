@@ -17,7 +17,7 @@ export function TopBar() {
   } = useTopBar()
 
   return (
-    <header className="flex w-full items-center border-b border-border bg-white lg:h-20 h-16 px-0 sticky top-0 z-30 font-mukta">
+    <header className="flex w-full items-center border-b border-border bg-white h-[92.18px] px-0 sticky top-0 z-30 font-mukta">
       <div className="flex w-full items-center justify-between gap-4 px-4 lg:px-6">
         <div className="flex items-center gap-3 flex-1">
           <SidebarTrigger className="-ml-1 text-gray-3" />
@@ -32,7 +32,7 @@ export function TopBar() {
             {searchValue || activeSearch ? (
               <button
                 onClick={handleClearSearch}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-3 hover:text-dark"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-3 hover:text-dark cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -43,7 +43,7 @@ export function TopBar() {
               />
             )}
           </div>
-          <button className="md:hidden p-2 text-gray-3">
+          <button className="md:hidden p-2 text-gray-3 cursor-pointer">
             <Search size={20} />
           </button>
         </div>
@@ -61,16 +61,15 @@ export function TopBar() {
             {formattedDate}
           </div>
           <div className="flex items-center gap-3 lg:gap-4 text-gray-3">
-            <button className="relative p-1 hover:text-primary transition-colors">
+            <button className="relative p-1 hover:text-primary transition-colors cursor-pointer">
               <Mail size={20} strokeWidth={1.5} />
               <span className="absolute right-0 top-0 block h-2 w-2 rounded-full bg-destructive" />
             </button>
             <NotificationDropdown />
             <button
-
               onClick={handleLogout}
               disabled={isLoggingOut}
-              className="p-1 hover:text-destructive transition-colors disabled:opacity-50"
+              className="p-1 hover:text-destructive transition-colors disabled:opacity-50 cursor-pointer"
               title="Logout"
             >
               {isLoggingOut ? (

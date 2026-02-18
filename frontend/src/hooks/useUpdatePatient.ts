@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import type { BackendErrorData } from "@/types";
 import type { AddPatientFormValues } from "./useAddPatient";
+import parsePhoneNumber from 'libphonenumber-js';
 
 const updatePatientSchema = z.object({
     recordNumber: z.string().optional(),
@@ -15,7 +16,14 @@ const updatePatientSchema = z.object({
     sex: z.enum(["male", "female"]),
     diagnosis: z.string().min(1, "Diagnosis is required"),
     notes: z.string().optional(),
-    phoneNumber: z.string().min(10, "Phone number must be at least 10 digits"),
+    phoneNumber: z.string().refine((val) => {
+        try {
+            const phone = parsePhoneNumber(val, 'PK');
+            return phone ? phone.isValid() : false;
+        } catch {
+            return false;
+        }
+    }, "Invalid phone number"),
     status: z.enum(["recovered", "awaiting_surgery", "on_treatment"]),
 });
 

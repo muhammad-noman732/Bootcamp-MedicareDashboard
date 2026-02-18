@@ -91,7 +91,7 @@ export default function SupportPage() {
                                     <CardContent className="p-0">
                                         <button
                                             onClick={() => toggleFaq(i)}
-                                            className="flex items-center justify-between w-full p-4 text-left outline-none"
+                                            className="flex items-center justify-between w-full p-4 text-left outline-none cursor-pointer"
                                         >
                                             <div className="flex items-center space-x-4">
                                                 <div className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${activeFaq === i ? 'bg-primary text-white' : 'bg-primary/10 text-primary'}`}>

@@ -10,7 +10,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
 } from "@/components/ui/sidebar"
 
 
@@ -18,7 +17,7 @@ const menuItems = [
   {
     title: "Dashboard",
     url: "/dashboard",
-    image: "/vite.svg",
+    image: "/dashboard.svg",
   },
   {
     title: "Schedule",
@@ -58,42 +57,78 @@ const generalItems = [
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar variant="sidebar" {...props}>
-      <SidebarHeader className="border-b border-sidebar-border lg:h-20 h-16 flex items-center px-4">
-        <div className="flex items-center gap-3">
-          <img
-            src="/logo.png"
-            alt="Medicare logo"
-            className="h-8 w-8 lg:h-10 lg:w-10 rounded-full object-contain"
-          />
-          <span className="text-xl font-bold text-primary font-mukta">Medicare</span>
-        </div>
+      <SidebarHeader className="h-[92.18px] w-full flex flex-row items-center pt-[23px] pb-[22px] pl-[16px] gap-[16px] border-b border-r-[0.98px] border-sidebar-border shadow-none bg-white">
+        <img
+          src="/logo.png"
+          alt="Medicare logo"
+          className="h-full w-auto object-contain"
+          style={{ opacity: 1 }}
+        />
+        <span className="text-[37.26px] font-normal text-primary leading-[100%] tracking-[0.0025em] font-mukta">
+          Medicare
+        </span>
       </SidebarHeader>
 
       <SidebarContent className="pr-3">
         { }
         <SidebarGroup className="mt-3">
-          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground mb-2 px-2">
+          <SidebarGroupLabel
+            style={{
+              width: '34px',
+              height: '21px',
+              opacity: 1,
+              paddingLeft: '19.61px',
+              fontFamily: 'Mukta',
+              fontWeight: 400,
+              fontSize: '12.75px',
+              lineHeight: '100%',
+              letterSpacing: '0.004em',
+              color: 'var(--sidebar-inactive-color)',
+            }}
+            className="mb-2 mt-2"
+          >
             MENU
           </SidebarGroupLabel>
-          <SidebarMenu className="gap-2">
+          <SidebarMenu style={{ gap: '8.83px' }}>
             {menuItems.map((item) => (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton
                   asChild
-                  className="group relative h-11 data-[active=true]:bg-transparent data-[active=true]:text-primary hover:bg-accent"
+                  style={{
+                    width: '211.82px',
+                    height: '44.13px',
+                    paddingLeft: '19px',
+                    paddingRight: '13px',
+                  }}
+                  className="group relative data-[active=true]:bg-transparent data-[active=true]:text-primary hover:bg-accent"
                 >
                   <NavLink to={item.url} className="relative" end={item.url === '/dashboard'}>
                     {({ isActive }) => (
                       <>
                         {isActive && (
-                          <div className="absolute -left-0 top-0 h-full w-1 bg-primary rounded-r-sm mr-[5px]" />
+                          <div className="absolute left-0 top-0 h-full w-1 bg-primary rounded-r-sm mr-[5px]" />
                         )}
                         <img
                           src={item.image}
                           alt={item.title}
-                          className={`size-5 ${isActive ? '' : 'opacity-60 grayscale'}`}
+                          className="size-5"
+                          style={{
+                            filter: isActive
+                              ? 'invert(12%) sepia(100%) saturate(5855%) hue-rotate(240deg) brightness(91%) contrast(118%)'
+                              : 'grayscale(100%)',
+                            opacity: isActive ? 1 : 0.6
+                          }}
                         />
-                        <span className={`${isActive ? 'font-medium text-primary' : 'text-muted-foreground'}`}>
+                        <span
+                          style={{
+                            fontFamily: 'Mukta',
+                            fontWeight: isActive ? 500 : 400,
+                            fontSize: '15.69px',
+                            lineHeight: '100%',
+                            letterSpacing: '0.0025em',
+                            color: isActive ? 'var(--primary)' : 'var(--sidebar-inactive-color)',
+                          }}
+                        >
                           {item.title}
                         </span>
                       </>
@@ -105,19 +140,47 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenu>
         </SidebarGroup>
 
-        <SidebarSeparator className="mx-4 my-4" />
+        <div
+          style={{
+            width: '168.6676px',
+            height: '0px',
+            borderTop: '0.98px solid #E0E0E0',
+            opacity: 1,
+            marginLeft: '38.24px',
+            marginTop: '17px',
+          }}
+        />
 
-        { }
-        <SidebarGroup className="mt-7">
-          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground mb-2 px-2">
+        <SidebarGroup style={{ marginTop: '27px' }}>
+          <SidebarGroupLabel
+            style={{
+              width: '50px',
+              height: '21px',
+              opacity: 1,
+              paddingLeft: '19.61px',
+              fontFamily: 'Mukta',
+              fontWeight: 400,
+              fontSize: '12.75px',
+              lineHeight: '100%',
+              letterSpacing: '0.004em',
+              color: 'var(--sidebar-inactive-color)',
+            }}
+            className="mb-2"
+          >
             GENERAL
           </SidebarGroupLabel>
-          <SidebarMenu className="gap-1">
+          <SidebarMenu style={{ gap: '8.83px' }}>
             {generalItems.map((item) => (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton
                   asChild
-                  className="group relative h-11 data-[active=true]:bg-transparent data-[active=true]:text-primary hover:bg-accent"
+                  style={{
+                    width: '211.82px',
+                    height: '44.13px',
+                    paddingLeft: '19px',
+                    paddingRight: '13px',
+                  }}
+                  className="group relative data-[active=true]:bg-transparent data-[active=true]:text-primary hover:bg-accent"
                 >
                   <NavLink to={item.url}>
                     {({ isActive }) => (
@@ -128,9 +191,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         <img
                           src={item.image}
                           alt={item.title}
-                          className={`size-5 ${isActive ? '' : 'opacity-60 grayscale'}`}
+                          className="size-5"
+                          style={{
+                            filter: isActive
+                              ? 'invert(12%) sepia(100%) saturate(5855%) hue-rotate(240deg) brightness(91%) contrast(118%)'
+                              : 'grayscale(100%)',
+                            opacity: isActive ? 1 : 0.6
+                          }}
                         />
-                        <span className={`${isActive ? 'font-medium text-primary' : 'text-muted-foreground'}`}>
+                        <span
+                          style={{
+                            fontFamily: 'Mukta',
+                            fontWeight: isActive ? 500 : 400,
+                            fontSize: '15.69px',
+                            lineHeight: '100%',
+                            letterSpacing: '0.0025em',
+                            color: isActive ? 'var(--primary)' : 'var(--sidebar-inactive-color)',
+                          }}
+                        >
                           {item.title}
                         </span>
                       </>

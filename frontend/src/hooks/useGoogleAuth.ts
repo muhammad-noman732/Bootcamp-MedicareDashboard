@@ -2,6 +2,7 @@ import { useGoogleLoginMutation } from "@/lib/store/services/auth/authApi"
 import { useNavigate } from "react-router-dom"
 import type { CredentialResponse } from "@react-oauth/google"
 import { toast } from "sonner"
+
 export const useGoogleAuth = () => {
     const [googleLogin, { isLoading }] = useGoogleLoginMutation()
     const navigate = useNavigate();
@@ -13,6 +14,7 @@ export const useGoogleAuth = () => {
         }
         try {
             const result = await googleLogin({ idToken: response.credential }).unwrap();
+
             if (result.status === "success") {
                 toast.success(result.message);
 
@@ -30,16 +32,14 @@ export const useGoogleAuth = () => {
         }
 
     }
+
     const handleGoogleError = () => {
         toast.error("Google login process interrupted")
     }
+
     return {
         handleGoogleLoginSuccess,
         handleGoogleError,
         isLoading
     }
-
-
-
-
 }

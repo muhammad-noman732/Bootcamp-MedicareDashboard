@@ -1,5 +1,6 @@
 import { useMemo, useState, useCallback } from "react";
 import { useGetAppointmentsQuery } from "@/lib/store/services/appointment/appointmentApi";
+import { useSearchParams } from "react-router-dom";
 
 const getVariantByStatus = (status: string): string => {
     switch (status) {
@@ -50,6 +51,8 @@ const getOrdinalSuffix = (day: number): string => {
 };
 
 export const useAppointments = () => {
+    const [searchParams] = useSearchParams();
+    const search = searchParams.get("search")?.toLowerCase() || "";
     const [currentDate, setCurrentDate] = useState(new Date());
     const { data, isLoading, error } = useGetAppointmentsQuery();
 
@@ -60,10 +63,28 @@ export const useAppointments = () => {
         [firstDay, lastDay]
     );
 
-    const calendarEvents = useMemo(() => {
+    const filteredAppointments = useMemo(() => {
         if (!data?.data) return [];
+        if (!search) return data.data;
 
-        return data.data.map((appointment) => {
+        return data.data.filter((appointment) => {
+            const patientName = (appointment.patient
+                ? `${appointment.patient.forename} ${appointment.patient.surname}`
+                : "").toLowerCase();
+
+            const status = (appointment.status || "").toLowerCase();
+            const statusLabel = status === "confirmation_required" ? "confirmation required" : status;
+
+            const type = (appointment.type || "").toLowerCase().replace("_", " ");
+            return patientName.includes(search) ||
+                status.includes(search) ||
+                statusLabel.includes(search) ||
+                type.includes(search);
+        });
+    }, [data, search]);
+
+    const calendarEvents = useMemo(() => {
+        return filteredAppointments.map((appointment) => {
             const patientName = appointment.patient
                 ? `${appointment.patient.forename} ${appointment.patient.surname}`
                 : "";
@@ -88,7 +109,7 @@ export const useAppointments = () => {
                 },
             };
         });
-    }, [data]);
+    }, [filteredAppointments]);
 
     const goToNextWeek = useCallback(() => {
         setCurrentDate((prev) => {
@@ -111,11 +132,11 @@ export const useAppointments = () => {
     }, []);
 
     return {
-        appointments: data?.data || [],
+        appointments: filteredAppointments,
         calendarEvents,
         isLoading,
         error,
-        count: data?.count || 0,
+        count: filteredAppointments.length,
         dateRangeLabel,
         currentDate,
         goToNextWeek,

@@ -19,7 +19,10 @@ export function usePatients() {
 
 
   const setPage = (newPage: number) => {
-    setSearchParams({ page: newPage.toString(), limit: limit.toString() });
+    const params = new URLSearchParams(searchParams);
+    params.set("page", newPage.toString());
+    params.set("limit", limit.toString());
+    setSearchParams(params);
   };
 
 

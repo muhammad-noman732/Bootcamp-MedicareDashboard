@@ -11,7 +11,7 @@ import {
     updateAppointmentSchema,
     appointmentIdSchema,
     dateRangeQuerySchema
-} from "../validations/appointmentSchema.ts";
+} from "../validations/appointmentValidation.ts";
 
 const appointmentRouter = express.Router();
 

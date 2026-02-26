@@ -12,7 +12,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { CreateTaskModal } from "../tasks/modals/CreateTaskModal";
 import { UpdateTaskModal } from "../tasks/modals/UpdateTaskModal";
 import { DeleteTaskModal } from "../tasks/modals/DeleteTaskModal";
@@ -78,8 +78,23 @@ export function TasksCard() {
             </CardHeader>
             <CardContent className="flex flex-col gap-3 px-0 pt-0">
                 {isLoading ? (
-                    <div className="flex items-center justify-center py-10">
-                        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                    <div className="space-y-3">
+                        {[1, 2, 3, 4].map((i) => (
+                            <div
+                                key={i}
+                                className="flex items-start gap-4 p-4 min-h-[100px] rounded-lg bg-muted/30 border-[0.98px] border-border"
+                            >
+                                <Skeleton className="flex-shrink-0 mt-1 w-[31.38px] h-[31.38px] rounded-[5.88px]" />
+                                <div className="flex-1 min-w-0 space-y-2 mt-1">
+                                    <Skeleton className="h-[15.69px] w-3/4 rounded-sm" />
+                                    <Skeleton className="h-4 w-1/2 rounded-sm" />
+                                </div>
+                                <div className="flex items-center gap-4 flex-shrink-0 self-center">
+                                    <Skeleton className="h-4 w-16 rounded-sm" />
+                                    <Skeleton className="w-[24px] h-[24px] rounded border-[0.72px] border-border" />
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 ) : tasks.length === 0 ? (
                     <div className="text-center py-10 text-sm text-muted-foreground">

@@ -1,4 +1,4 @@
-import { Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { TaskItem } from "./TaskItem";
 import type { Task } from "@/types/task";
 
@@ -19,8 +19,23 @@ export function TasksList({
 }: TasksListProps) {
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center py-20">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <div className="flex flex-col gap-3">
+                {[1, 2, 3, 4, 5].map((i) => (
+                    <div
+                        key={i}
+                        className="flex items-start gap-4 p-4 min-h-[96px] rounded-lg bg-white border border-border shadow-sm"
+                    >
+                        <Skeleton className="flex-shrink-0 mt-1 w-[32px] h-[32px] rounded-[6px]" />
+                        <div className="flex-1 min-w-0 space-y-3 mt-1">
+                            <Skeleton className="h-4 w-3/4 rounded-sm" />
+                            <Skeleton className="h-3 w-1/2 rounded-sm" />
+                        </div>
+                        <div className="flex items-center gap-4 flex-shrink-0 self-center">
+                            <Skeleton className="h-4 w-16 rounded-sm" />
+                            <Skeleton className="w-8 h-8 rounded-md" />
+                        </div>
+                    </div>
+                ))}
             </div>
         );
     }

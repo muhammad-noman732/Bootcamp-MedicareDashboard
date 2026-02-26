@@ -2,7 +2,8 @@ import { AnalyticsCards } from "@/components/dashboard/analytics/AnalyticsCards"
 import { TrendsChart } from "@/components/dashboard/analytics/TrendsChart";
 import { PatientDistribution } from "@/components/dashboard/analytics/PatientDistribution";
 import { DemographicsChart } from "@/components/dashboard/analytics/DemographicsChart";
-import { Loader2, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
@@ -11,8 +12,28 @@ export default function AnalyticsPage() {
 
     if (isLoading) {
         return (
-            <div className="flex h-[60vh] items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <div className="p-6 space-y-8 animate-in fade-in duration-500 w-full">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <Skeleton className="h-9 w-[250px] mb-2 rounded-md" />
+                        <Skeleton className="h-5 w-[350px] rounded-md" />
+                    </div>
+                    <Skeleton className="h-9 w-[120px] rounded-md" />
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    <Skeleton className="h-[120px] w-full rounded-xl" />
+                    <Skeleton className="h-[120px] w-full rounded-xl" />
+                    <Skeleton className="h-[120px] w-full rounded-xl" />
+                    <Skeleton className="h-[120px] w-full rounded-xl" />
+                </div>
+
+                <div className="grid gap-6 lg:grid-cols-2">
+                    <Skeleton className="h-[400px] w-full rounded-xl" />
+                    <Skeleton className="h-[400px] w-full rounded-xl" />
+                </div>
+
+                <Skeleton className="h-[300px] w-full rounded-xl" />
             </div>
         );
     }

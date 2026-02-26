@@ -30,6 +30,7 @@ export const TasksPage = () => {
                     onAddTask={openCreateModal}
                     filter={filter}
                     onFilterChange={setFilter}
+                    isLoading={isLoading}
                 />
             </div>
 

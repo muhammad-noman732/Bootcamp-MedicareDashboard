@@ -6,7 +6,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { format, isPast, addMinutes } from "date-fns";
 import { NewAppointmentModal } from "../schedule/NewAppointmentModal";
 import { UpdateAppointmentModal } from "../schedule/UpdateAppointmentModal";
@@ -57,8 +57,27 @@ export function UpcomingScheduleCard() {
 
             <CardContent className="px-0 pt-0 relative min-h-[500px]">
                 {isLoading ? (
-                    <div className="flex items-center justify-center py-20">
-                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <div className="relative">
+                        <div className="absolute left-[39px] top-0 bottom-0 w-[1px] bg-[#E0E0E0] opacity-30" />
+                        <div className="space-y-8">
+                            {[1, 2, 3, 4, 5].map((i) => (
+                                <div key={i} className="relative">
+                                    <div className="flex items-start mb-2">
+                                        <Skeleton className="w-[30px] h-3 mt-1" />
+                                        <div className="absolute left-[34px] top-[6px] w-[11px] h-[11px] rounded-full bg-muted border border-border" />
+                                    </div>
+                                    <div className="ml-[54px] space-y-3">
+                                        <div className="p-3 rounded-lg border border-border bg-white shadow-sm space-y-2">
+                                            <div className="flex items-center gap-2">
+                                                <Skeleton className="w-2 h-2 rounded-full" />
+                                                <Skeleton className="h-4 w-3/4" />
+                                            </div>
+                                            <Skeleton className="h-3 w-1/2 ml-4" />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 ) : appointments.length === 0 ? (
                     <div className="text-center py-24 text-sm text-gray-3 bg-muted/30 rounded-lg border border-dashed border-border font-mukta">

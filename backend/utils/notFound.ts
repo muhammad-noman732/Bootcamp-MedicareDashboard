@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { NotFoundError } from "./appError.ts";
+import { NotFoundError } from "./appError";
 
 export const notFoundHandler = (
     req: Request,

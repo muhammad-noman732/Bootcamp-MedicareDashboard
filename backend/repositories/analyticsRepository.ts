@@ -1,4 +1,4 @@
-import { prisma } from "../lib/prisma.ts";
+import { prisma } from "../lib/prisma";
 import { startOfMonth, endOfMonth, subMonths } from "date-fns";
 
 export class AnalyticsRepository {

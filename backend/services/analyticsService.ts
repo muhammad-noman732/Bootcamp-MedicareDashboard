@@ -1,4 +1,4 @@
-import type { AnalyticsRepository } from "../repositories/analyticsRepository.ts";
+import type { AnalyticsRepository } from "../repositories/analyticsRepository";
 import type {
     AnalyticsData,
     AnalyticsSummary,

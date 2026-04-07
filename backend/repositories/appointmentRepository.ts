@@ -1,4 +1,4 @@
-import { Appointment } from "../generated/prisma/client";
+import { Appointment } from "@prisma/client";
 import { prisma } from "../lib/prisma";
 import type { AppointmentWithPatient, AppointmentWithDetails, CreateAppointmentData, UpdateAppointmentData } from "../types/appointmentTypes";
 import { startOfMonth, endOfMonth, subMonths, format } from 'date-fns';

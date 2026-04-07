@@ -1,4 +1,4 @@
-import { Notification } from "../generated/prisma/client";
+import { Notification } from "@prisma/client";
 
 export type NotificationResponse = Notification;
 

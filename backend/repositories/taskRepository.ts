@@ -1,4 +1,4 @@
-import { Task, Prisma } from "../generated/prisma/client";
+import { Task, Prisma } from "@prisma/client";
 import { prisma } from "../lib/prisma";
 import type { CreateTaskData, UpdateTaskData } from "../types/taskTypes";
 

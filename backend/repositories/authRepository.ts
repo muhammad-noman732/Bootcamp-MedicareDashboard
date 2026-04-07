@@ -1,4 +1,4 @@
-import { Prisma, type User, type RefreshToken } from "../generated/prisma/client";
+import { Prisma, type User, type RefreshToken } from "@prisma/client";
 import { prisma } from "../lib/prisma";
 import type { AuthResponse, AuthUserResponse } from "../types/authTypes";
 

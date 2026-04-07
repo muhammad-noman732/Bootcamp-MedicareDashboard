@@ -1,4 +1,4 @@
-import { Appointment, Patient, User } from "../generated/prisma/client";
+import { Appointment, Patient, User } from "@prisma/client";
 
 export type AppointmentWithPatient = Appointment & { patient: Patient };
 

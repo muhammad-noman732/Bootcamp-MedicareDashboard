@@ -8,7 +8,7 @@ import {
 } from "../validations/userSchemaValidation";
 
 import type { AuthRepository } from "../repositories/authRepository";
-import type { User } from "../generated/prisma/client";
+import type { User } from "@prisma/client";
 import {
     ConflictError,
     NotFoundError,
@@ -16,7 +16,7 @@ import {
     InternalServerError,
     BadRequestError,
 } from "../utils/appError";
-import type { Prisma } from "../generated/prisma/client";
+import type { Prisma } from "@prisma/client";
 import bcryptjs from "bcryptjs";
 import { JwtService } from "../lib/jwt";
 import { AuthUserResponse } from "../types/authTypes";

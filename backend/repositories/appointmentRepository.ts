@@ -175,7 +175,7 @@ export class AppointmentRepository {
                             lte: monthEnd
                         }
                     }
-                }).then(count => ({
+                }).then((count: number) => ({
                     month: format(targetDate, "MMMM"),
                     count
                 }))

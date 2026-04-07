@@ -58,7 +58,7 @@ export class AnalyticsService {
             awaiting_surgery: "#f59e0b"
         };
 
-        const patientStatus: PatientStatusStats[] = statusDist.map(item => ({
+        const patientStatus: PatientStatusStats[] = statusDist.map((item: any) => ({
             status: item.status.replace('_', ' ').charAt(0).toUpperCase() + item.status.replace('_', ' ').slice(1),
             count: item._count.id,
             fill: statusColors[item.status] || "#94a3b8"
@@ -66,7 +66,7 @@ export class AnalyticsService {
 
 
         const trendMap = new Map<string, number>();
-        trends.forEach(item => {
+        trends.forEach((item: any) => {
             const dateStr = format(new Date(item.createdAt), "MMM dd");
             trendMap.set(dateStr, (trendMap.get(dateStr) || 0) + item._count.id);
         });
@@ -81,7 +81,7 @@ export class AnalyticsService {
             female: "#ec4899"
         };
 
-        const genderDistribution: GenderStats[] = genderDist.map(item => ({
+        const genderDistribution: GenderStats[] = genderDist.map((item: any) => ({
             gender: item.sex.charAt(0).toUpperCase() + item.sex.slice(1),
             count: item._count.id,
             fill: genderColors[item.sex] || "#94a3b8"
@@ -96,7 +96,7 @@ export class AnalyticsService {
             "70+": 0
         };
 
-        ageData.forEach(p => {
+        ageData.forEach((p: any) => {
             const age = differenceInYears(new Date(), new Date(p.dateOfBirth));
             if (age <= 18) ageGroupsMap["0-18"]++;
             else if (age <= 35) ageGroupsMap["19-35"]++;

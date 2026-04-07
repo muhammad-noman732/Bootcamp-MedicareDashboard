@@ -1,15 +1,15 @@
 import express from "express";
-import { AuthRepository } from "../repositories/authRepository.ts";
-import { AuthService } from "../services/authServices.ts";
-import { AuthController } from "../controllers/authController.ts";
-import { JwtService } from "../lib/jwt.ts";
-import { SendGridService } from "../lib/sendGrid.ts";
+import { AuthRepository } from "../repositories/authRepository";
+import { AuthService } from "../services/authServices";
+import { AuthController } from "../controllers/authController";
+import { JwtService } from "../lib/jwt";
+import { SendGridService } from "../lib/sendGrid";
 
-import { verifyEmailAuth } from "../middlewares/verifyEmailMiddleware.ts";
+import { verifyEmailAuth } from "../middlewares/verifyEmailMiddleware";
 
-import { AuthMiddleware } from "../middlewares/authMiddleware.ts";
-import { upload } from "../middlewares/uploadMiddleware.ts";
-import { validate } from "../middlewares/validateMiddleware.ts";
+import { AuthMiddleware } from "../middlewares/authMiddleware";
+import { upload } from "../middlewares/uploadMiddleware";
+import { validate } from "../middlewares/validateMiddleware";
 import {
     authSchema,
     loginSchema,
@@ -18,8 +18,8 @@ import {
     changePasswordSchema,
     updateProfileSchema,
     onboardingSchema
-} from "../validations/userSchemaValidation.ts";
-import { verifyEmailSchema } from "../validations/emailVerificationValidition.ts";
+} from "../validations/userSchemaValidation";
+import { verifyEmailSchema } from "../validations/emailVerificationValidition";
 
 
 const authRouter = express.Router();

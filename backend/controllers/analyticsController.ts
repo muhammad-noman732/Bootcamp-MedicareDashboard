@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { asyncHandler } from "../utils/asyncHandler.ts";
-import { AnalyticsService } from "../services/analyticsService.ts";
+import { asyncHandler } from "../utils/asyncHandler";
+import { AnalyticsService } from "../services/analyticsService";
 
 export class AnalyticsController {
     constructor(private analyticsService: AnalyticsService) { }

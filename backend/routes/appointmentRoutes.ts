@@ -1,17 +1,17 @@
 import express from "express";
-import { AppointmentRepository } from "../repositories/appointmentRepository.ts";
-import { AppointmentService } from "../services/appointmentService.ts";
-import { AppointmentController } from "../controllers/appintmentController.ts";
-import { notificationServiceInstance } from "./notificationRoutes.ts";
-import { AuthMiddleware } from "../middlewares/authMiddleware.ts";
-import { JwtService } from "../lib/jwt.ts";
-import { validate } from "../middlewares/validateMiddleware.ts";
+import { AppointmentRepository } from "../repositories/appointmentRepository";
+import { AppointmentService } from "../services/appointmentService";
+import { AppointmentController } from "../controllers/appintmentController";
+import { notificationServiceInstance } from "./notificationRoutes";
+import { AuthMiddleware } from "../middlewares/authMiddleware";
+import { JwtService } from "../lib/jwt";
+import { validate } from "../middlewares/validateMiddleware";
 import {
     appointmentSchema,
     updateAppointmentSchema,
     appointmentIdSchema,
     dateRangeQuerySchema
-} from "../validations/appointmentValidation.ts";
+} from "../validations/appointmentValidation";
 
 const appointmentRouter = express.Router();
 

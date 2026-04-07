@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { NotificationResponse } from "../types/notificationTypes.ts";
+import { NotificationResponse } from "../types/notificationTypes";
 
 class NotificationManager {
     private static instance: NotificationManager;

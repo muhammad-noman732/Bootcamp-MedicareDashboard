@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { NotificationService } from "../services/notificationService.ts";
-import { notificationManager } from "../lib/notificationManager.ts";
-import { asyncHandler } from "../utils/asyncHandler.ts";
+import { NotificationService } from "../services/notificationService";
+import { notificationManager } from "../lib/notificationManager";
+import { asyncHandler } from "../utils/asyncHandler";
 
 export class NotificationController {
     constructor(private service: NotificationService) { }

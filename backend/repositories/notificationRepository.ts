@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { prisma } from "../lib/prisma.ts";
+import { prisma } from "../lib/prisma";
 
 export class NotificationRepository {
     private prisma: PrismaClient;

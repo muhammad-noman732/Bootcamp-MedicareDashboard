@@ -1,17 +1,17 @@
 import express from "express";
-import { TaskRepository } from "../repositories/taskRepository.ts";
-import { TaskService } from "../services/taskService.ts";
-import { TaskController } from "../controllers/taskController.ts";
-import { AuthMiddleware } from "../middlewares/authMiddleware.ts";
-import { JwtService } from "../lib/jwt.ts";
-import { validate } from "../middlewares/validateMiddleware.ts";
+import { TaskRepository } from "../repositories/taskRepository";
+import { TaskService } from "../services/taskService";
+import { TaskController } from "../controllers/taskController";
+import { AuthMiddleware } from "../middlewares/authMiddleware";
+import { JwtService } from "../lib/jwt";
+import { validate } from "../middlewares/validateMiddleware";
 import {
     createTaskSchema,
     updateTaskSchema,
     taskIdSchema,
     taskQuerySchema,
     toggleTaskCompletionSchema
-} from "../validations/tasksValidation.ts";
+} from "../validations/tasksValidation";
 
 
 const taskRouter = express.Router();

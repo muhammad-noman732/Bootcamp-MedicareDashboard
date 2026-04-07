@@ -1,9 +1,9 @@
 import express from "express";
-import { NotificationRepository } from "../repositories/notificationRepository.ts";
-import { NotificationService } from "../services/notificationService.ts";
-import { NotificationController } from "../controllers/notificationController.ts";
-import { AuthMiddleware } from "../middlewares/authMiddleware.ts";
-import { JwtService } from "../lib/jwt.ts";
+import { NotificationRepository } from "../repositories/notificationRepository";
+import { NotificationService } from "../services/notificationService";
+import { NotificationController } from "../controllers/notificationController";
+import { AuthMiddleware } from "../middlewares/authMiddleware";
+import { JwtService } from "../lib/jwt";
 
 const notificationRouter = express.Router();
 

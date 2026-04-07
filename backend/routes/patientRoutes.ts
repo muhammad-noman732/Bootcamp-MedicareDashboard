@@ -4,9 +4,9 @@ import { PatientServices } from "../services/patientServices";
 import { PatientController } from "../controllers/patientController";
 import { AuthMiddleware } from "../middlewares/authMiddleware";
 import { JwtService } from "../lib/jwt";
-import { validate } from "../middlewares/validateMiddleware.ts";
-import { createPatientSchema, updatePatientSchema } from "../validations/patientsValidation.ts";
-import { paginationQuerySchema } from "../validations/paginationQueryValidation.ts";
+import { validate } from "../middlewares/validateMiddleware";
+import { createPatientSchema, updatePatientSchema } from "../validations/patientsValidation";
+import { paginationQuerySchema } from "../validations/paginationQueryValidation";
 
 const patientRouter = express.Router();
 

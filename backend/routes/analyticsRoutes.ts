@@ -1,9 +1,9 @@
 import express from "express";
-import { AnalyticsRepository } from "../repositories/analyticsRepository.ts";
-import { AnalyticsService } from "../services/analyticsService.ts";
-import { AnalyticsController } from "../controllers/analyticsController.ts";
-import { AuthMiddleware } from "../middlewares/authMiddleware.ts";
-import { JwtService } from "../lib/jwt.ts";
+import { AnalyticsRepository } from "../repositories/analyticsRepository";
+import { AnalyticsService } from "../services/analyticsService";
+import { AnalyticsController } from "../controllers/analyticsController";
+import { AuthMiddleware } from "../middlewares/authMiddleware";
+import { JwtService } from "../lib/jwt";
 
 const analyticsRouter = express.Router();
 

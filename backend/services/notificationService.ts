@@ -1,5 +1,5 @@
-import { NotificationRepository } from "../repositories/notificationRepository.ts";
-import { notificationManager } from "../lib/notificationManager.ts";
+import { NotificationRepository } from "../repositories/notificationRepository";
+import { notificationManager } from "../lib/notificationManager";
 
 export class NotificationService {
     constructor(private repository: NotificationRepository) { }

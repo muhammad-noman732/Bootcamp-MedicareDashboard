@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "tsx watch server.ts",
     "typecheck": "tsc --noEmit",
-    "build": "npx prisma generate",
-    "postinstall": "npx prisma generate",
+    "build": "npx prisma@6.1.0 generate",
+    "postinstall": "npx prisma@6.1.0 generate",
     "start": "tsx server.ts"
   },
   "keywords": [],

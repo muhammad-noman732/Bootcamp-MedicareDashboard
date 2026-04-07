@@ -13,7 +13,7 @@
         "dev:backend": "npm run dev --prefix backend",
         "cy:open": "cypress open",
         "cy:run": "cypress run",
-        "postinstall": "npx prisma generate --schema=backend/prisma/schema.prisma",
+        "postinstall": "npx prisma@6.1.0 generate --schema=backend/prisma/schema.prisma",
         "test:e2e": "concurrently \"npm run dev:frontend\" \"wait-on http://localhost:5173 && cypress open\"",
         "test:e2e:ci": "concurrently \"npm run dev:frontend\" \"wait-on http://localhost:5173 && cypress run\""
     },
